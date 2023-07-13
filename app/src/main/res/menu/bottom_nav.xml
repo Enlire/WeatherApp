@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/home"
+        android:title="@string/home" />
+    <item
+        android:title="@string/hourly"
+        android:id="@+id/hourly"
+        android:icon="@drawable/schedule"/>
+    <item
+        android:title="@string/daily"
+        android:id="@+id/daily"
+        android:icon="@drawable/calendar"/>
+    <item
+        android:title="@string/correlation"
+        android:id="@+id/correlation"
+        android:icon="@drawable/scatter_plot"/>
+    <item
+        android:title="@string/settings"
+        android:id="@+id/settings"
+        android:icon="@drawable/settings"/>
+</menu>

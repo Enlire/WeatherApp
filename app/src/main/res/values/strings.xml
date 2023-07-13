@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <string name="home">Главная</string>
+    <string name="hourly">24 часа</string>
+    <string name="daily">7 дней</string>
+    <string name="correlation">Корреляция</string>
+    <string name="settings">Настройки</string>
+</resources>
