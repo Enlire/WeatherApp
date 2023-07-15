@@ -3,5 +3,5 @@
     <color name="background">#101E2E</color>
     <color name="active_item">#FFFFFF</color>
     <color name="items">#5F88F1</color>
-
+    <color name="text">#FFFFFF</color>
 </resources>

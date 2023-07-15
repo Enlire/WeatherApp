@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Bottom navigation view-->
     <color name="background">#FFFFFF</color>
     <color name="active_item">#3E3E3E</color>
     <color name="items">#5F88F1</color>
 
+    <!--Text-->
+    <color name="text">#2B2B2B</color>
+
+    <!--Background-->
+    <color name="background_top">#A2B9FF</color>
+    <color name="background_bottom">#FFFFFF</color>
 </resources>
