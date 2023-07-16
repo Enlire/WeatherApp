@@ -20,68 +20,363 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/textView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:fontFamily="@font/roboto_medium"
                     android:text="Волгоград"
                     android:textAlignment="center"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/roboto_medium"
                     android:textColor="@color/text"
-                    android:layout_marginTop="40dp" />
+                    android:textSize="20sp" />
 
                 <ImageView
                     android:id="@+id/imageView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/sunny"
                     android:layout_marginTop="13dp"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="8dp"
+                    android:src="@drawable/sunny" />
 
                 <TextView
                     android:id="@+id/textView2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="15°C"
                     android:textAlignment="center"
                     android:textColor="@color/text"
-                    android:textSize="36sp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginBottom="3dp"/>
+                    android:textSize="36sp" />
 
                 <TextView
                     android:id="@+id/textView3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="Ясно"
                     android:textAlignment="center"
                     android:textColor="@color/text"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginBottom="3dp"/>
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/textView4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="13dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="5°C / 17°C"
                     android:textAlignment="center"
                     android:textColor="@color/text"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginBottom="13dp"/>
+                    android:textSize="16sp" />
 
-                <GridView
-                    android:id="@+id/grid"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:numColumns="2"/>
+                    android:orientation="horizontal"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="3dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.333"
+                        app:cardBackgroundColor="@color/card_background"
+                        app:cardCornerRadius="5dp"
+                        app:cardElevation="0dp"
+                        android:layout_margin="3dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/idParameterIcon1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginTop="15dp"
+                                app:srcCompat="@drawable/thermometer" />
+
+                            <TextView
+                                android:id="@+id/idParameterName1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:fontFamily="@font/roboto_regular"
+                                android:text="Ощущается как"
+                                android:textAlignment="center"
+                                android:textColor="@color/active_item"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/idParameterValue1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:fontFamily="@font/roboto_regular"
+                                android:text="10°C"
+                                android:textAlignment="center"
+                                android:textColor="@color/text"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.333"
+                        app:cardElevation="0dp"
+                        android:layout_margin="3dp"
+                        app:cardBackgroundColor="@color/card_background"
+                        app:cardCornerRadius="5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/idParameterIcon2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginTop="15dp"
+                                app:srcCompat="@drawable/air" />
+
+                            <TextView
+                                android:id="@+id/idParameterName2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:fontFamily="@font/roboto_regular"
+                                android:text="ССВ"
+                                android:textAlignment="center"
+                                android:textColor="@color/active_item"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/idParameterValue2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:fontFamily="@font/roboto_regular"
+                                android:text="3 м/с"
+                                android:textAlignment="center"
+                                android:textColor="@color/text"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.333"
+                        app:cardElevation="0dp"
+                        android:layout_margin="3dp"
+                        app:cardBackgroundColor="@color/card_background"
+                        app:cardCornerRadius="5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/idParameterIcon3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
+                                app:srcCompat="@drawable/humidity"
+                                android:layout_marginTop="15dp"/>
+
+                            <TextView
+                                android:id="@+id/idParameterName3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:fontFamily="@font/roboto_regular"
+                                android:text="Влажность"
+                                android:textAlignment="center"
+                                android:textColor="@color/active_item"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/idParameterValue3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:fontFamily="@font/roboto_regular"
+                                android:text="80%"
+                                android:textAlignment="center"
+                                android:textColor="@color/text"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="3dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.333"
+                        app:cardBackgroundColor="@color/card_background"
+                        app:cardCornerRadius="5dp"
+                        app:cardElevation="0dp"
+                        android:layout_margin="3dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/idParameterIcon4"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginTop="15dp"
+                                app:srcCompat="@drawable/thermometer" />
+
+                            <TextView
+                                android:id="@+id/idParameterName4"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:fontFamily="@font/roboto_regular"
+                                android:text="Ощущается как"
+                                android:textAlignment="center"
+                                android:textColor="@color/active_item"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/idParameterValue4"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:fontFamily="@font/roboto_regular"
+                                android:text="10°C"
+                                android:textAlignment="center"
+                                android:textColor="@color/text"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.333"
+                        app:cardElevation="0dp"
+                        android:layout_margin="3dp"
+                        app:cardBackgroundColor="@color/card_background"
+                        app:cardCornerRadius="5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/idParameterIcon5"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginTop="15dp"
+                                app:srcCompat="@drawable/air" />
+
+                            <TextView
+                                android:id="@+id/idParameterName5"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:fontFamily="@font/roboto_regular"
+                                android:text="ССВ"
+                                android:textAlignment="center"
+                                android:textColor="@color/active_item"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/idParameterValue5"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:fontFamily="@font/roboto_regular"
+                                android:text="3 м/с"
+                                android:textAlignment="center"
+                                android:textColor="@color/text"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.333"
+                        app:cardElevation="0dp"
+                        android:layout_margin="3dp"
+                        app:cardBackgroundColor="@color/card_background"
+                        app:cardCornerRadius="5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/idParameterIcon6"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
+                                app:srcCompat="@drawable/humidity"
+                                android:layout_marginTop="15dp"/>
+
+                            <TextView
+                                android:id="@+id/idParameterName6"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:fontFamily="@font/roboto_regular"
+                                android:text="Влажность"
+                                android:textAlignment="center"
+                                android:textColor="@color/active_item"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/idParameterValue6"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:fontFamily="@font/roboto_regular"
+                                android:text="80%"
+                                android:textAlignment="center"
+                                android:textColor="@color/text"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
             </LinearLayout>
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,4 +11,5 @@
     <!--Background-->
     <color name="background_top">#A2B9FF</color>
     <color name="background_bottom">#FFFFFF</color>
+    <color name="card_background">#D6E0FF</color>
 </resources>
