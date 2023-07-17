@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="5dp"
+    android:layout_marginBottom="3dp"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="0dp"
+    app:cardMaxElevation="0dp">
+
+    <ImageView
+        android:layout_width="65dp"
+        android:layout_height="130dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/hourly_card" />
+
+    <LinearLayout
+        android:layout_width="65dp"
+        android:layout_height="130dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/idHour1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="10"
+            android:textAlignment="center"
+            android:textColor="@color/secondary_text"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/idHourIcon1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:maxWidth="24dp"
+            android:maxHeight="24dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/cloud" />
+
+        <TextView
+            android:id="@+id/idHourCondition1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="Облачно"
+            android:textAlignment="center"
+            android:textColor="@color/secondary_text"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/idHourValue1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="10°C"
+            android:textAlignment="center"
+            android:textColor="@color/main_text"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/idHourPrecipValue1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:drawableStart="@drawable/drop"
+            android:drawablePadding="5dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="10%"
+            android:textColor="@color/main_text"
+            android:textSize="12sp" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

@@ -6,10 +6,15 @@
     <color name="items">#5F88F1</color>
 
     <!--Text-->
-    <color name="text">#2B2B2B</color>
+    <color name="main_text">#2B2B2B</color>
+    <color name="secondary_text">#3E3E3E</color>
+
+    <!--Images-->
+    <color name="icon">#2B2B2B</color>
 
     <!--Background-->
     <color name="background_top">#A2B9FF</color>
     <color name="background_bottom">#FFFFFF</color>
     <color name="card_background">#D6E0FF</color>
+    <color name="hourly_card_background">#F2F6FF</color>
 </resources>

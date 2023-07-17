@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Bottom navigation view-->
     <color name="background">#101E2E</color>
     <color name="active_item">#FFFFFF</color>
     <color name="items">#5F88F1</color>
-    <color name="text">#FFFFFF</color>
+
+    <!--Text-->
+    <color name="main_text">#FFFFFF</color>
+    <color name="secondary_text">#D6E5FF</color>
+
+    <!--Images-->
+    <color name="icon">#FFFFFF</color>
+
+    <!--Background-->
+    <color name="background_top">#1D3445</color>
+    <color name="background_bottom">#101E2E</color>
+    <color name="card_background">#152A39</color>
+    <color name="hourly_card_background">#1D3445</color>
 </resources>

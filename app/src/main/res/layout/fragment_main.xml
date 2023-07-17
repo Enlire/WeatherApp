@@ -30,7 +30,7 @@
                     android:fontFamily="@font/roboto_medium"
                     android:text="Волгоград"
                     android:textAlignment="center"
-                    android:textColor="@color/text"
+                    android:textColor="@color/main_text"
                     android:textSize="20sp" />
 
                 <ImageView
@@ -50,7 +50,7 @@
                     android:fontFamily="@font/roboto_regular"
                     android:text="15°C"
                     android:textAlignment="center"
-                    android:textColor="@color/text"
+                    android:textColor="@color/main_text"
                     android:textSize="36sp" />
 
                 <TextView
@@ -62,7 +62,7 @@
                     android:fontFamily="@font/roboto_regular"
                     android:text="Ясно"
                     android:textAlignment="center"
-                    android:textColor="@color/text"
+                    android:textColor="@color/main_text"
                     android:textSize="16sp" />
 
                 <TextView
@@ -74,7 +74,7 @@
                     android:fontFamily="@font/roboto_regular"
                     android:text="5°C / 17°C"
                     android:textAlignment="center"
-                    android:textColor="@color/text"
+                    android:textColor="@color/main_text"
                     android:textSize="16sp" />
 
                 <LinearLayout
@@ -104,7 +104,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="5dp"
-                                android:layout_marginTop="15dp"
+                                android:layout_marginTop="16dp"
                                 app:srcCompat="@drawable/thermometer" />
 
                             <TextView
@@ -112,11 +112,10 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:layout_marginBottom="5dp"
                                 android:fontFamily="@font/roboto_regular"
                                 android:text="Ощущается как"
                                 android:textAlignment="center"
-                                android:textColor="@color/active_item"
+                                android:textColor="@color/secondary_text"
                                 android:textSize="12sp" />
 
                             <TextView
@@ -127,7 +126,7 @@
                                 android:fontFamily="@font/roboto_regular"
                                 android:text="10°C"
                                 android:textAlignment="center"
-                                android:textColor="@color/text"
+                                android:textColor="@color/main_text"
                                 android:textSize="14sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
@@ -151,7 +150,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="5dp"
-                                android:layout_marginTop="15dp"
+                                android:layout_marginTop="16dp"
                                 app:srcCompat="@drawable/air" />
 
                             <TextView
@@ -159,11 +158,10 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:layout_marginBottom="5dp"
                                 android:fontFamily="@font/roboto_regular"
                                 android:text="ССВ"
                                 android:textAlignment="center"
-                                android:textColor="@color/active_item"
+                                android:textColor="@color/secondary_text"
                                 android:textSize="12sp" />
 
                             <TextView
@@ -174,7 +172,7 @@
                                 android:fontFamily="@font/roboto_regular"
                                 android:text="3 м/с"
                                 android:textAlignment="center"
-                                android:textColor="@color/text"
+                                android:textColor="@color/main_text"
                                 android:textSize="14sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
@@ -199,18 +197,17 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="5dp"
                                 app:srcCompat="@drawable/humidity"
-                                android:layout_marginTop="15dp"/>
+                                android:layout_marginTop="16dp"/>
 
                             <TextView
                                 android:id="@+id/idParameterName3"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:layout_marginBottom="5dp"
                                 android:fontFamily="@font/roboto_regular"
                                 android:text="Влажность"
                                 android:textAlignment="center"
-                                android:textColor="@color/active_item"
+                                android:textColor="@color/secondary_text"
                                 android:textSize="12sp" />
 
                             <TextView
@@ -221,7 +218,7 @@
                                 android:fontFamily="@font/roboto_regular"
                                 android:text="80%"
                                 android:textAlignment="center"
-                                android:textColor="@color/text"
+                                android:textColor="@color/main_text"
                                 android:textSize="14sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
@@ -232,7 +229,8 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:layout_marginStart="3dp"
-                    android:layout_marginEnd="3dp">
+                    android:layout_marginEnd="3dp"
+                    android:layout_marginBottom="6dp">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="0dp"
@@ -253,19 +251,18 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="5dp"
-                                android:layout_marginTop="15dp"
-                                app:srcCompat="@drawable/thermometer" />
+                                android:layout_marginTop="16dp"
+                                app:srcCompat="@drawable/visibility" />
 
                             <TextView
                                 android:id="@+id/idParameterName4"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:layout_marginBottom="5dp"
                                 android:fontFamily="@font/roboto_regular"
-                                android:text="Ощущается как"
+                                android:text="Видимость"
                                 android:textAlignment="center"
-                                android:textColor="@color/active_item"
+                                android:textColor="@color/secondary_text"
                                 android:textSize="12sp" />
 
                             <TextView
@@ -274,9 +271,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:fontFamily="@font/roboto_regular"
-                                android:text="10°C"
+                                android:text="10 км"
                                 android:textAlignment="center"
-                                android:textColor="@color/text"
+                                android:textColor="@color/main_text"
                                 android:textSize="14sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
@@ -300,19 +297,18 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="5dp"
-                                android:layout_marginTop="15dp"
-                                app:srcCompat="@drawable/air" />
+                                android:layout_marginTop="16dp"
+                                app:srcCompat="@drawable/uv" />
 
                             <TextView
                                 android:id="@+id/idParameterName5"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:layout_marginBottom="5dp"
                                 android:fontFamily="@font/roboto_regular"
-                                android:text="ССВ"
+                                android:text="УФ-индекс"
                                 android:textAlignment="center"
-                                android:textColor="@color/active_item"
+                                android:textColor="@color/secondary_text"
                                 android:textSize="12sp" />
 
                             <TextView
@@ -321,9 +317,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:fontFamily="@font/roboto_regular"
-                                android:text="3 м/с"
+                                android:text="2"
                                 android:textAlignment="center"
-                                android:textColor="@color/text"
+                                android:textColor="@color/main_text"
                                 android:textSize="14sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
@@ -347,19 +343,18 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="5dp"
-                                app:srcCompat="@drawable/humidity"
-                                android:layout_marginTop="15dp"/>
+                                app:srcCompat="@drawable/speed"
+                                android:layout_marginTop="16dp"/>
 
                             <TextView
                                 android:id="@+id/idParameterName6"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:layout_marginBottom="5dp"
                                 android:fontFamily="@font/roboto_regular"
-                                android:text="Влажность"
+                                android:text="Давление"
                                 android:textAlignment="center"
-                                android:textColor="@color/active_item"
+                                android:textColor="@color/secondary_text"
                                 android:textSize="12sp" />
 
                             <TextView
@@ -368,14 +363,15 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:fontFamily="@font/roboto_regular"
-                                android:text="80%"
+                                android:text="748 мм рт. ст."
                                 android:textAlignment="center"
-                                android:textColor="@color/text"
+                                android:textColor="@color/main_text"
                                 android:textSize="14sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
                 </LinearLayout>
+
 
             </LinearLayout>
         </ScrollView>
