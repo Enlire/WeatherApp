@@ -23,56 +23,57 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="40dp"
                     android:fontFamily="@font/roboto_medium"
-                    android:text="Волгоград"
+                    android:text="..."
                     android:textAlignment="center"
                     android:textColor="@color/main_text"
                     android:textSize="20sp" />
 
                 <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="match_parent"
+                    android:id="@+id/weatherIcon"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginTop="13dp"
                     android:layout_marginBottom="8dp"
                     android:src="@drawable/sunny" />
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/tempC"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:layout_marginBottom="3dp"
                     android:fontFamily="@font/roboto_regular"
-                    android:text="15°C"
+                    android:text="..."
                     android:textAlignment="center"
                     android:textColor="@color/main_text"
                     android:textSize="36sp" />
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/weatherCondition"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:layout_marginBottom="3dp"
                     android:fontFamily="@font/roboto_regular"
-                    android:text="Ясно"
+                    android:text="..."
                     android:textAlignment="center"
                     android:textColor="@color/main_text"
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/minMaxTemp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:layout_marginBottom="13dp"
                     android:fontFamily="@font/roboto_regular"
-                    android:text="5°C / 17°C"
+                    android:text="..."
                     android:textAlignment="center"
                     android:textColor="@color/main_text"
                     android:textSize="16sp" />
@@ -100,15 +101,14 @@
                             android:orientation="vertical">
 
                             <ImageView
-                                android:id="@+id/idParameterIcon1"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
                                 android:layout_marginBottom="5dp"
                                 android:layout_marginTop="16dp"
                                 app:srcCompat="@drawable/thermometer" />
 
                             <TextView
-                                android:id="@+id/idParameterName1"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
@@ -119,12 +119,12 @@
                                 android:textSize="12sp" />
 
                             <TextView
-                                android:id="@+id/idParameterValue1"
+                                android:id="@+id/feels_like"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:fontFamily="@font/roboto_regular"
-                                android:text="10°C"
+                                android:text="..."
                                 android:textAlignment="center"
                                 android:textColor="@color/main_text"
                                 android:textSize="14sp" />
@@ -146,31 +146,31 @@
                             android:orientation="vertical">
 
                             <ImageView
-                                android:id="@+id/idParameterIcon2"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
                                 android:layout_marginBottom="5dp"
                                 android:layout_marginTop="16dp"
                                 app:srcCompat="@drawable/air" />
 
                             <TextView
-                                android:id="@+id/idParameterName2"
+                                android:id="@+id/wind_dir"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:fontFamily="@font/roboto_regular"
-                                android:text="ССВ"
+                                android:text="..."
                                 android:textAlignment="center"
                                 android:textColor="@color/secondary_text"
                                 android:textSize="12sp" />
 
                             <TextView
-                                android:id="@+id/idParameterValue2"
+                                android:id="@+id/wind_speed"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:fontFamily="@font/roboto_regular"
-                                android:text="3 м/с"
+                                android:text="..."
                                 android:textAlignment="center"
                                 android:textColor="@color/main_text"
                                 android:textSize="14sp" />
@@ -192,15 +192,14 @@
                             android:orientation="vertical">
 
                             <ImageView
-                                android:id="@+id/idParameterIcon3"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
                                 android:layout_marginBottom="5dp"
                                 app:srcCompat="@drawable/humidity"
                                 android:layout_marginTop="16dp"/>
 
                             <TextView
-                                android:id="@+id/idParameterName3"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
@@ -211,12 +210,12 @@
                                 android:textSize="12sp" />
 
                             <TextView
-                                android:id="@+id/idParameterValue3"
+                                android:id="@+id/humidity"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:fontFamily="@font/roboto_regular"
-                                android:text="80%"
+                                android:text="..."
                                 android:textAlignment="center"
                                 android:textColor="@color/main_text"
                                 android:textSize="14sp" />
@@ -247,15 +246,14 @@
                             android:orientation="vertical">
 
                             <ImageView
-                                android:id="@+id/idParameterIcon4"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
                                 android:layout_marginBottom="5dp"
                                 android:layout_marginTop="16dp"
                                 app:srcCompat="@drawable/visibility" />
 
                             <TextView
-                                android:id="@+id/idParameterName4"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
@@ -266,12 +264,12 @@
                                 android:textSize="12sp" />
 
                             <TextView
-                                android:id="@+id/idParameterValue4"
+                                android:id="@+id/visibility"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:fontFamily="@font/roboto_regular"
-                                android:text="10 км"
+                                android:text="..."
                                 android:textAlignment="center"
                                 android:textColor="@color/main_text"
                                 android:textSize="14sp" />
@@ -293,15 +291,14 @@
                             android:orientation="vertical">
 
                             <ImageView
-                                android:id="@+id/idParameterIcon5"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
                                 android:layout_marginBottom="5dp"
                                 android:layout_marginTop="16dp"
                                 app:srcCompat="@drawable/uv" />
 
                             <TextView
-                                android:id="@+id/idParameterName5"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
@@ -312,12 +309,12 @@
                                 android:textSize="12sp" />
 
                             <TextView
-                                android:id="@+id/idParameterValue5"
+                                android:id="@+id/uv_index"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:fontFamily="@font/roboto_regular"
-                                android:text="2"
+                                android:text="..."
                                 android:textAlignment="center"
                                 android:textColor="@color/main_text"
                                 android:textSize="14sp" />
@@ -339,15 +336,14 @@
                             android:orientation="vertical">
 
                             <ImageView
-                                android:id="@+id/idParameterIcon6"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
                                 android:layout_marginBottom="5dp"
                                 app:srcCompat="@drawable/speed"
                                 android:layout_marginTop="16dp"/>
 
                             <TextView
-                                android:id="@+id/idParameterName6"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
@@ -358,12 +354,12 @@
                                 android:textSize="12sp" />
 
                             <TextView
-                                android:id="@+id/idParameterValue6"
+                                android:id="@+id/pressure"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:fontFamily="@font/roboto_regular"
-                                android:text="748 мм рт. ст."
+                                android:text="..."
                                 android:textAlignment="center"
                                 android:textColor="@color/main_text"
                                 android:textSize="14sp" />

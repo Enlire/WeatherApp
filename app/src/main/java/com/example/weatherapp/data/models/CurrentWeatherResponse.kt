@@ -5,59 +5,59 @@ import com.google.gson.annotations.SerializedName
 data class CurrentWeatherResponse(
 
 	@field:SerializedName("current")
-	val current: Current? = null,
+	val current: Current,
 
 	@field:SerializedName("location")
-	val location: Location? = null
+	val location: Location
 )
 
 data class Condition(
 
 	@field:SerializedName("text")
-	val text: String? = null
+	val text: String,
+
+	@field:SerializedName("icon")
+	val icon: String
 )
 
 data class Location(
 
 	@field:SerializedName("name")
-	val name: String? = null,
+	val name: String,
 
 	@field:SerializedName("lon")
-	val lon: Any? = null,
+	val lon: Double,
 
 	@field:SerializedName("lat")
-	val lat: Any? = null
+	val lat: Double
 )
 
 data class Current(
 
 	@field:SerializedName("feelslike_c")
-	val feelslikeC: Any? = null,
+	val feelslikeC: Double,
 
 	@field:SerializedName("uv")
-	val uv: Any? = null,
+	val uv: Double,
 
 	@field:SerializedName("wind_dir")
-	val windDir: String? = null,
+	val windDir: String,
 
 	@field:SerializedName("temp_c")
-	val tempC: Any? = null,
+	val tempC: Double,
 
 	@field:SerializedName("pressure_in")
-	val pressureIn: Any? = null,
-
-	@field:SerializedName("precip_mm")
-	val precipMm: Any? = null,
+	val pressureIn: Double,
 
 	@field:SerializedName("wind_kph")
-	val windKph: Any? = null,
+	val windKph: Double,
 
 	@field:SerializedName("condition")
-	val condition: Condition? = null,
+	val condition: Condition,
 
 	@field:SerializedName("vis_km")
-	val visKm: Any? = null,
+	val visKm: Double,
 
 	@field:SerializedName("humidity")
-	val humidity: Int? = null
+	val humidity: Int
 )
