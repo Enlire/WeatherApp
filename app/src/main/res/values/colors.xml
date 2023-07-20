@@ -8,6 +8,7 @@
     <!--Text-->
     <color name="main_text">#2B2B2B</color>
     <color name="secondary_text">#3E3E3E</color>
+    <color name="customButtonColor">#5F88F1</color>
 
     <!--Images-->
     <color name="icon">#2B2B2B</color>

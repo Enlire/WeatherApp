@@ -6,6 +6,10 @@ import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.ActivityMainBinding
+import com.example.weatherapp.ui.fragments.CorrelationFragment
+import com.example.weatherapp.ui.fragments.DailyWeatherFragment
+import com.example.weatherapp.ui.fragments.HourlyWeatherFragment
+import com.example.weatherapp.ui.fragments.MainFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding

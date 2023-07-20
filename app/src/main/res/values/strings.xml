@@ -5,11 +5,7 @@
     <string name="daily">7 дней</string>
     <string name="correlation">Корреляция</string>
     <string name="settings">Настройки</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
-
-    <string name="city_name">City Name</string>
-    <string name="send_request">Send Request</string>
-    <string name="loading">Loading…</string>
+    <string name="no_internet_title">Отсутствует интернет-соединение</string>
+    <string name="no_internet_message">Пожалуйста, проверьте ваше интернет-соединение и попробуйте снова.</string>
+    <string name="no_internet_button">OK</string>
 </resources>
