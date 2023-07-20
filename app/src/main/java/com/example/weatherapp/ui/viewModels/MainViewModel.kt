@@ -15,7 +15,7 @@ class MainViewModel : ViewModel() {
     val weatherData: MutableLiveData<CurrentWeather> = MutableLiveData()
     private val currentWeatherMapper = CurrentWeatherMapper()
 
-    fun fetchWeatherData(location: String) {
+    fun fetchCurrentWeatherData(location: String) {
         apiService.getCurrentWeather(location = location)
             .enqueue(object : Callback<CurrentWeatherResponse> {
             override fun onResponse(

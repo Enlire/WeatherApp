@@ -1,5 +1,6 @@
 package com.example.weatherapp.ui.viewModels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,35 +15,34 @@ import retrofit2.Response
 
 class HourlyWeatherViewModel : ViewModel() {
     private val apiService = ApiConfig.getApiService()
-    private val hourlyWeatherData = MutableLiveData<List<HourlyWeather>>()
     private val hourlyWeatherMapper = HourlyWeatherMapper()
+    // MutableLiveData для хранения списка HourlyWeather
+    private val _hourlyWeatherList = MutableLiveData<List<HourlyWeather>>()
+    val hourlyWeatherList: LiveData<List<HourlyWeather>>
+        get() = _hourlyWeatherList
 
     fun fetchHourlyWeather(location: String) {
         apiService.getHourlyWeather(location = location)
-            .enqueue(object : Callback<List<HourlyWeatherResponse>> {
+            .enqueue(object : Callback<HourlyWeatherResponse> {
             override fun onResponse(
-                call: Call<List<HourlyWeatherResponse>>,
-                response: Response<List<HourlyWeatherResponse>>
+                call: Call<HourlyWeatherResponse>,
+                response: Response<HourlyWeatherResponse>
             ) {
                 if (response.isSuccessful) {
-                    val hourlyWeatherResponseList = response.body()?.get(0)
-                    if (hourlyWeatherResponseList != null) {
+                    val hourlyWeatherResponse: HourlyWeatherResponse? = response.body()
+                    if (hourlyWeatherResponse != null) {
                         // Convert the API response to the domain model HourlyWeather
-                        val domainHourlyWeatherList = hourlyWeatherMapper.mapHourlyResponseToDomain(hourlyWeatherResponseList)
-                        hourlyWeatherData.value = domainHourlyWeatherList
+                        val hourlyWeatherList  = hourlyWeatherMapper.mapHourlyResponseToDomain(hourlyWeatherResponse)
+                        _hourlyWeatherList.value = hourlyWeatherList
                     }
                 } else {
                     // Handle API error case
                 }
             }
 
-            override fun onFailure(call: Call<List<HourlyWeatherResponse>>, t: Throwable) {
+            override fun onFailure(call: Call<HourlyWeatherResponse>, t: Throwable) {
                 // Handle network failure or other exceptions
             }
         })
-    }
-
-    fun getHourlyWeatherData(): LiveData<List<HourlyWeather>> {
-        return hourlyWeatherData
     }
 }

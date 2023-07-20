@@ -19,9 +19,9 @@ interface WeatherApiService {
     fun getHourlyWeather(
         @Query("key") key: String = ApiConfig.API_KEY,
         @Query("q") location: String,
-        @Query("days") daysCount: Int = 1,
+        @Query("days") daysCount: Int = 2,
         @Query("aqi") aqi: String = "no",
         @Query("alerts") alerts: String = "no",
         @Query("Lang") languageCode: String = "ru"
-    ): Call<List<HourlyWeatherResponse>>
+    ): Call<HourlyWeatherResponse>
 }

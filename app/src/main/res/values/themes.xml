@@ -18,6 +18,7 @@
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:colorEdgeEffect">@color/items</item>
 <!--        <item name="android:background">@color/background</item>-->
     </style>
 

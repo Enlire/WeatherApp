@@ -50,7 +50,6 @@ class MainFragment : Fragment() {
         weatherIcon = view.findViewById(R.id.weatherIcon)
         temp = view.findViewById(R.id.tempC)
         weatherCondition = view.findViewById(R.id.weatherCondition)
-        minMaxTemp = view.findViewById(R.id.minMaxTemp)
         feelsLike = view.findViewById(R.id.feels_like)
         windDir = view.findViewById(R.id.wind_dir)
         windSpeed = view.findViewById(R.id.wind_speed)
@@ -70,7 +69,7 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         // Check Internet connection and display dialog if not available
         if (!NetworkUtils.isInternetAvailable(requireContext())) {
@@ -81,8 +80,8 @@ class MainFragment : Fragment() {
                 showCurrentWeather(weatherResponse)
             }
             // Fetch weather data and update UI
-            val location = "Ахтубинск"
-            viewModel.fetchWeatherData(location)
+            val location = "Волгоград"
+            viewModel.fetchCurrentWeatherData(location)
         }
     }
 
