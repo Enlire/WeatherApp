@@ -52,7 +52,7 @@
                     android:text="..."
                     android:textAlignment="center"
                     android:textColor="@color/main_text"
-                    android:textSize="36sp" />
+                    android:textSize="38sp" />
 
                 <TextView
                     android:id="@+id/weatherCondition"
@@ -72,7 +72,8 @@
                     android:orientation="horizontal"
                     android:layout_marginTop="3dp"
                     android:layout_marginStart="3dp"
-                    android:layout_marginEnd="3dp">
+                    android:layout_marginEnd="3dp"
+                    android:layout_marginBottom="5dp">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="0dp"
@@ -80,8 +81,7 @@
                         android:layout_weight="0.333"
                         app:cardBackgroundColor="@color/card_background"
                         app:cardCornerRadius="5dp"
-                        app:cardElevation="0dp"
-                        android:layout_margin="3dp">
+                        app:cardElevation="0dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -124,7 +124,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0.333"
                         app:cardElevation="0dp"
-                        android:layout_margin="3dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
                         app:cardBackgroundColor="@color/card_background"
                         app:cardCornerRadius="5dp">
 
@@ -170,7 +171,6 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0.333"
                         app:cardElevation="0dp"
-                        android:layout_margin="3dp"
                         app:cardBackgroundColor="@color/card_background"
                         app:cardCornerRadius="5dp">
 
@@ -217,7 +217,7 @@
                     android:orientation="horizontal"
                     android:layout_marginStart="3dp"
                     android:layout_marginEnd="3dp"
-                    android:layout_marginBottom="6dp">
+                    android:layout_marginBottom="20dp">
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="0dp"
@@ -225,8 +225,7 @@
                         android:layout_weight="0.333"
                         app:cardBackgroundColor="@color/card_background"
                         app:cardCornerRadius="5dp"
-                        app:cardElevation="0dp"
-                        android:layout_margin="3dp">
+                        app:cardElevation="0dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -269,7 +268,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0.333"
                         app:cardElevation="0dp"
-                        android:layout_margin="3dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
                         app:cardBackgroundColor="@color/card_background"
                         app:cardCornerRadius="5dp">
 
@@ -314,7 +314,6 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0.333"
                         app:cardElevation="0dp"
-                        android:layout_margin="3dp"
                         app:cardBackgroundColor="@color/card_background"
                         app:cardCornerRadius="5dp">
 
@@ -360,10 +359,12 @@
                     android:id="@+id/hourlyWeatherRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginStart="3dp"
                     android:layout_marginEnd="3dp"
-                    android:layout_marginBottom="6dp"/>
+                    android:layout_marginBottom="6dp"
+                    android:orientation="horizontal"
+                    tools:listitem="@layout/hourly_card_home"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
             </LinearLayout>
         </ScrollView>

@@ -8,22 +8,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.data.networking.NetworkUtils
 import com.example.weatherapp.domain.models.CurrentWeather
 import com.example.weatherapp.domain.models.WeatherCondition
+import com.example.weatherapp.ui.adapters.HourlyCardsAdapter
+import com.example.weatherapp.ui.adapters.HourlyWeatherAdapter
 import com.example.weatherapp.ui.dialogs.NoInternetDialogFragment
+import com.example.weatherapp.ui.viewModels.HourlyWeatherViewModel
 import com.example.weatherapp.ui.viewModels.MainViewModel
 
 class MainFragment : Fragment() {
 
     private val weatherDescription = WeatherCondition()
     private lateinit var viewModel: MainViewModel
+    private lateinit var viewModelHourly: HourlyWeatherViewModel
     private lateinit var location: TextView
     private lateinit var weatherIcon: ImageView
     private lateinit var temp: TextView
     private lateinit var weatherCondition: TextView
-    private lateinit var minMaxTemp: TextView
     private lateinit var feelsLike: TextView
     private lateinit var windDir: TextView
     private lateinit var windSpeed: TextView
@@ -70,6 +75,11 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        viewModelHourly = ViewModelProvider(this)[HourlyWeatherViewModel::class.java]
+        val recyclerView: RecyclerView = view.findViewById(R.id.hourlyWeatherRecyclerView)
+        val adapter = HourlyCardsAdapter(emptyList())
+        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.adapter = adapter
 
         // Check Internet connection and display dialog if not available
         if (!NetworkUtils.isInternetAvailable(requireContext())) {
@@ -79,9 +89,13 @@ class MainFragment : Fragment() {
             viewModel.weatherData.observe(viewLifecycleOwner) { weatherResponse ->
                 showCurrentWeather(weatherResponse)
             }
+            viewModelHourly.hourlyWeatherList.observe(viewLifecycleOwner) { hourlyCardsList ->
+                adapter.updateData(hourlyCardsList)
+            }
             // Fetch weather data and update UI
             val location = "Волгоград"
             viewModel.fetchCurrentWeatherData(location)
+            viewModelHourly.fetchHourlyWeather(location)
         }
     }
 

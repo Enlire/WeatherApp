@@ -29,14 +29,12 @@ class MainViewModel : ViewModel() {
                         weatherData.postValue(currentWeather)
                     }
                 } else {
-                    // Handle API error case
-                    // You can post an error state to the weatherData LiveData here
+                    // TODO: You can post an error state to the weatherData LiveData here
                 }
             }
 
                 override fun onFailure(call: Call<CurrentWeatherResponse>, t: Throwable) {
-                    // Handle network failure or other exceptions
-                    // You can post an error state to the weatherData LiveData here
+                    // TODO: You can post an error state to the weatherData LiveData here
                 }
             })
     }

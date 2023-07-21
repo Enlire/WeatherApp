@@ -1,11 +1,9 @@
 package com.example.weatherapp.ui.viewModels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weatherapp.data.mappers.HourlyWeatherMapper
-import com.example.weatherapp.data.models.HourItem
 import com.example.weatherapp.data.models.HourlyWeatherResponse
 import com.example.weatherapp.data.networking.ApiConfig
 import com.example.weatherapp.domain.models.HourlyWeather
@@ -16,10 +14,8 @@ import retrofit2.Response
 class HourlyWeatherViewModel : ViewModel() {
     private val apiService = ApiConfig.getApiService()
     private val hourlyWeatherMapper = HourlyWeatherMapper()
-    // MutableLiveData для хранения списка HourlyWeather
     private val _hourlyWeatherList = MutableLiveData<List<HourlyWeather>>()
-    val hourlyWeatherList: LiveData<List<HourlyWeather>>
-        get() = _hourlyWeatherList
+    val hourlyWeatherList: LiveData<List<HourlyWeather>> = _hourlyWeatherList
 
     fun fetchHourlyWeather(location: String) {
         apiService.getHourlyWeather(location = location)
@@ -36,12 +32,12 @@ class HourlyWeatherViewModel : ViewModel() {
                         _hourlyWeatherList.value = hourlyWeatherList
                     }
                 } else {
-                    // Handle API error case
+                    // TODO: Handle API error case
                 }
             }
 
             override fun onFailure(call: Call<HourlyWeatherResponse>, t: Throwable) {
-                // Handle network failure or other exceptions
+                // TODO: Handle network failure or other exceptions
             }
         })
     }

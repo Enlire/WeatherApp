@@ -66,44 +66,6 @@ class HourlyWeatherMapper {
         return hourlyWeatherList
     }
 
-//        val hourlyWeatherList = mutableListOf<HourlyWeather>()
-//
-//        for (forecastDayItem in response.forecast.forecastday) {
-//            for (hourItem in forecastDayItem.hour) {
-//                val (formattedDate, formattedTime) = extractDateAndTime(hourItem.time)
-//                val temperature = hourItem.tempC.toInt()
-//                val precip = hourItem.precipMm.toInt()
-//                val dewPoint = hourItem.dewpointC.toInt()
-//                val windSpeed = hourItem.windKph / 3.6
-//                val visibility = hourItem.visKm.toInt()
-//                val uvIndex = hourItem.uv.toInt()
-//                val pressure = hourItem.pressureIn * 25.4
-//
-//                val hourlyWeather = HourlyWeather(
-//                    location = response.location.name,
-//                    description = hourItem.condition.text,
-//                    day = formattedDate,
-//                    hour = formattedTime,
-//                    icon = hourItem.condition.icon,
-//                    temperature = temperature,
-//                    chance_of_rain = hourItem.chanceOfRain,
-//                    chance_of_snow = hourItem.chanceOfSnow,
-//                    precip = precip,
-//                    cloud = hourItem.cloud,
-//                    dew_point = dewPoint,
-//                    wind_dir = hourItem.windDir,
-//                    wind_speed = windSpeed.toInt(),
-//                    humidity = hourItem.humidity,
-//                    visibility = visibility,
-//                    uv_index = uvIndex,
-//                    pressure = pressure.toInt()
-//                )
-//                hourlyWeatherList.add(hourlyWeather)
-//            }
-//        }
-//
-//        return hourlyWeatherList
-
     private fun extractDateAndTime(inputString: String): Pair<String, String> {
         val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         val dateTime = LocalDateTime.parse(inputString, dateTimeFormatter)
