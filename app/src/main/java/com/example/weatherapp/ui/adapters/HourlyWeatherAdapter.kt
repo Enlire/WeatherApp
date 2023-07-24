@@ -25,7 +25,6 @@ class HourlyWeatherAdapter(private var hourlyWeatherList: List<HourlyWeather>) :
         val windTextView: TextView = itemView.findViewById(R.id.wind)
         val pressureTextView: TextView = itemView.findViewById(R.id.pressure)
         val uvTextView: TextView = itemView.findViewById(R.id.uv)
-        val dewPointTextView: TextView = itemView.findViewById(R.id.dew_point)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HourlyWeatherViewHolder {
@@ -51,7 +50,6 @@ class HourlyWeatherAdapter(private var hourlyWeatherList: List<HourlyWeather>) :
         holder.windTextView.text = "${hourlyWeather.wind_speed} м/с ${weatherDescription.translateWindDir(hourlyWeather.wind_dir)}"
         holder.pressureTextView.text = "${hourlyWeather.pressure} мм рт. ст."
         holder.uvTextView.text = hourlyWeather.uv_index.toString()
-        holder.dewPointTextView.text = "${hourlyWeather.dew_point}°C"
     }
 
     override fun getItemCount(): Int {

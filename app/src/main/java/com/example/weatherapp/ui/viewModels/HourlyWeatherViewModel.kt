@@ -12,7 +12,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class HourlyWeatherViewModel : ViewModel() {
-    private val apiService = ApiConfig.getApiService()
+    private val apiService = ApiConfig.getWeatherApiService()
     private val hourlyWeatherMapper = HourlyWeatherMapper()
     private val _hourlyWeatherList = MutableLiveData<List<HourlyWeather>>()
     val hourlyWeatherList: LiveData<List<HourlyWeather>> = _hourlyWeatherList

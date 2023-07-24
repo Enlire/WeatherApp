@@ -6,7 +6,6 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface WeatherApiService {
-    // Get current weather data
     @GET("current.json")
     fun getCurrentWeather(
         @Query("key") key: String = ApiConfig.API_KEY,

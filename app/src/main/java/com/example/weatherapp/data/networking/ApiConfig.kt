@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class ApiConfig {
     companion object {
-        fun getApiService(): WeatherApiService {
+        fun getWeatherApiService(): WeatherApiService {
 
             // API response interceptor
             val loggingInterceptor = HttpLoggingInterceptor()
@@ -26,6 +26,27 @@ class ApiConfig {
                 .build()
 
             return retrofit.create(WeatherApiService::class.java)
+        }
+
+        fun getOpenMeteoApiService(): OpenMeteoApiService {
+
+            // API response interceptor
+            val loggingInterceptor = HttpLoggingInterceptor()
+                .setLevel(HttpLoggingInterceptor.Level.BODY)
+
+            // Client
+            val client = OkHttpClient.Builder()
+                .addInterceptor(loggingInterceptor)
+                .build()
+
+            // Retrofit
+            val retrofit = Retrofit.Builder()
+                .baseUrl("https://api.open-meteo.com/v1/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build()
+
+            return retrofit.create(OpenMeteoApiService::class.java)
         }
 
         const val API_KEY = "50a3be20b7454b1482d113119232303"

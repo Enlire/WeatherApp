@@ -17,7 +17,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/day"
+            android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -30,16 +30,16 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/hour"
+            android:id="@+id/day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
-            android:text="00:00"
+            android:text="ПН"
             android:fontFamily="@font/roboto_regular"
             android:textSize="16sp"
             android:textColor="@color/items"
-            app:layout_constraintStart_toEndOf="@+id/day"
+            app:layout_constraintStart_toEndOf="@+id/date"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
@@ -49,21 +49,21 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/day"
+            app:layout_constraintTop_toBottomOf="@+id/date"
             app:srcCompat="@drawable/ic_launcher_foreground" />
 
         <TextView
             android:id="@+id/temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="17dp"
+            android:layout_marginStart="160dp"
+            android:layout_marginTop="20dp"
             android:fontFamily="@font/roboto_regular"
-            android:text="10°C"
+            android:text="10°C / 20°C"
             android:textColor="@color/main_text"
             android:textSize="18sp"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/hour" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/condition"
@@ -71,12 +71,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:maxLines="2"
             android:ellipsize="end"
-            android:text="Ясно"
             android:fontFamily="@font/roboto_regular"
-            android:textSize="14dp"
+            android:maxLines="2"
+            android:text="Ясно"
             android:textColor="@color/secondary_text"
+            android:textSize="14dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
@@ -85,15 +85,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="5dp"
             android:drawableLeft="@drawable/drop"
             android:drawablePadding="5dp"
-            android:text="0%"
             android:fontFamily="@font/roboto_regular"
-            android:textSize="14dp"
+            android:text="0%"
             android:textColor="@color/main_text"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="14dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/condition" />
 
@@ -102,39 +100,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="160dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="20dp"
             android:fontFamily="@font/roboto_light"
             android:text="Осадки:"
             android:textColor="@color/secondary_text"
             android:textSize="14dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textView12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="160dp"
-            android:layout_marginTop="5dp"
-            android:fontFamily="@font/roboto_light"
-            android:text="Облачность:"
-            android:textColor="@color/secondary_text"
-            android:textSize="14dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView11" />
-
-        <TextView
-            android:id="@+id/textView13"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="160dp"
-            android:layout_marginTop="5dp"
-            android:fontFamily="@font/roboto_light"
-            android:text="Влажность:"
-            android:textColor="@color/secondary_text"
-            android:textSize="14dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView12" />
+            app:layout_constraintTop_toBottomOf="@+id/temp" />
 
         <TextView
             android:id="@+id/textView14"
@@ -147,20 +119,7 @@
             android:textColor="@color/secondary_text"
             android:textSize="14dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView13" />
-
-        <TextView
-            android:id="@+id/textView15"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="160dp"
-            android:layout_marginTop="5dp"
-            android:fontFamily="@font/roboto_light"
-            android:text="Давление:"
-            android:textColor="@color/secondary_text"
-            android:textSize="14dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView14" />
+            app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
         <TextView
             android:id="@+id/textView16"
@@ -173,46 +132,48 @@
             android:textColor="@color/secondary_text"
             android:textSize="14dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView15" />
+            app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
         <TextView
             android:id="@+id/precip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="20dp"
             android:fontFamily="@font/roboto_regular"
             android:text="..."
             android:textColor="@color/main_text"
             android:textSize="14dp"
             app:layout_constraintStart_toEndOf="@+id/textView11"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/temp" />
 
         <TextView
-            android:id="@+id/cloud"
+            android:id="@+id/sunrise"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:text="..."
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/roboto_regular"
-            android:textSize="14dp"
+            android:text="00:00"
             android:textColor="@color/main_text"
-            app:layout_constraintStart_toEndOf="@+id/textView12"
-            app:layout_constraintTop_toBottomOf="@+id/precip" />
+            android:textSize="14dp"
+            app:layout_constraintStart_toEndOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/chance_of_precip" />
 
         <TextView
-            android:id="@+id/humidity"
+            android:id="@+id/sunset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:text="..."
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="60dp"
             android:fontFamily="@font/roboto_regular"
-            android:textSize="14dp"
+            android:text="00:00"
             android:textColor="@color/main_text"
-            app:layout_constraintStart_toEndOf="@+id/textView13"
-            app:layout_constraintTop_toBottomOf="@+id/cloud" />
+            android:textSize="14dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/chance_of_precip" />
 
         <TextView
             android:id="@+id/wind"
@@ -220,25 +181,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
-            android:text="..."
             android:fontFamily="@font/roboto_regular"
-            android:textSize="14dp"
+            android:text="..."
             android:textColor="@color/main_text"
+            android:textSize="14dp"
             app:layout_constraintStart_toEndOf="@+id/textView14"
-            app:layout_constraintTop_toBottomOf="@+id/humidity" />
-
-        <TextView
-            android:id="@+id/pressure"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:text="..."
-            android:fontFamily="@font/roboto_regular"
-            android:textSize="14dp"
-            android:textColor="@color/main_text"
-            app:layout_constraintStart_toEndOf="@+id/textView15"
-            app:layout_constraintTop_toBottomOf="@+id/wind" />
+            app:layout_constraintTop_toBottomOf="@+id/precip" />
 
         <TextView
             android:id="@+id/uv"
@@ -246,12 +194,46 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
-            android:text="..."
             android:fontFamily="@font/roboto_regular"
-            android:textSize="14dp"
+            android:text="..."
             android:textColor="@color/main_text"
+            android:textSize="14dp"
             app:layout_constraintStart_toEndOf="@+id/textView16"
-            app:layout_constraintTop_toBottomOf="@+id/pressure" />
+            app:layout_constraintTop_toBottomOf="@+id/wind" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
+            android:drawableStart="@drawable/sunrise"
+            android:drawablePadding="5dp"
+            android:fontFamily="@font/roboto_light"
+            android:text="Восход:"
+            android:textColor="@color/secondary_text"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chance_of_precip" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
+            android:drawableStart="@drawable/sunset"
+            android:drawablePadding="5dp"
+            android:fontFamily="@font/roboto_light"
+            android:text="Закат:"
+            android:textColor="@color/secondary_text"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/sunrise"
+            app:layout_constraintTop_toBottomOf="@+id/chance_of_precip" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

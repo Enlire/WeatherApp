@@ -361,9 +361,20 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="3dp"
                     android:layout_marginEnd="3dp"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginBottom="20dp"
                     android:orientation="horizontal"
                     tools:listitem="@layout/hourly_card_home"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/dailyWeatherRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="3dp"
+                    android:layout_marginBottom="6dp"
+                    android:orientation="vertical"
+                    tools:listitem="@layout/daily_card_home"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
             </LinearLayout>
