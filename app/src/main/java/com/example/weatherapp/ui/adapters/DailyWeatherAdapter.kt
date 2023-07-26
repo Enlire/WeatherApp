@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
@@ -17,6 +18,7 @@ class DailyWeatherAdapter(private var dailyWeatherList: List<DailyWeather>) :
         val dayTextView: TextView = itemView.findViewById(R.id.day)
         val tempTextView: TextView = itemView.findViewById(R.id.temp)
         val conditionTextView: TextView = itemView.findViewById(R.id.condition)
+        val iconImageView: ImageView = itemView.findViewById(R.id.imageView)
         val chanceTextView: TextView = itemView.findViewById(R.id.chance_of_precip)
         val precipTextView: TextView = itemView.findViewById(R.id.precip)
         val windTextView: TextView = itemView.findViewById(R.id.wind)
@@ -40,6 +42,7 @@ class DailyWeatherAdapter(private var dailyWeatherList: List<DailyWeather>) :
         holder.dayTextView.text = dailyWeather.day
         holder.tempTextView.text = "${dailyWeather.temp_min}°C / ${dailyWeather.temp_max}°C"
         holder.conditionTextView.text = dailyWeather.description
+        holder.iconImageView.setImageResource(dailyWeather.iconResId)
         holder.chanceTextView.text = "${dailyWeather.chance_of_precip}%"
         holder.precipTextView.text = "${dailyWeather.precip} мм"
         holder.windTextView.text = "${dailyWeather.wind_speed} м/с"

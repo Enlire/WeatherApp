@@ -1,5 +1,7 @@
 package com.example.weatherapp.ui.fragments
 
+import android.annotation.SuppressLint
+import android.graphics.Color
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -99,11 +101,14 @@ class MainFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showCurrentWeather(currentWeather: CurrentWeather) {
         val windDirection = weatherDescription.translateWindDir(currentWeather.wind_dir)
         location.text = currentWeather.location
         temp.text = "${currentWeather.temperature}°C"
         weatherCondition.text = currentWeather.description
+        weatherIcon.setImageResource(currentWeather.icResId)
+        weatherIcon.setColorFilter(Color.parseColor("#2B2B2B"))
         feelsLike.text = "${currentWeather.feels_like}°C"
         windDir.text = windDirection
         windSpeed.text = "${currentWeather.wind_speed} м/с"

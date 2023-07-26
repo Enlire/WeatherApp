@@ -17,7 +17,10 @@ data class Condition(
 	val text: String,
 
 	@field:SerializedName("icon")
-	val icon: String
+	val icon: String,
+
+	@field:SerializedName("code")
+	val code: Int
 )
 
 data class Location(
@@ -39,6 +42,9 @@ data class Current(
 
 	@field:SerializedName("uv")
 	val uv: Double,
+
+	@field:SerializedName("isDay")
+	val isDay: Int,
 
 	@field:SerializedName("wind_dir")
 	val windDir: String,

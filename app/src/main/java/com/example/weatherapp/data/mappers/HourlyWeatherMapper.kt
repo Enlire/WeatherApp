@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.weatherapp.data.models.HourItem
 import com.example.weatherapp.data.models.HourlyWeatherResponse
 import com.example.weatherapp.domain.models.HourlyWeather
+import com.example.weatherapp.domain.models.WeatherCondition
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -40,13 +41,16 @@ class HourlyWeatherMapper {
             val visibility = hourItem.visKm.toInt()
             val uvIndex = hourItem.uv.toInt()
             val pressure = hourItem.pressureIn * 25.4
+            val weatherCondition = WeatherCondition()
 
             val hourlyWeather = HourlyWeather(
                 location = location,
                 description = hourItem.condition.text,
                 day = formattedDate,
                 hour = formattedTime,
-                icon = hourItem.condition.icon,
+                isDay = hourItem.isDay,
+                code = hourItem.condition.code,
+                icResId = weatherCondition.weatherCodeWeatherApiToIcon(hourItem.condition.code, hourItem.isDay),
                 temperature = temperature,
                 chance_of_rain = hourItem.chanceOfRain,
                 chance_of_snow = hourItem.chanceOfSnow,

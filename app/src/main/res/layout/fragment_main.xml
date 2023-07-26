@@ -40,7 +40,9 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="13dp"
                     android:layout_marginBottom="8dp"
-                    android:src="@drawable/sunny" />
+                    android:minHeight="76dp"
+                    android:minWidth="76dp"
+                    android:src="@drawable/ic_launcher_foreground" />
 
                 <TextView
                     android:id="@+id/tempC"

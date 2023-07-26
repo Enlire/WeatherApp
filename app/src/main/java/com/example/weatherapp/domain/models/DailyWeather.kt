@@ -4,6 +4,7 @@ data class DailyWeather(
     val date: String,
     val day: String,
     val description: String,
+    val iconResId: Int,
     val temp_max: Int,
     val temp_min: Int,
     val chance_of_precip: Int,

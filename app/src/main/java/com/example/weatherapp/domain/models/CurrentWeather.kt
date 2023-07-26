@@ -3,7 +3,9 @@ package com.example.weatherapp.domain.models
 data class CurrentWeather (
     val location: String,
     val description: String,
-    val icon: String,
+    val code: Int,
+    val isDay: Int,
+    val icResId: Int,
     val temperature: Int,
     val feels_like: Int,
     val wind_dir: String,

@@ -3,9 +3,7 @@ package com.example.weatherapp.data.mappers
 import com.example.weatherapp.data.models.DailyWeatherResponse
 import com.example.weatherapp.domain.models.DailyWeather
 import com.example.weatherapp.domain.models.WeatherCondition
-import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -20,7 +18,7 @@ class DailyWeatherMapper {
         val weatherCondition = WeatherCondition()
         val sunriseList = daily.sunrise
         val sunsetList = daily.sunset
-        val weatherCodeList = daily.weathercode
+        val weatherCode = daily.weathercode
         val uvIndexMaxList = daily.uvIndexMax
         val temperature2mMaxList = daily.temperature2mMax
         val temperature2mMinList = daily.temperature2mMin
@@ -32,7 +30,8 @@ class DailyWeatherMapper {
             val date = timeList[i]
             val dateFormat = formatDate(timeList[i])
             val day = getDayOfWeek(date)
-            val description = weatherCondition.weatherCodeToDescription(weatherCodeList[i])
+            val description = weatherCondition.weatherCodeToDescription(weatherCode[i])
+            val iconResId = weatherCondition.weatherCodeOpenMeteoToIcon(weatherCode[i])
             val tempMax = temperature2mMaxList[i].toInt()
             val tempMin = temperature2mMinList[i].toInt()
             val chanceOfPrecip = precipitationProbabilityMaxList[i]
@@ -46,6 +45,7 @@ class DailyWeatherMapper {
                 dateFormat,
                 day,
                 description,
+                iconResId,
                 tempMax,
                 tempMin,
                 chanceOfPrecip,

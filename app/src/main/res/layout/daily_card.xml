@@ -9,12 +9,18 @@
     android:layout_marginStart="15dp"
     app:cardCornerRadius="5dp"
     app:cardElevation="0dp"
-    app:cardMaxElevation="0dp"
-    app:cardBackgroundColor="@color/hourly_card_background">
+    app:cardMaxElevation="0dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/daily_card_background" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
 
         <TextView
             android:id="@+id/date"
@@ -148,34 +154,6 @@
             app:layout_constraintTop_toBottomOf="@+id/temp" />
 
         <TextView
-            android:id="@+id/sunrise"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/roboto_regular"
-            android:text="00:00"
-            android:textColor="@color/main_text"
-            android:textSize="14dp"
-            app:layout_constraintStart_toEndOf="@+id/textView"
-            app:layout_constraintTop_toBottomOf="@+id/chance_of_precip" />
-
-        <TextView
-            android:id="@+id/sunset"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="60dp"
-            android:fontFamily="@font/roboto_regular"
-            android:text="00:00"
-            android:textColor="@color/main_text"
-            android:textSize="14dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView2"
-            app:layout_constraintTop_toBottomOf="@+id/chance_of_precip" />
-
-        <TextView
             android:id="@+id/wind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -201,39 +179,65 @@
             app:layout_constraintStart_toEndOf="@+id/textView16"
             app:layout_constraintTop_toBottomOf="@+id/wind" />
 
-        <TextView
-            android:id="@+id/textView"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="60dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="15dp"
-            android:drawableStart="@drawable/sunrise"
-            android:drawablePadding="5dp"
-            android:fontFamily="@font/roboto_light"
-            android:text="Восход:"
-            android:textColor="@color/secondary_text"
-            android:textSize="14dp"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chance_of_precip" />
+            app:layout_constraintTop_toBottomOf="@+id/chance_of_precip">
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="15dp"
-            android:drawableStart="@drawable/sunset"
-            android:drawablePadding="5dp"
-            android:fontFamily="@font/roboto_light"
-            android:text="Закат:"
-            android:textColor="@color/secondary_text"
-            android:textSize="14dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/sunrise"
-            app:layout_constraintTop_toBottomOf="@+id/chance_of_precip" />
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="15dp"
+                android:drawableStart="@drawable/sunrise"
+                android:drawablePadding="5dp"
+                android:fontFamily="@font/roboto_light"
+                android:text="Восход:"
+                android:textColor="@color/secondary_text"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/sunrise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="00:00"
+                android:textColor="@color/main_text"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="15dp"
+                android:drawableStart="@drawable/sunset"
+                android:drawablePadding="5dp"
+                android:fontFamily="@font/roboto_light"
+                android:text="Закат:"
+                android:textColor="@color/secondary_text"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/sunset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="00:00"
+                android:textColor="@color/main_text"
+                android:textSize="14dp" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
