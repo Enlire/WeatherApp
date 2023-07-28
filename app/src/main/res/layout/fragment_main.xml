@@ -58,10 +58,12 @@
 
                 <TextView
                     android:id="@+id/weatherCondition"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:layout_marginBottom="20dp"
+                    android:width="300dp"
+                    android:layout_gravity="center"
                     android:fontFamily="@font/roboto_regular"
                     android:text="..."
                     android:textAlignment="center"

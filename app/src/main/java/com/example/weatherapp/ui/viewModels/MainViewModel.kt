@@ -10,7 +10,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel : ViewModel() {
+class MainViewModel() : ViewModel() {
+
     private val apiService = ApiConfig.getWeatherApiService()
     val weatherData: MutableLiveData<CurrentWeather> = MutableLiveData()
     private val currentWeatherMapper = CurrentWeatherMapper()

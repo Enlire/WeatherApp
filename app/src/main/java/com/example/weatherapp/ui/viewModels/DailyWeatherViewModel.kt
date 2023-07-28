@@ -17,7 +17,7 @@ class DailyWeatherViewModel : ViewModel() {
     private val _dailyWeatherList = MutableLiveData<List<DailyWeather>>()
     val dailyWeatherList: LiveData<List<DailyWeather>> = _dailyWeatherList
 
-    fun fetchHourlyWeather() {
+    fun fetchDailyWeather() {
         apiService.getDailyWeather(lat = 48.7194, lon = 44.5018)
             .enqueue(object : Callback<DailyWeatherResponse> {
                 override fun onResponse(

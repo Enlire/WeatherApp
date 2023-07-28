@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Местоположение">
+        <SwitchPreference
+            android:key="USE_DEVICE_LOCATION"
+            android:title="Определять моё местоположение"
+            android:summary="Автоматическое определение местоположения"
+            android:defaultValue="true"
+            android:disableDependentsState="true" />
+
+        <EditTextPreference
+            android:key="USER_LOCATION"
+            android:title="Выбрать местоположение вручную"
+            android:summary="Местоположение, для которого будет отображаться информация"
+            android:defaultValue="Волгоград"
+            android:dependency="USE_DEVICE_LOCATION"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Настройки приложения">
+        <ListPreference
+            android:key="APP_THEME"
+            android:title="Тема"
+            android:summary="%s"
+            android:defaultValue="Светлая"
+            android:entryValues="@array/themeValues"/>
+    </PreferenceCategory>
+</PreferenceScreen>

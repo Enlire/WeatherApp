@@ -42,7 +42,7 @@ class DailyWeatherAdapter(private var dailyWeatherList: List<DailyWeather>) :
         holder.dayTextView.text = dailyWeather.day
         holder.tempTextView.text = "${dailyWeather.temp_min}°C / ${dailyWeather.temp_max}°C"
         holder.conditionTextView.text = dailyWeather.description
-        holder.iconImageView.setImageResource(dailyWeather.iconResId)
+        holder.iconImageView.setImageResource(dailyWeather.icResId)
         holder.chanceTextView.text = "${dailyWeather.chance_of_precip}%"
         holder.precipTextView.text = "${dailyWeather.precip} мм"
         holder.windTextView.text = "${dailyWeather.wind_speed} м/с"

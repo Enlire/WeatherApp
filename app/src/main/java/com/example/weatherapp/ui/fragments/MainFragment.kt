@@ -13,12 +13,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
+import com.example.weatherapp.data.SettingsRepository
 import com.example.weatherapp.data.networking.NetworkUtils
 import com.example.weatherapp.domain.models.CurrentWeather
 import com.example.weatherapp.domain.models.WeatherCondition
+import com.example.weatherapp.ui.adapters.DailyCardsAdapter
 import com.example.weatherapp.ui.adapters.HourlyCardsAdapter
-import com.example.weatherapp.ui.adapters.HourlyWeatherAdapter
 import com.example.weatherapp.ui.dialogs.NoInternetDialogFragment
+import com.example.weatherapp.ui.viewModels.DailyWeatherViewModel
 import com.example.weatherapp.ui.viewModels.HourlyWeatherViewModel
 import com.example.weatherapp.ui.viewModels.MainViewModel
 
@@ -27,6 +29,7 @@ class MainFragment : Fragment() {
     private val weatherDescription = WeatherCondition()
     private lateinit var viewModel: MainViewModel
     private lateinit var viewModelHourly: HourlyWeatherViewModel
+    private lateinit var viewModelDaily: DailyWeatherViewModel
     private lateinit var location: TextView
     private lateinit var weatherIcon: ImageView
     private lateinit var temp: TextView
@@ -76,12 +79,22 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val settingsRepository = SettingsRepository(requireContext())
+        val userLocation = settingsRepository.getSavedUserLocation()
+
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModelHourly = ViewModelProvider(this)[HourlyWeatherViewModel::class.java]
-        val recyclerView: RecyclerView = view.findViewById(R.id.hourlyWeatherRecyclerView)
-        val adapter = HourlyCardsAdapter(emptyList())
-        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.adapter = adapter
+        viewModelDaily = ViewModelProvider(this)[DailyWeatherViewModel::class.java]
+
+        val recyclerViewHourly: RecyclerView = view.findViewById(R.id.hourlyWeatherRecyclerView)
+        val hourlyAdapter = HourlyCardsAdapter(emptyList())
+        recyclerViewHourly.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerViewHourly.adapter = hourlyAdapter
+
+        val recyclerViewDaily: RecyclerView = view.findViewById(R.id.dailyWeatherRecyclerView)
+        val dailyAdapter = DailyCardsAdapter(emptyList())
+        recyclerViewDaily.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recyclerViewDaily.adapter = dailyAdapter
 
         // Check Internet connection and display dialog if not available
         if (!NetworkUtils.isInternetAvailable(requireContext())) {
@@ -92,12 +105,19 @@ class MainFragment : Fragment() {
                 showCurrentWeather(weatherResponse)
             }
             viewModelHourly.hourlyWeatherList.observe(viewLifecycleOwner) { hourlyCardsList ->
-                adapter.updateData(hourlyCardsList)
+                hourlyAdapter.updateData(hourlyCardsList)
             }
+            viewModelDaily.dailyWeatherList.observe(viewLifecycleOwner) { dailyCardsList ->
+                dailyAdapter.updateData(dailyCardsList)
+            }
+
+
             // Fetch weather data and update UI
-            val location = "Волгоград"
-            viewModel.fetchCurrentWeatherData(location)
-            viewModelHourly.fetchHourlyWeather(location)
+            if (userLocation != null) {
+                viewModel.fetchCurrentWeatherData(userLocation)
+                viewModelHourly.fetchHourlyWeather(userLocation)
+                viewModelDaily.fetchDailyWeather()
+            }
         }
     }
 

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
+import com.example.weatherapp.data.SettingsRepository
 import com.example.weatherapp.domain.models.HourlyWeather
 import com.example.weatherapp.ui.adapters.HourlyWeatherAdapter
 import com.example.weatherapp.ui.viewModels.HourlyWeatherViewModel
@@ -37,18 +38,22 @@ class HourlyWeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val settingsRepository = SettingsRepository(requireContext())
+        val userLocation = settingsRepository.getSavedUserLocation()
         val recyclerView: RecyclerView = view.findViewById(R.id.hourlyWeatherRecyclerView)
         val adapter = HourlyWeatherAdapter(emptyList())
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
         viewModel = ViewModelProvider(this)[HourlyWeatherViewModel::class.java]
 
+        // Fetch the hourly weather data for the desired location
+        if (userLocation != null) {
+            viewModel.fetchHourlyWeather(userLocation)
+        }
+
         // Observe the hourly weather data from the ViewModel
         viewModel.hourlyWeatherList.observe(viewLifecycleOwner) { hourlyWeatherList ->
             adapter.updateData(hourlyWeatherList)
         }
-
-        // Fetch the hourly weather data for the desired location
-        viewModel.fetchHourlyWeather("Волгоград")
     }
 }

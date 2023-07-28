@@ -43,7 +43,7 @@ class DailyWeatherFragment : Fragment() {
         }
 
         // Fetch the hourly weather data for the desired location
-        viewModel.fetchHourlyWeather()
+        viewModel.fetchDailyWeather()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
