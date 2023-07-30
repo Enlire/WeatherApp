@@ -8,7 +8,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,13 +25,17 @@ import com.example.weatherapp.ui.dialogs.NoInternetDialogFragment
 import com.example.weatherapp.ui.viewModels.DailyWeatherViewModel
 import com.example.weatherapp.ui.viewModels.HourlyWeatherViewModel
 import com.example.weatherapp.ui.viewModels.MainViewModel
+import com.facebook.shimmer.ShimmerFrameLayout
 
 class MainFragment : Fragment() {
 
-    private val weatherDescription = WeatherCondition()
+    private lateinit var shimmerLayout: ShimmerFrameLayout
+
     private lateinit var viewModel: MainViewModel
     private lateinit var viewModelHourly: HourlyWeatherViewModel
     private lateinit var viewModelDaily: DailyWeatherViewModel
+
+    private val weatherDescription = WeatherCondition()
     private lateinit var location: TextView
     private lateinit var weatherIcon: ImageView
     private lateinit var temp: TextView
@@ -56,6 +62,9 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
+
+        shimmerLayout = view.findViewById(R.id.shimmer_view_container)
+
         location = view.findViewById(R.id.location)
         weatherIcon = view.findViewById(R.id.weatherIcon)
         temp = view.findViewById(R.id.tempC)
@@ -100,6 +109,7 @@ class MainFragment : Fragment() {
         if (!NetworkUtils.isInternetAvailable(requireContext())) {
             showNoInternetDialog()
         } else {
+            shimmerLayout.startShimmer()
             // Observe weather data changes
             viewModel.weatherData.observe(viewLifecycleOwner) { weatherResponse ->
                 showCurrentWeather(weatherResponse)
@@ -111,12 +121,12 @@ class MainFragment : Fragment() {
                 dailyAdapter.updateData(dailyCardsList)
             }
 
-
             // Fetch weather data and update UI
             if (userLocation != null) {
                 viewModel.fetchCurrentWeatherData(userLocation)
                 viewModelHourly.fetchHourlyWeather(userLocation)
                 viewModelDaily.fetchDailyWeather()
+                onDataLoaded()
             }
         }
     }
@@ -136,5 +146,10 @@ class MainFragment : Fragment() {
         visibility.text = "${currentWeather.visibility} км"
         uvIndex.text = currentWeather.uv_index.toString()
         pressure.text = "${currentWeather.pressure} мм рт. ст."
+    }
+
+    private fun onDataLoaded() {
+        shimmerLayout.stopShimmer()
+        shimmerLayout.visibility = View.GONE
     }
 }

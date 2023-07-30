@@ -6,6 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragments.HourlyWeatherFragment">
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:orientation="vertical">
+
+        <!-- Adding 7 rows of placeholders -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/hourly_placeholder" />
+            <include layout="@layout/hourly_placeholder" />
+            <include layout="@layout/hourly_placeholder" />
+            <include layout="@layout/hourly_placeholder" />
+            <include layout="@layout/hourly_placeholder" />
+        </LinearLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -29,6 +51,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="100dp"
             android:orientation="vertical"
+            android:visibility="gone"
             app:layoutManager="LinearLayoutManager"
             app:layout_constraintTop_toTopOf="parent"
             tools:listitem="@layout/hourly_card" />

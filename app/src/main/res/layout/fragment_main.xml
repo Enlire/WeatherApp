@@ -2,25 +2,35 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_gradient"
     tools:context=".ui.fragments.MainFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp"
         tools:context=".ui.MainActivity">
 
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_view_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:shimmer_auto_start="true">
+            <include layout="@layout/data_placeholder_layout" />
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
         <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:background="@drawable/background_gradient">
 
                 <TextView
                     android:id="@+id/location"
@@ -75,8 +85,8 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:layout_marginTop="3dp"
-                    android:layout_marginStart="3dp"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginStart="13dp"
+                    android:layout_marginEnd="13dp"
                     android:layout_marginBottom="5dp">
 
                     <androidx.cardview.widget.CardView
@@ -219,8 +229,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:layout_marginStart="3dp"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginStart="13dp"
+                    android:layout_marginEnd="13dp"
                     android:layout_marginBottom="20dp">
 
                     <androidx.cardview.widget.CardView
@@ -363,8 +373,8 @@
                     android:id="@+id/hourlyWeatherRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginStart="13dp"
+                    android:layout_marginEnd="13dp"
                     android:layout_marginBottom="20dp"
                     android:orientation="horizontal"
                     tools:listitem="@layout/hourly_card_home"
@@ -374,8 +384,8 @@
                     android:id="@+id/dailyWeatherRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
-                    android:layout_marginEnd="3dp"
+                    android:layout_marginStart="13dp"
+                    android:layout_marginEnd="13dp"
                     android:layout_marginBottom="6dp"
                     android:orientation="vertical"
                     tools:listitem="@layout/daily_card_home"

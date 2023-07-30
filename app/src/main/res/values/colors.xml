@@ -19,4 +19,5 @@
     <color name="background_bottom">#FFFFFF</color>
     <color name="card_background">#D6E0FF</color>
     <color name="hourly_card_background">#F2F6FF</color>
+    <color name="shimmer_background">#CCCCCC</color>
 </resources>
