@@ -16,7 +16,15 @@ class DailyWeatherViewModel : ViewModel() {
     private val dailyWeatherMapper = DailyWeatherMapper()
     private val _dailyWeatherList = MutableLiveData<List<DailyWeather>>()
     val dailyWeatherList: LiveData<List<DailyWeather>> = _dailyWeatherList
+    private var dataLoaded = false
 
+    fun onDataLoaded() {
+        dataLoaded = true
+    }
+
+    fun isDataLoaded(): Boolean {
+        return dataLoaded
+    }
     fun fetchDailyWeather() {
         apiService.getDailyWeather(lat = 48.7194, lon = 44.5018)
             .enqueue(object : Callback<DailyWeatherResponse> {

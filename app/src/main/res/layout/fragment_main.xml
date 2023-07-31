@@ -7,19 +7,21 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragments.MainFragment">
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <include layout="@layout/main_placeholder" />
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.MainActivity">
-
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/shimmer_view_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:shimmer_auto_start="true">
-            <include layout="@layout/data_placeholder_layout" />
-        </com.facebook.shimmer.ShimmerFrameLayout>
+        tools:context=".ui.MainActivity"
+        android:visibility="gone">
 
         <ScrollView
             android:id="@+id/scrollView"
@@ -52,7 +54,9 @@
                     android:layout_marginBottom="8dp"
                     android:minHeight="76dp"
                     android:minWidth="76dp"
-                    android:src="@drawable/ic_launcher_foreground" />
+                    android:maxWidth="76dp"
+                    android:maxHeight="76dp"
+                    android:src="@drawable/ic_day_clear" />
 
                 <TextView
                     android:id="@+id/tempC"
@@ -383,7 +387,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/dailyWeatherRecyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="539dp"
                     android:layout_marginStart="13dp"
                     android:layout_marginEnd="13dp"
                     android:layout_marginBottom="6dp"

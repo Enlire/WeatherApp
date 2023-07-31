@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.ui.adapters.DailyWeatherAdapter
 import com.example.weatherapp.ui.viewModels.DailyWeatherViewModel
+import com.facebook.shimmer.ShimmerFrameLayout
 
 class DailyWeatherFragment : Fragment() {
 
@@ -19,6 +20,7 @@ class DailyWeatherFragment : Fragment() {
     }
 
     private lateinit var viewModel: DailyWeatherViewModel
+    private lateinit var shimmerLayout: ShimmerFrameLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,16 +32,22 @@ class DailyWeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         val recyclerView: RecyclerView = view.findViewById(R.id.dailyWeatherRecyclerView)
         val adapter = DailyWeatherAdapter(emptyList())
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
         viewModel = ViewModelProvider(this)[DailyWeatherViewModel::class.java]
 
+        shimmerLayout = view.findViewById(R.id.shimmer_view_container)
+        shimmerLayout.visibility = View.VISIBLE;
+        shimmerLayout.startShimmer()
+
         // Observe the hourly weather data from the ViewModel
         viewModel.dailyWeatherList.observe(viewLifecycleOwner) { dailyWeatherList ->
             adapter.updateData(dailyWeatherList)
+            shimmerLayout.stopShimmer()
+            shimmerLayout.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
         }
 
         // Fetch the hourly weather data for the desired location
@@ -52,4 +60,16 @@ class DailyWeatherFragment : Fragment() {
         // TODO: Use the ViewModel
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        shimmerLayout.visibility = View.VISIBLE;
+        shimmerLayout.startShimmer()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        shimmerLayout.visibility = View.GONE;
+        shimmerLayout.stopShimmer()
+    }
 }

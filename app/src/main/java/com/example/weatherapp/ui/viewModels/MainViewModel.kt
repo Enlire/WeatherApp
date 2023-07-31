@@ -1,5 +1,6 @@
 package com.example.weatherapp.ui.viewModels
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weatherapp.data.mappers.CurrentWeatherMapper
@@ -24,7 +25,10 @@ class MainViewModel() : ViewModel() {
                 response: Response<CurrentWeatherResponse>
             ) {
                 if (response.isSuccessful) {
-                    val weatherResponse = response.body()
+                    val weatherResponse: CurrentWeatherResponse? = response.body()
+                    if (weatherResponse != null) {
+                        Log.d("day", weatherResponse.current.isDay.toString())
+                    }
                     weatherResponse?.let {
                         val currentWeather = currentWeatherMapper.mapCurrentResponseToDomain(it)
                         weatherData.postValue(currentWeather)

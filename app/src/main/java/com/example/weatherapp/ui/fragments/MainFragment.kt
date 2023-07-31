@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ScrollView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
@@ -30,6 +31,7 @@ import com.facebook.shimmer.ShimmerFrameLayout
 class MainFragment : Fragment() {
 
     private lateinit var shimmerLayout: ShimmerFrameLayout
+    private lateinit var constraintLayout: ConstraintLayout
 
     private lateinit var viewModel: MainViewModel
     private lateinit var viewModelHourly: HourlyWeatherViewModel
@@ -48,6 +50,8 @@ class MainFragment : Fragment() {
     private lateinit var uvIndex: TextView
     private lateinit var pressure: TextView
 
+    var observationCount = 0
+
     companion object {
         fun newInstance() = MainFragment()
     }
@@ -62,8 +66,6 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
-
-        shimmerLayout = view.findViewById(R.id.shimmer_view_container)
 
         location = view.findViewById(R.id.location)
         weatherIcon = view.findViewById(R.id.weatherIcon)
@@ -95,6 +97,12 @@ class MainFragment : Fragment() {
         viewModelHourly = ViewModelProvider(this)[HourlyWeatherViewModel::class.java]
         viewModelDaily = ViewModelProvider(this)[DailyWeatherViewModel::class.java]
 
+        shimmerLayout = view.findViewById(R.id.shimmer_view_container)
+        constraintLayout = view.findViewById(R.id.constraint_layout)
+
+        shimmerLayout.visibility = View.VISIBLE;
+        shimmerLayout.startShimmer()
+
         val recyclerViewHourly: RecyclerView = view.findViewById(R.id.hourlyWeatherRecyclerView)
         val hourlyAdapter = HourlyCardsAdapter(emptyList())
         recyclerViewHourly.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -109,24 +117,25 @@ class MainFragment : Fragment() {
         if (!NetworkUtils.isInternetAvailable(requireContext())) {
             showNoInternetDialog()
         } else {
-            shimmerLayout.startShimmer()
-            // Observe weather data changes
-            viewModel.weatherData.observe(viewLifecycleOwner) { weatherResponse ->
-                showCurrentWeather(weatherResponse)
-            }
-            viewModelHourly.hourlyWeatherList.observe(viewLifecycleOwner) { hourlyCardsList ->
-                hourlyAdapter.updateData(hourlyCardsList)
-            }
-            viewModelDaily.dailyWeatherList.observe(viewLifecycleOwner) { dailyCardsList ->
-                dailyAdapter.updateData(dailyCardsList)
-            }
-
             // Fetch weather data and update UI
             if (userLocation != null) {
                 viewModel.fetchCurrentWeatherData(userLocation)
                 viewModelHourly.fetchHourlyWeather(userLocation)
                 viewModelDaily.fetchDailyWeather()
-                onDataLoaded()
+            }
+
+            // Observe weather data changes
+            viewModel.weatherData.observe(viewLifecycleOwner) { weatherResponse ->
+                showCurrentWeather(weatherResponse)
+                onObservationComplete()
+            }
+            viewModelHourly.hourlyWeatherList.observe(viewLifecycleOwner) { hourlyCardsList ->
+                hourlyAdapter.updateData(hourlyCardsList)
+                onObservationComplete()
+            }
+            viewModelDaily.dailyWeatherList.observe(viewLifecycleOwner) { dailyCardsList ->
+                dailyAdapter.updateData(dailyCardsList)
+                onObservationComplete()
             }
         }
     }
@@ -148,8 +157,25 @@ class MainFragment : Fragment() {
         pressure.text = "${currentWeather.pressure} мм рт. ст."
     }
 
-    private fun onDataLoaded() {
+    private fun onObservationComplete() {
+        observationCount++
+
+        if (observationCount == 3) {
+            shimmerLayout.stopShimmer()
+            shimmerLayout.visibility = View.GONE
+            constraintLayout.visibility = View.VISIBLE
+        }
+    }
+    override fun onResume() {
+        super.onResume()
+        // Start the shimmer effect when the fragment is visible
+        shimmerLayout.visibility = View.VISIBLE;
+        shimmerLayout.startShimmer()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        shimmerLayout.visibility = View.GONE;
         shimmerLayout.stopShimmer()
-        shimmerLayout.visibility = View.GONE
     }
 }

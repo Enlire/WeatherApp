@@ -43,7 +43,7 @@ data class Current(
 	@field:SerializedName("uv")
 	val uv: Double,
 
-	@field:SerializedName("isDay")
+	@field:SerializedName("is_day")
 	val isDay: Int,
 
 	@field:SerializedName("wind_dir")
