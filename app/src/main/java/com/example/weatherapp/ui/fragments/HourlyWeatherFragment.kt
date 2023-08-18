@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.data.SettingsRepository
+import com.example.weatherapp.data.networking.NetworkUtils
 import com.example.weatherapp.domain.models.HourlyWeather
 import com.example.weatherapp.ui.adapters.HourlyWeatherAdapter
+import com.example.weatherapp.ui.dialogs.NoInternetDialogFragment
 import com.example.weatherapp.ui.viewModels.HourlyWeatherViewModel
 import com.facebook.shimmer.ShimmerFrameLayout
 
@@ -52,30 +54,27 @@ class HourlyWeatherFragment : Fragment() {
         shimmerLayout.visibility = View.VISIBLE;
         shimmerLayout.startShimmer()
 
-        // Fetch the hourly weather data for the desired location
-        if (userLocation != null) {
-            viewModel.fetchHourlyWeather(userLocation)
-        }
+        if (!NetworkUtils.isInternetAvailable(requireContext())) {
+            showNoInternetDialog()
+        } else {
+            // Fetch the hourly weather data for the desired location
+            if (userLocation != null) {
+                viewModel.fetchHourlyWeather(userLocation)
+            }
 
-        // Observe the hourly weather data from the ViewModel
-        viewModel.hourlyWeatherList.observe(viewLifecycleOwner) { hourlyWeatherList ->
-            adapter.updateData(hourlyWeatherList)
-            shimmerLayout.stopShimmer()
-            shimmerLayout.visibility = View.GONE
-            recyclerView.visibility = View.VISIBLE
+            // Observe the hourly weather data from the ViewModel
+            viewModel.hourlyWeatherList.observe(viewLifecycleOwner) { hourlyWeatherList ->
+                adapter.updateData(hourlyWeatherList)
+                shimmerLayout.stopShimmer()
+                shimmerLayout.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
+            }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        // Start the shimmer effect when the fragment is visible
-        shimmerLayout.visibility = View.VISIBLE;
-        shimmerLayout.startShimmer()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        shimmerLayout.visibility = View.GONE;
-        shimmerLayout.stopShimmer()
+    private fun showNoInternetDialog() {
+        val dialogFragment = NoInternetDialogFragment()
+        dialogFragment.show(childFragmentManager, "NoInternetDialog")
+        dialogFragment.isCancelable = false
     }
 }

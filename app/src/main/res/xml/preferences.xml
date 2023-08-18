@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
-        android:title="Местоположение">
+        android:title="Местоположение"
+        app:iconSpaceReserved="false">
+
         <SwitchPreference
+            app:iconSpaceReserved="false"
             android:key="USE_DEVICE_LOCATION"
             android:title="Определять моё местоположение"
             android:summary="Автоматическое определение местоположения"
@@ -11,6 +14,7 @@
             android:disableDependentsState="true" />
 
         <EditTextPreference
+            app:iconSpaceReserved="false"
             android:key="USER_LOCATION"
             android:title="Выбрать местоположение вручную"
             android:summary="Местоположение, для которого будет отображаться информация"
@@ -19,8 +23,10 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Настройки приложения">
+        android:title="Настройки приложения"
+        app:iconSpaceReserved="false">
         <ListPreference
+            app:iconSpaceReserved="false"
             android:key="APP_THEME"
             android:title="Тема"
             android:summary="%s"

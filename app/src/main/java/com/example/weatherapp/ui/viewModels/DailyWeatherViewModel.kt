@@ -25,8 +25,8 @@ class DailyWeatherViewModel : ViewModel() {
     fun isDataLoaded(): Boolean {
         return dataLoaded
     }
-    fun fetchDailyWeather() {
-        apiService.getDailyWeather(lat = 48.7194, lon = 44.5018)
+    fun fetchDailyWeather(latitude: Double, longitude: Double) {
+        apiService.getDailyWeather(latitude, longitude)
             .enqueue(object : Callback<DailyWeatherResponse> {
                 override fun onResponse(
                     call: Call<DailyWeatherResponse>,

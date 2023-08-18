@@ -2,6 +2,7 @@ package com.example.weatherapp.ui.fragments
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.location.Geocoder
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.data.SettingsRepository
 import com.example.weatherapp.data.networking.NetworkUtils
+import com.example.weatherapp.domain.LocationService
 import com.example.weatherapp.domain.models.CurrentWeather
 import com.example.weatherapp.domain.models.WeatherCondition
 import com.example.weatherapp.ui.adapters.DailyCardsAdapter
@@ -59,6 +61,7 @@ class MainFragment : Fragment() {
     private fun showNoInternetDialog() {
         val dialogFragment = NoInternetDialogFragment()
         dialogFragment.show(childFragmentManager, "NoInternetDialog")
+        dialogFragment.isCancelable = false
     }
 
     override fun onCreateView(
@@ -92,6 +95,7 @@ class MainFragment : Fragment() {
 
         val settingsRepository = SettingsRepository(requireContext())
         val userLocation = settingsRepository.getSavedUserLocation()
+        val locationService = LocationService(requireContext())
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModelHourly = ViewModelProvider(this)[HourlyWeatherViewModel::class.java]
@@ -119,9 +123,14 @@ class MainFragment : Fragment() {
         } else {
             // Fetch weather data and update UI
             if (userLocation != null) {
+                val coordinates = locationService.getCoordinatesFromAddress(userLocation)
+                if (coordinates != null) {
+                    val latitude = coordinates.first
+                    val longitude = coordinates.second
+                    viewModelDaily.fetchDailyWeather(latitude, longitude)
+                }
                 viewModel.fetchCurrentWeatherData(userLocation)
                 viewModelHourly.fetchHourlyWeather(userLocation)
-                viewModelDaily.fetchDailyWeather()
             }
 
             // Observe weather data changes
@@ -166,16 +175,5 @@ class MainFragment : Fragment() {
             constraintLayout.visibility = View.VISIBLE
         }
     }
-    override fun onResume() {
-        super.onResume()
-        // Start the shimmer effect when the fragment is visible
-        shimmerLayout.visibility = View.VISIBLE;
-        shimmerLayout.startShimmer()
-    }
 
-    override fun onPause() {
-        super.onPause()
-        shimmerLayout.visibility = View.GONE;
-        shimmerLayout.stopShimmer()
-    }
 }

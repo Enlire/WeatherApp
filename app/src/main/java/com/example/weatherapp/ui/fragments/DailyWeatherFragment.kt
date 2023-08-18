@@ -9,7 +9,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
+import com.example.weatherapp.data.SettingsRepository
+import com.example.weatherapp.data.networking.NetworkUtils
+import com.example.weatherapp.domain.LocationService
 import com.example.weatherapp.ui.adapters.DailyWeatherAdapter
+import com.example.weatherapp.ui.dialogs.NoInternetDialogFragment
 import com.example.weatherapp.ui.viewModels.DailyWeatherViewModel
 import com.facebook.shimmer.ShimmerFrameLayout
 
@@ -42,16 +46,29 @@ class DailyWeatherFragment : Fragment() {
         shimmerLayout.visibility = View.VISIBLE;
         shimmerLayout.startShimmer()
 
-        // Observe the hourly weather data from the ViewModel
-        viewModel.dailyWeatherList.observe(viewLifecycleOwner) { dailyWeatherList ->
-            adapter.updateData(dailyWeatherList)
-            shimmerLayout.stopShimmer()
-            shimmerLayout.visibility = View.GONE
-            recyclerView.visibility = View.VISIBLE
-        }
+        val settingsRepository = SettingsRepository(requireContext())
+        val userLocation = settingsRepository.getSavedUserLocation()
+        val locationService = LocationService(requireContext())
 
-        // Fetch the hourly weather data for the desired location
-        viewModel.fetchDailyWeather()
+        if (!NetworkUtils.isInternetAvailable(requireContext())) {
+            showNoInternetDialog()
+        } else {
+            if (userLocation != null) {
+                val coordinates = locationService.getCoordinatesFromAddress(userLocation)
+                if (coordinates != null) {
+                    val latitude = coordinates.first
+                    val longitude = coordinates.second
+                    viewModel.fetchDailyWeather(latitude, longitude)
+                }
+            }
+            // Observe the hourly weather data from the ViewModel
+            viewModel.dailyWeatherList.observe(viewLifecycleOwner) { dailyWeatherList ->
+                adapter.updateData(dailyWeatherList)
+                shimmerLayout.stopShimmer()
+                shimmerLayout.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
+            }
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -60,16 +77,9 @@ class DailyWeatherFragment : Fragment() {
         // TODO: Use the ViewModel
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        shimmerLayout.visibility = View.VISIBLE;
-        shimmerLayout.startShimmer()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        shimmerLayout.visibility = View.GONE;
-        shimmerLayout.stopShimmer()
+    private fun showNoInternetDialog() {
+        val dialogFragment = NoInternetDialogFragment()
+        dialogFragment.show(childFragmentManager, "NoInternetDialog")
+        dialogFragment.isCancelable = false
     }
 }
