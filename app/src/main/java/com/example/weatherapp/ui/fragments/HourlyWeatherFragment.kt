@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.data.SettingsRepository
 import com.example.weatherapp.data.networking.NetworkUtils
+import com.example.weatherapp.domain.LocationService
 import com.example.weatherapp.domain.models.HourlyWeather
+import com.example.weatherapp.ui.DialogUtils
 import com.example.weatherapp.ui.adapters.HourlyWeatherAdapter
 import com.example.weatherapp.ui.dialogs.NoInternetDialogFragment
 import com.example.weatherapp.ui.viewModels.HourlyWeatherViewModel
@@ -42,8 +44,9 @@ class HourlyWeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val settingsRepository = SettingsRepository(requireContext())
-        val userLocation = settingsRepository.getSavedUserLocation()
+        val locationService = LocationService(requireContext())
+        val locationData: Triple<Double, Double, String> = locationService.getLocation()
+
         val recyclerView: RecyclerView = view.findViewById(R.id.hourlyWeatherRecyclerView)
         val adapter = HourlyWeatherAdapter(emptyList())
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -55,12 +58,12 @@ class HourlyWeatherFragment : Fragment() {
         shimmerLayout.startShimmer()
 
         if (!NetworkUtils.isInternetAvailable(requireContext())) {
-            showNoInternetDialog()
+            DialogUtils.showNoInternetDialog(childFragmentManager)
+        } else if (!locationService.isLocationServiceEnabled()) {
+            DialogUtils.showLocationEnableDialog(childFragmentManager)
         } else {
             // Fetch the hourly weather data for the desired location
-            if (userLocation != null) {
-                viewModel.fetchHourlyWeather(userLocation)
-            }
+                viewModel.fetchHourlyWeather(locationData.third)
 
             // Observe the hourly weather data from the ViewModel
             viewModel.hourlyWeatherList.observe(viewLifecycleOwner) { hourlyWeatherList ->
@@ -70,11 +73,5 @@ class HourlyWeatherFragment : Fragment() {
                 recyclerView.visibility = View.VISIBLE
             }
         }
-    }
-
-    private fun showNoInternetDialog() {
-        val dialogFragment = NoInternetDialogFragment()
-        dialogFragment.show(childFragmentManager, "NoInternetDialog")
-        dialogFragment.isCancelable = false
     }
 }

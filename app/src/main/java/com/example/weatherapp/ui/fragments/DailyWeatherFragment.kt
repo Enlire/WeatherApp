@@ -12,6 +12,7 @@ import com.example.weatherapp.R
 import com.example.weatherapp.data.SettingsRepository
 import com.example.weatherapp.data.networking.NetworkUtils
 import com.example.weatherapp.domain.LocationService
+import com.example.weatherapp.ui.DialogUtils
 import com.example.weatherapp.ui.adapters.DailyWeatherAdapter
 import com.example.weatherapp.ui.dialogs.NoInternetDialogFragment
 import com.example.weatherapp.ui.viewModels.DailyWeatherViewModel
@@ -46,22 +47,15 @@ class DailyWeatherFragment : Fragment() {
         shimmerLayout.visibility = View.VISIBLE;
         shimmerLayout.startShimmer()
 
-        val settingsRepository = SettingsRepository(requireContext())
-        val userLocation = settingsRepository.getSavedUserLocation()
         val locationService = LocationService(requireContext())
+        val locationData: Triple<Double, Double, String> = locationService.getLocation()
 
         if (!NetworkUtils.isInternetAvailable(requireContext())) {
-            showNoInternetDialog()
+            DialogUtils.showNoInternetDialog(childFragmentManager)
+        } else if (!locationService.isLocationServiceEnabled()) {
+            DialogUtils.showLocationEnableDialog(childFragmentManager)
         } else {
-            if (userLocation != null) {
-                val coordinates = locationService.getCoordinatesFromAddress(userLocation)
-                if (coordinates != null) {
-                    val latitude = coordinates.first
-                    val longitude = coordinates.second
-                    viewModel.fetchDailyWeather(latitude, longitude)
-                }
-            }
-            // Observe the hourly weather data from the ViewModel
+            viewModel.fetchDailyWeather(locationData.first, locationData.second)
             viewModel.dailyWeatherList.observe(viewLifecycleOwner) { dailyWeatherList ->
                 adapter.updateData(dailyWeatherList)
                 shimmerLayout.stopShimmer()
@@ -75,11 +69,5 @@ class DailyWeatherFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(DailyWeatherViewModel::class.java)
         // TODO: Use the ViewModel
-    }
-
-    private fun showNoInternetDialog() {
-        val dialogFragment = NoInternetDialogFragment()
-        dialogFragment.show(childFragmentManager, "NoInternetDialog")
-        dialogFragment.isCancelable = false
     }
 }

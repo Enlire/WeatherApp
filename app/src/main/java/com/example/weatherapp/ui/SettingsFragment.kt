@@ -1,17 +1,13 @@
 package com.example.weatherapp.ui
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
+import androidx.preference.SwitchPreference
+import androidx.preference.SwitchPreferenceCompat
 import com.example.weatherapp.R
 import com.example.weatherapp.data.SettingsRepository
+import com.example.weatherapp.domain.LocationService
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -32,11 +28,27 @@ class SettingsFragment : PreferenceFragmentCompat() {
         addPreferencesFromResource(R.xml.preferences)
 
         val settingsRepository = SettingsRepository(requireContext())
-        val editTextPreference = findPreference<EditTextPreference>("USER_LOCATION")
+        val locationService = LocationService(requireContext())
+        val locationEditText = findPreference<EditTextPreference>("USER_LOCATION")
+        val locationSwitch = findPreference<SwitchPreference>("USE_DEVICE_LOCATION")
 
-        editTextPreference?.setOnPreferenceChangeListener { _, newValue ->
-            settingsRepository.saveUserLocation(newValue.toString())
+        locationSwitch?.setOnPreferenceChangeListener { _, newValue ->
+            val isEnabled = newValue as Boolean
+            if (isEnabled) {
+                locationService.startLocationUpdates()
+            } else {
+                locationService.stopLocationUpdates()
+            }
             true
+        }
+
+        locationEditText?.setOnPreferenceChangeListener { _, newValue ->
+            if (newValue is String) {
+                settingsRepository.saveUserLocation(newValue)
+                true
+            } else {
+                false
+            }
         }
     }
 

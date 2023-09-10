@@ -2,16 +2,13 @@ package com.example.weatherapp.ui.fragments
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.location.Geocoder
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.ScrollView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,8 +19,10 @@ import com.example.weatherapp.data.networking.NetworkUtils
 import com.example.weatherapp.domain.LocationService
 import com.example.weatherapp.domain.models.CurrentWeather
 import com.example.weatherapp.domain.models.WeatherCondition
+import com.example.weatherapp.ui.DialogUtils
 import com.example.weatherapp.ui.adapters.DailyCardsAdapter
 import com.example.weatherapp.ui.adapters.HourlyCardsAdapter
+import com.example.weatherapp.ui.dialogs.LocationEnableDialogFragment
 import com.example.weatherapp.ui.dialogs.NoInternetDialogFragment
 import com.example.weatherapp.ui.viewModels.DailyWeatherViewModel
 import com.example.weatherapp.ui.viewModels.HourlyWeatherViewModel
@@ -52,16 +51,10 @@ class MainFragment : Fragment() {
     private lateinit var uvIndex: TextView
     private lateinit var pressure: TextView
 
-    var observationCount = 0
+    private var observationCount = 0
 
     companion object {
         fun newInstance() = MainFragment()
-    }
-
-    private fun showNoInternetDialog() {
-        val dialogFragment = NoInternetDialogFragment()
-        dialogFragment.show(childFragmentManager, "NoInternetDialog")
-        dialogFragment.isCancelable = false
     }
 
     override fun onCreateView(
@@ -93,9 +86,9 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val settingsRepository = SettingsRepository(requireContext())
-        val userLocation = settingsRepository.getSavedUserLocation()
         val locationService = LocationService(requireContext())
+        val locationData: Triple<Double, Double, String> = locationService.getLocation()
+        val (latitude, longitude, locationName) = locationData
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModelHourly = ViewModelProvider(this)[HourlyWeatherViewModel::class.java]
@@ -119,19 +112,14 @@ class MainFragment : Fragment() {
 
         // Check Internet connection and display dialog if not available
         if (!NetworkUtils.isInternetAvailable(requireContext())) {
-            showNoInternetDialog()
+            DialogUtils.showNoInternetDialog(childFragmentManager)
+        } else if (!locationService.isLocationServiceEnabled()) {
+            DialogUtils.showLocationEnableDialog(childFragmentManager)
         } else {
             // Fetch weather data and update UI
-            if (userLocation != null) {
-                val coordinates = locationService.getCoordinatesFromAddress(userLocation)
-                if (coordinates != null) {
-                    val latitude = coordinates.first
-                    val longitude = coordinates.second
-                    viewModelDaily.fetchDailyWeather(latitude, longitude)
-                }
-                viewModel.fetchCurrentWeatherData(userLocation)
-                viewModelHourly.fetchHourlyWeather(userLocation)
-            }
+            viewModelDaily.fetchDailyWeather(latitude, longitude)
+            viewModel.fetchCurrentWeatherData(locationName)
+            viewModelHourly.fetchHourlyWeather(locationName)
 
             // Observe weather data changes
             viewModel.weatherData.observe(viewLifecycleOwner) { weatherResponse ->

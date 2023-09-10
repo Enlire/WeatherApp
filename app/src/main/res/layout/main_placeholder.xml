@@ -18,7 +18,7 @@
             android:background="@color/shimmer_background"
             android:textAlignment="center"
             android:textColor="@color/main_text"
-            android:textSize="20sp" />
+            android:textSize="24sp" />
 
         <ImageView
             android:layout_width="wrap_content"
