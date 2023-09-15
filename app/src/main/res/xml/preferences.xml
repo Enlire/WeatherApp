@@ -10,16 +10,16 @@
             android:key="USE_DEVICE_LOCATION"
             android:title="Определять моё местоположение"
             android:summary="Автоматическое определение местоположения"
-            android:defaultValue="true"
-            android:disableDependentsState="true" />
+            android:defaultValue="false"
+            android:enabled="true" />
 
         <EditTextPreference
             app:iconSpaceReserved="false"
             android:key="USER_LOCATION"
             android:title="Выбрать местоположение вручную"
             android:summary="Местоположение, для которого будет отображаться информация"
-            android:defaultValue="Волгоград"
-            android:dependency="USE_DEVICE_LOCATION"/>
+            android:defaultValue="Москва"
+            android:enabled="true"/>
     </PreferenceCategory>
 
     <PreferenceCategory

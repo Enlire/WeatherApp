@@ -2,11 +2,13 @@ package com.example.weatherapp.domain
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.LocationManager
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.example.weatherapp.data.SettingsRepository
@@ -19,6 +21,7 @@ class LocationService(private val context: Context) {
     private val geocoder = Geocoder(context, Locale.getDefault())
     private val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
     private val settingsRepository = SettingsRepository(context)
+    private val LOCATION_PERMISSION_REQUEST_CODE = 123
 
     fun getLocation() : Triple<Double, Double, String> {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -96,9 +99,18 @@ class LocationService(private val context: Context) {
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
-    private fun hasLocationPermission() : Boolean {
+    fun hasLocationPermission() : Boolean {
         return ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
     }
 
+    fun requestLocationPermissions() {
+        if (!hasLocationPermission()) {
+            ActivityCompat.requestPermissions(
+                context as Activity,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        }
+    }
 }

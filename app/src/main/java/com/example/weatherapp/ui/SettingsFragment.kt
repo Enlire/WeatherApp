@@ -3,13 +3,15 @@ package com.example.weatherapp.ui
 import android.os.Bundle
 import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreference
-import androidx.preference.SwitchPreferenceCompat
 import com.example.weatherapp.R
 import com.example.weatherapp.data.SettingsRepository
 import com.example.weatherapp.domain.LocationService
 
 class SettingsFragment : PreferenceFragmentCompat() {
+    private var locationSwitch: SwitchPreference? = null
+    private var locationEditText: EditTextPreference? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,15 +31,24 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val settingsRepository = SettingsRepository(requireContext())
         val locationService = LocationService(requireContext())
-        val locationEditText = findPreference<EditTextPreference>("USER_LOCATION")
-        val locationSwitch = findPreference<SwitchPreference>("USE_DEVICE_LOCATION")
+        locationEditText = findPreference<EditTextPreference>("USER_LOCATION")
+        locationSwitch = findPreference<SwitchPreference>("USE_DEVICE_LOCATION")
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val hasLocationPermission = locationService.hasLocationPermission()
+
+        locationSwitch?.isEnabled = hasLocationPermission
+        locationEditText?.isEnabled = locationSwitch?.isChecked == false
 
         locationSwitch?.setOnPreferenceChangeListener { _, newValue ->
-            val isEnabled = newValue as Boolean
-            if (isEnabled) {
+            val isChecked = newValue as Boolean
+            if (isChecked) {
                 locationService.startLocationUpdates()
+                locationEditText?.isEnabled = false
+                sharedPreferences.edit().putBoolean("switch_state", true).apply()
             } else {
                 locationService.stopLocationUpdates()
+                locationEditText?.isEnabled = true
+                sharedPreferences.edit().putBoolean("switch_state", false).apply()
             }
             true
         }

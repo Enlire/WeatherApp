@@ -10,6 +10,7 @@ import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.ActivityMainBinding
+import com.example.weatherapp.domain.LocationService
 import com.example.weatherapp.ui.fragments.CorrelationFragment
 import com.example.weatherapp.ui.fragments.DailyWeatherFragment
 import com.example.weatherapp.ui.fragments.HourlyWeatherFragment
@@ -23,7 +24,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         replaceFragment(MainFragment())
 
-        requestLocationPermission()
+        val locationService = LocationService(this)
+        locationService.requestLocationPermissions()
 
         WindowCompat.setDecorFitsSystemWindows(
             window,
@@ -52,20 +54,4 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.replace(R.id.frameLayout, fragment)
         fragmentTransaction.commit()
     }
-
-    private fun requestLocationPermission() {
-        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-        }
-    }
-
-    companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 123
-    }
-
 }
