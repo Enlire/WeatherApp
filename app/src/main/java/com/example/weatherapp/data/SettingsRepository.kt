@@ -2,11 +2,13 @@ package com.example.weatherapp.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.core.content.edit
+import androidx.preference.PreferenceManager
 
 class SettingsRepository(val context: Context) {
 
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences("APP_PREFERENCES", Context.MODE_PRIVATE)
+    private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     fun getSavedDeviceLocation() : Triple<Double, Double, String?> {
         return Triple(sharedPreferences.getFloat("LATITUDE", 0.0f).toDouble(),
@@ -15,6 +17,7 @@ class SettingsRepository(val context: Context) {
     }
 
     fun getSavedUserLocation() : String? {
+        Log.d("getSavedUserLocation", sharedPreferences.getString("USER_LOCATION", null).toString())
         return sharedPreferences.getString("USER_LOCATION", null)
     }
 

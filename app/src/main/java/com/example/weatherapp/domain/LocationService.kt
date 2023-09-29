@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.LocationManager
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
@@ -32,6 +33,7 @@ class LocationService(private val context: Context) {
             Triple(deviceLocation.first, deviceLocation.second, deviceLocation.third.toString())
         } else {
             val userLocation = settingsRepository.getSavedUserLocation().toString()
+            Log.d("loc5", userLocation)
             val userLocationCoordinates = getCoordinatesFromAddress(userLocation)
             Triple(userLocationCoordinates.first, userLocationCoordinates.second, userLocation)
         }
@@ -65,7 +67,7 @@ class LocationService(private val context: Context) {
         }
     }
 
-    fun getAddressFromCoordinates (latitude: Double, longitude: Double) : String? {
+    private fun getAddressFromCoordinates (latitude: Double, longitude: Double) : String? {
         val geocoder = Geocoder(context, Locale.getDefault())
         try {
             val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
@@ -79,7 +81,7 @@ class LocationService(private val context: Context) {
         return null
     }
 
-    fun getCoordinatesFromAddress(locationName: String) : Pair<Double, Double> {
+    private fun getCoordinatesFromAddress(locationName: String) : Pair<Double, Double> {
         try {
             val addresses: List<Address>? = geocoder.getFromLocationName(locationName, 1)
             if (addresses?.isNotEmpty() == true) {

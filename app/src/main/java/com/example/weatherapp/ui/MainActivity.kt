@@ -8,6 +8,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.domain.LocationService
@@ -18,6 +19,9 @@ import com.example.weatherapp.ui.fragments.MainFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
+    private val sharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(this)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -26,6 +30,12 @@ class MainActivity : AppCompatActivity() {
 
         val locationService = LocationService(this)
         locationService.requestLocationPermissions()
+        if (!locationService.hasLocationPermission()) {
+            val settingsFragment = supportFragmentManager.findFragmentById(R.id.settings) as? SettingsFragment
+            settingsFragment?.setLocationSwitchEnabled(false)
+            settingsFragment?.setLocationSwitchChecked(false)
+            sharedPreferences.edit().putBoolean("USE_DEVICE_LOCATION", false).apply()
+        }
 
         WindowCompat.setDecorFitsSystemWindows(
             window,

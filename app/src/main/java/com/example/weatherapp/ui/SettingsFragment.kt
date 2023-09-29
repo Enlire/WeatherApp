@@ -18,6 +18,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     }
 
+    fun setLocationSwitchEnabled(isEnabled: Boolean) {
+        locationEditText = findPreference("USER_LOCATION")
+        locationSwitch?.isEnabled = isEnabled
+    }
+
+    fun setLocationSwitchChecked(isChecked: Boolean) {
+        locationSwitch = findPreference("USE_DEVICE_LOCATION")
+        locationSwitch?.isChecked = isChecked
+    }
+
 //    override fun onCreateView(
 //        inflater: LayoutInflater, container: ViewGroup?,
 //        savedInstanceState: Bundle?
@@ -31,8 +41,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         val settingsRepository = SettingsRepository(requireContext())
         val locationService = LocationService(requireContext())
-        locationEditText = findPreference<EditTextPreference>("USER_LOCATION")
-        locationSwitch = findPreference<SwitchPreference>("USE_DEVICE_LOCATION")
+        locationSwitch = findPreference("USE_DEVICE_LOCATION")
+        locationEditText = findPreference("USER_LOCATION")
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         val hasLocationPermission = locationService.hasLocationPermission()
 
@@ -44,11 +54,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
             if (isChecked) {
                 locationService.startLocationUpdates()
                 locationEditText?.isEnabled = false
-                sharedPreferences.edit().putBoolean("switch_state", true).apply()
+                sharedPreferences.edit().putBoolean("USE_DEVICE_LOCATION", true).apply()
             } else {
                 locationService.stopLocationUpdates()
                 locationEditText?.isEnabled = true
-                sharedPreferences.edit().putBoolean("switch_state", false).apply()
+                sharedPreferences.edit().putBoolean("USE_DEVICE_LOCATION", false).apply()
             }
             true
         }

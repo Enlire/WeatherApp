@@ -1,6 +1,5 @@
 package com.example.weatherapp.ui
 
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.weatherapp.ui.dialogs.LocationEnableDialogFragment
 import com.example.weatherapp.ui.dialogs.NoInternetDialogFragment

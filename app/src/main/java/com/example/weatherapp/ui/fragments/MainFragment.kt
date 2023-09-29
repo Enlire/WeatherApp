@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,19 +12,18 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
-import com.example.weatherapp.data.SettingsRepository
 import com.example.weatherapp.data.networking.NetworkUtils
 import com.example.weatherapp.domain.LocationService
 import com.example.weatherapp.domain.models.CurrentWeather
 import com.example.weatherapp.domain.models.WeatherCondition
 import com.example.weatherapp.ui.DialogUtils
+import com.example.weatherapp.ui.SettingsFragment
 import com.example.weatherapp.ui.adapters.DailyCardsAdapter
 import com.example.weatherapp.ui.adapters.HourlyCardsAdapter
-import com.example.weatherapp.ui.dialogs.LocationEnableDialogFragment
-import com.example.weatherapp.ui.dialogs.NoInternetDialogFragment
 import com.example.weatherapp.ui.viewModels.DailyWeatherViewModel
 import com.example.weatherapp.ui.viewModels.HourlyWeatherViewModel
 import com.example.weatherapp.ui.viewModels.MainViewModel
@@ -39,6 +39,9 @@ class MainFragment : Fragment() {
     private lateinit var viewModelDaily: DailyWeatherViewModel
 
     private val weatherDescription = WeatherCondition()
+    private val sharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(requireContext())
+    }
     private lateinit var location: TextView
     private lateinit var weatherIcon: ImageView
     private lateinit var temp: TextView
@@ -111,12 +114,28 @@ class MainFragment : Fragment() {
         recyclerViewDaily.adapter = dailyAdapter
 
         // Check Internet connection and display dialog if not available
-        if (!NetworkUtils.isInternetAvailable(requireContext())) {
+        if (NetworkUtils.isInternetAvailable(requireContext())) {
+            checkLocationSettings(locationName, latitude, longitude, hourlyAdapter, dailyAdapter)
+        }
+        else {
             DialogUtils.showNoInternetDialog(childFragmentManager)
-        } else if (!locationService.isLocationServiceEnabled()) {
+        }
+    }
+
+    private fun checkLocationSettings(
+        locationName: String,
+        latitude: Double,
+        longitude: Double,
+        hourlyAdapter: HourlyCardsAdapter,
+        dailyAdapter: DailyCardsAdapter
+    ) {
+        val locationService = LocationService(requireContext())
+        val isSwitchEnabled = sharedPreferences.getBoolean("USE_DEVICE_LOCATION", false)
+
+        if (isSwitchEnabled && !locationService.isLocationServiceEnabled()) {
             DialogUtils.showLocationEnableDialog(childFragmentManager)
         } else {
-            // Fetch weather data and update UI
+            // Fetch weather data and update UI based on location settings
             viewModelDaily.fetchDailyWeather(latitude, longitude)
             viewModel.fetchCurrentWeatherData(locationName)
             viewModelHourly.fetchHourlyWeather(locationName)
@@ -135,6 +154,10 @@ class MainFragment : Fragment() {
                 onObservationComplete()
             }
         }
+    }
+
+    private fun fetchCurrentWeatherData() {
+
     }
 
     @SuppressLint("SetTextI18n")
