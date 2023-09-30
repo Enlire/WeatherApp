@@ -19,6 +19,10 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:colorEdgeEffect">@color/items</item>
+
+        <item name="colorAccent">@color/items</item>
+        <item name="colorControlNormal">@color/items</item>
+        <item name="colorPrimary">@color/items</item>
 <!--        <item name="android:background">@color/background</item>-->
     </style>
 
@@ -38,5 +42,11 @@
         <item name="android:fontWeight">400</item>
         <item name="android:fontFamily">@font/roboto_light</item>
         <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="CustomDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <!-- Цвет текста и другие атрибуты для кнопок "ОК" и "Отмена" -->
+        <item name="android:textColorPrimary">@color/items</item>
+        <item name="android:colorBackground">@color/items</item>
     </style>
 </resources>

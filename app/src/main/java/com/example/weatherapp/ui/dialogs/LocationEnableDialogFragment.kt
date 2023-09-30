@@ -10,8 +10,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 import com.example.weatherapp.R
-import com.example.weatherapp.domain.LocationService
-import com.example.weatherapp.ui.LocationSwitchListener
 import com.example.weatherapp.ui.SettingsFragment
 
 class LocationEnableDialogFragment : DialogFragment() {

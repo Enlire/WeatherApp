@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,8 +19,7 @@ import com.example.weatherapp.data.networking.NetworkUtils
 import com.example.weatherapp.domain.LocationService
 import com.example.weatherapp.domain.models.CurrentWeather
 import com.example.weatherapp.domain.models.WeatherCondition
-import com.example.weatherapp.ui.DialogUtils
-import com.example.weatherapp.ui.SettingsFragment
+import com.example.weatherapp.ui.dialogs.DialogUtils
 import com.example.weatherapp.ui.adapters.DailyCardsAdapter
 import com.example.weatherapp.ui.adapters.HourlyCardsAdapter
 import com.example.weatherapp.ui.viewModels.DailyWeatherViewModel

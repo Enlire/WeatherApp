@@ -1,9 +1,14 @@
 package com.example.weatherapp.ui
 
 import android.os.Bundle
+import android.widget.Switch
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.ActivityCompat.recreate
 import androidx.preference.EditTextPreference
+import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
+import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreference
 import com.example.weatherapp.R
 import com.example.weatherapp.data.SettingsRepository
@@ -12,6 +17,7 @@ import com.example.weatherapp.domain.LocationService
 class SettingsFragment : PreferenceFragmentCompat() {
     private var locationSwitch: SwitchPreference? = null
     private var locationEditText: EditTextPreference? = null
+    private var themePreference: ListPreference? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,7 +25,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     fun setLocationSwitchEnabled(isEnabled: Boolean) {
-        locationEditText = findPreference("USER_LOCATION")
+        locationSwitch = findPreference("USE_DEVICE_LOCATION")
         locationSwitch?.isEnabled = isEnabled
     }
 
@@ -39,13 +45,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.preferences)
 
-        val settingsRepository = SettingsRepository(requireContext())
-        val locationService = LocationService(requireContext())
         locationSwitch = findPreference("USE_DEVICE_LOCATION")
         locationEditText = findPreference("USER_LOCATION")
+        themePreference = findPreference("APP_THEME")
+
+        val settingsRepository = SettingsRepository(requireContext())
+        val locationService = LocationService(requireContext())
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         val hasLocationPermission = locationService.hasLocationPermission()
 
+        themePreference?.value = sharedPreferences.getString("APP_THEME", null)
+        locationEditText?.summary = locationEditText?.text
         locationSwitch?.isEnabled = hasLocationPermission
         locationEditText?.isEnabled = locationSwitch?.isChecked == false
 
@@ -66,10 +76,31 @@ class SettingsFragment : PreferenceFragmentCompat() {
         locationEditText?.setOnPreferenceChangeListener { _, newValue ->
             if (newValue is String) {
                 settingsRepository.saveUserLocation(newValue)
+                locationEditText?.summary = newValue
                 true
             } else {
                 false
             }
+        }
+
+        themePreference?.setOnPreferenceChangeListener { _, newValue ->
+            val themeValue = newValue.toString()
+            when (newValue.toString()) {
+                "light" -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+
+                "dark" -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                }
+
+                "system" -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                }
+            }
+            sharedPreferences.edit().putString("APP_THEME", themeValue).apply()
+            //recreate(requireActivity())
+            true
         }
     }
 

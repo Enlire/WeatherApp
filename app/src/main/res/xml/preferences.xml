@@ -2,36 +2,44 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/settings">
+    <Preference
+        app:layout="@layout/settings_title"
+        app:allowDividerBelow="false"
+        android:enabled="false"/>
+
     <PreferenceCategory
         android:title="Местоположение"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        android:layout="@layout/category_location">
 
         <SwitchPreference
-            app:iconSpaceReserved="false"
-            android:key="USE_DEVICE_LOCATION"
-            android:title="Определять моё местоположение"
-            android:summary="Автоматическое определение местоположения"
             android:defaultValue="false"
-            android:enabled="true" />
+            android:enabled="true"
+            android:key="USE_DEVICE_LOCATION"
+            android:summary="Автоматическое определение местоположения"
+            android:title="Определять моё местоположение"
+            app:iconSpaceReserved="false"/>
 
         <EditTextPreference
-            app:iconSpaceReserved="false"
-            android:key="USER_LOCATION"
-            android:title="Выбрать местоположение вручную"
-            android:summary="Местоположение, для которого будет отображаться информация"
             android:defaultValue="Москва"
-            android:enabled="true"/>
+            android:enabled="true"
+            android:key="USER_LOCATION"
+            android:summary="Местоположение, для которого будет отображаться информация"
+            android:title="Выбрать местоположение вручную"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 
     <PreferenceCategory
         android:title="Настройки приложения"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        android:layout="@layout/category_theme">
         <ListPreference
             app:iconSpaceReserved="false"
             android:key="APP_THEME"
             android:title="Тема"
             android:summary="%s"
             android:defaultValue="Светлая"
-            android:entryValues="@array/themeValues"/>
+            android:entryValues="@array/themeValues"
+            android:entries="@array/themeEntries"/>
     </PreferenceCategory>
 </PreferenceScreen>

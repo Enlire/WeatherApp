@@ -1,4 +1,4 @@
-package com.example.weatherapp.ui
+package com.example.weatherapp.ui.dialogs
 
 import androidx.fragment.app.FragmentManager
 import com.example.weatherapp.ui.dialogs.LocationEnableDialogFragment

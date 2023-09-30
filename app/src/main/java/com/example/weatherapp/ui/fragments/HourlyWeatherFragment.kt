@@ -9,13 +9,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
-import com.example.weatherapp.data.SettingsRepository
 import com.example.weatherapp.data.networking.NetworkUtils
 import com.example.weatherapp.domain.LocationService
-import com.example.weatherapp.domain.models.HourlyWeather
-import com.example.weatherapp.ui.DialogUtils
+import com.example.weatherapp.ui.dialogs.DialogUtils
 import com.example.weatherapp.ui.adapters.HourlyWeatherAdapter
-import com.example.weatherapp.ui.dialogs.NoInternetDialogFragment
 import com.example.weatherapp.ui.viewModels.HourlyWeatherViewModel
 import com.facebook.shimmer.ShimmerFrameLayout
 
