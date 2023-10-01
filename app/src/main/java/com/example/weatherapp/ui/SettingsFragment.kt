@@ -99,7 +99,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 }
             }
             sharedPreferences.edit().putString("APP_THEME", themeValue).apply()
-            //recreate(requireActivity())
+            sharedPreferences.edit().putBoolean("THEME_CHANGED", true).apply()
             true
         }
     }

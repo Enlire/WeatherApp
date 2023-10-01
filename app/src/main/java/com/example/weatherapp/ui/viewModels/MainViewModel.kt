@@ -27,7 +27,7 @@ class MainViewModel() : ViewModel() {
                 if (response.isSuccessful) {
                     val weatherResponse: CurrentWeatherResponse? = response.body()
                     if (weatherResponse != null) {
-                        Log.d("day", weatherResponse.current.isDay.toString())
+
                     }
                     weatherResponse?.let {
                         val currentWeather = currentWeatherMapper.mapCurrentResponseToDomain(it)

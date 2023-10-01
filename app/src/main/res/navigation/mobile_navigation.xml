@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/home">
+
+    <fragment
+        android:id="@+id/home"
+        android:name="com.example.weatherapp.ui.fragments.MainFragment"
+        tools:layout="@layout/fragment_main" />
+
+    <fragment
+        android:id="@+id/hourly"
+        android:name="com.example.weatherapp.ui.fragments.HourlyWeatherFragment"
+        tools:layout="@layout/fragment_hourly_weather" />
+
+    <fragment
+        android:id="@+id/daily"
+        android:name="com.example.weatherapp.ui.fragments.DailyWeatherFragment"
+        tools:layout="@layout/fragment_daily_weather" />
+
+    <fragment
+        android:id="@+id/correlation"
+        android:name="com.example.weatherapp.ui.fragments.CorrelationFragment"
+        tools:layout="@layout/fragment_correlation" />
+
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.example.weatherapp.ui.SettingsFragment"
+        tools:layout="@layout/fragment_settings" />
+</navigation>

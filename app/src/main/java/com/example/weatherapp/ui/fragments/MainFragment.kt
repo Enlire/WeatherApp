@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -90,6 +92,7 @@ class MainFragment : Fragment() {
         val locationService = LocationService(requireContext())
         val locationData: Triple<Double, Double, String> = locationService.getLocation()
         val (latitude, longitude, locationName) = locationData
+        observationCount = 0
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModelHourly = ViewModelProvider(this)[HourlyWeatherViewModel::class.java]
@@ -142,14 +145,17 @@ class MainFragment : Fragment() {
             viewModel.weatherData.observe(viewLifecycleOwner) { weatherResponse ->
                 showCurrentWeather(weatherResponse)
                 onObservationComplete()
+                Log.d("count1", observationCount.toString())
             }
             viewModelHourly.hourlyWeatherList.observe(viewLifecycleOwner) { hourlyCardsList ->
                 hourlyAdapter.updateData(hourlyCardsList)
                 onObservationComplete()
+                Log.d("count2", observationCount.toString())
             }
             viewModelDaily.dailyWeatherList.observe(viewLifecycleOwner) { dailyCardsList ->
                 dailyAdapter.updateData(dailyCardsList)
                 onObservationComplete()
+                Log.d("count3", observationCount.toString())
             }
         }
     }
@@ -165,7 +171,7 @@ class MainFragment : Fragment() {
         temp.text = "${currentWeather.temperature}°C"
         weatherCondition.text = currentWeather.description
         weatherIcon.setImageResource(currentWeather.icResId)
-        weatherIcon.setColorFilter(Color.parseColor("#2B2B2B"))
+        weatherIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.main_text))
         feelsLike.text = "${currentWeather.feels_like}°C"
         windDir.text = windDirection
         windSpeed.text = "${currentWeather.wind_speed} м/с"
