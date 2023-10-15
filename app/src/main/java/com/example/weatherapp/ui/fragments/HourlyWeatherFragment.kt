@@ -57,8 +57,8 @@ class HourlyWeatherFragment : Fragment() {
         if (!NetworkUtils.isInternetAvailable(requireContext())) {
             DialogUtils.showNoInternetDialog(childFragmentManager)
         } else if (!locationService.isLocationServiceEnabled()) {
-            DialogUtils.showLocationEnableDialog(childFragmentManager)
-        } else {
+            //DialogUtils.showLocationEnableDialog(childFragmentManager)
+        } //else {
             // Fetch the hourly weather data for the desired location
                 viewModel.fetchHourlyWeather(locationData.third)
 
@@ -69,6 +69,6 @@ class HourlyWeatherFragment : Fragment() {
                 shimmerLayout.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
             }
-        }
+        //}
     }
 }

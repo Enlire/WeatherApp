@@ -1,6 +1,9 @@
 package com.example.weatherapp.ui
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Switch
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat.recreate
@@ -102,6 +105,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
             sharedPreferences.edit().putBoolean("THEME_CHANGED", true).apply()
             true
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        view?.setBackgroundColor(resources.getColor(R.color.background));
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     companion object {

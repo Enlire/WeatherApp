@@ -6,16 +6,19 @@ import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.weatherapp.R
 import com.example.weatherapp.data.networking.NetworkUtils
 import com.example.weatherapp.domain.LocationService
@@ -33,6 +36,7 @@ class MainFragment : Fragment() {
 
     private lateinit var shimmerLayout: ShimmerFrameLayout
     private lateinit var constraintLayout: ConstraintLayout
+    private lateinit var refreshLayout: SwipeRefreshLayout
 
     private lateinit var viewModel: MainViewModel
     private lateinit var viewModelHourly: HourlyWeatherViewModel
@@ -65,6 +69,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
+        //container?.removeAllViews();
 
         location = view.findViewById(R.id.location)
         weatherIcon = view.findViewById(R.id.weatherIcon)
@@ -100,6 +105,7 @@ class MainFragment : Fragment() {
 
         shimmerLayout = view.findViewById(R.id.shimmer_view_container)
         constraintLayout = view.findViewById(R.id.constraint_layout)
+        refreshLayout = view.findViewById(R.id.swipe_refresh_layout)
 
         shimmerLayout.visibility = View.VISIBLE;
         shimmerLayout.startShimmer()
@@ -113,13 +119,25 @@ class MainFragment : Fragment() {
         val dailyAdapter = DailyCardsAdapter(emptyList())
         recyclerViewDaily.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerViewDaily.adapter = dailyAdapter
-
+        //sharedPreferences.edit().putBoolean("USE_DEVICE_LOCATION", false).apply()
         // Check Internet connection and display dialog if not available
         if (NetworkUtils.isInternetAvailable(requireContext())) {
             checkLocationSettings(locationName, latitude, longitude, hourlyAdapter, dailyAdapter)
         }
         else {
             DialogUtils.showNoInternetDialog(childFragmentManager)
+        }
+
+        refreshLayout.setOnRefreshListener {
+            val currentFragment = childFragmentManager.findFragmentById(R.id.home)
+            currentFragment?.let {
+                val transaction = childFragmentManager.beginTransaction()
+                transaction.detach(it)
+                transaction.attach(it)
+                transaction.commit()
+            }
+            checkLocationSettings(locationName, latitude, longitude, hourlyAdapter, dailyAdapter)
+            refreshLayout.isRefreshing = false
         }
     }
 
@@ -134,7 +152,8 @@ class MainFragment : Fragment() {
         val isSwitchEnabled = sharedPreferences.getBoolean("USE_DEVICE_LOCATION", false)
 
         if (isSwitchEnabled && !locationService.isLocationServiceEnabled()) {
-            DialogUtils.showLocationEnableDialog(childFragmentManager)
+            val fragmentId = R.id.home
+            DialogUtils.showLocationEnableDialog(childFragmentManager, fragmentId)
         } else {
             // Fetch weather data and update UI based on location settings
             viewModelDaily.fetchDailyWeather(latitude, longitude)
@@ -145,17 +164,14 @@ class MainFragment : Fragment() {
             viewModel.weatherData.observe(viewLifecycleOwner) { weatherResponse ->
                 showCurrentWeather(weatherResponse)
                 onObservationComplete()
-                Log.d("count1", observationCount.toString())
             }
             viewModelHourly.hourlyWeatherList.observe(viewLifecycleOwner) { hourlyCardsList ->
                 hourlyAdapter.updateData(hourlyCardsList)
                 onObservationComplete()
-                Log.d("count2", observationCount.toString())
             }
             viewModelDaily.dailyWeatherList.observe(viewLifecycleOwner) { dailyCardsList ->
                 dailyAdapter.updateData(dailyCardsList)
                 onObservationComplete()
-                Log.d("count3", observationCount.toString())
             }
         }
     }
@@ -190,5 +206,4 @@ class MainFragment : Fragment() {
             constraintLayout.visibility = View.VISIBLE
         }
     }
-
 }

@@ -51,7 +51,7 @@ class DailyWeatherFragment : Fragment() {
         if (!NetworkUtils.isInternetAvailable(requireContext())) {
             DialogUtils.showNoInternetDialog(childFragmentManager)
         } else if (!locationService.isLocationServiceEnabled()) {
-            DialogUtils.showLocationEnableDialog(childFragmentManager)
+            //DialogUtils.showLocationEnableDialog(childFragmentManager)
         } else {
             viewModel.fetchDailyWeather(locationData.first, locationData.second)
             viewModel.dailyWeatherList.observe(viewLifecycleOwner) { dailyWeatherList ->

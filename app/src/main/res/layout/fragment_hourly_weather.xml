@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="66dp"
     tools:context=".ui.fragments.HourlyWeatherFragment">
 
     <com.facebook.shimmer.ShimmerFrameLayout
@@ -53,7 +54,8 @@
             android:visibility="gone"
             app:layoutManager="LinearLayoutManager"
             app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/hourly_card" />
+            tools:listitem="@layout/hourly_card"
+            android:scrollbars="none"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
