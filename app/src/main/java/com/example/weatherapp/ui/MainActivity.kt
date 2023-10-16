@@ -1,9 +1,14 @@
 package com.example.weatherapp.ui
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -17,6 +22,7 @@ import androidx.preference.PreferenceManager
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.domain.LocationService
+import com.example.weatherapp.ui.dialogs.LocationEnableDialogFragment
 import com.example.weatherapp.ui.fragments.CorrelationFragment
 import com.example.weatherapp.ui.fragments.DailyWeatherFragment
 import com.example.weatherapp.ui.fragments.HourlyWeatherFragment
@@ -67,5 +73,13 @@ class MainActivity : AppCompatActivity() {
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         navView.setupWithNavController(navController)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val callingFragmentId = sharedPreferences.getInt("currentFragmentId", -1)
+        if (callingFragmentId != -1) {
+            findNavController(R.id.nav_host_fragment_activity_main).navigate(callingFragmentId)
+        }
     }
 }

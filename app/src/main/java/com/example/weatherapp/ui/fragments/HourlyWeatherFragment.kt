@@ -2,15 +2,20 @@ package com.example.weatherapp.ui.fragments
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.data.networking.NetworkUtils
 import com.example.weatherapp.domain.LocationService
+import com.example.weatherapp.ui.adapters.DailyCardsAdapter
+import com.example.weatherapp.ui.adapters.HourlyCardsAdapter
 import com.example.weatherapp.ui.dialogs.DialogUtils
 import com.example.weatherapp.ui.adapters.HourlyWeatherAdapter
 import com.example.weatherapp.ui.viewModels.HourlyWeatherViewModel
@@ -24,6 +29,10 @@ class HourlyWeatherFragment : Fragment() {
 
     private lateinit var viewModel: HourlyWeatherViewModel
     private lateinit var shimmerLayout: ShimmerFrameLayout
+    private lateinit var recyclerView: RecyclerView
+    private val sharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(requireContext())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,32 +52,50 @@ class HourlyWeatherFragment : Fragment() {
 
         val locationService = LocationService(requireContext())
         val locationData: Triple<Double, Double, String> = locationService.getLocation()
+        val (latitude, longitude, locationName) = locationData
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.hourlyWeatherRecyclerView)
-        val adapter = HourlyWeatherAdapter(emptyList())
+        recyclerView = view.findViewById(R.id.hourlyWeatherRecyclerView)
+        val hourlyAdapter = HourlyWeatherAdapter(emptyList())
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = adapter
+        recyclerView.adapter = hourlyAdapter
         viewModel = ViewModelProvider(this)[HourlyWeatherViewModel::class.java]
 
         shimmerLayout = view.findViewById(R.id.shimmer_view_container)
         shimmerLayout.visibility = View.VISIBLE;
         shimmerLayout.startShimmer()
 
-        if (!NetworkUtils.isInternetAvailable(requireContext())) {
+        // Check Internet connection and display dialog if not available
+        if (NetworkUtils.isInternetAvailable(requireContext())) {
+            checkLocationSettings(locationName, latitude, longitude, hourlyAdapter)
+        }
+        else {
             DialogUtils.showNoInternetDialog(childFragmentManager)
-        } else if (!locationService.isLocationServiceEnabled()) {
-            //DialogUtils.showLocationEnableDialog(childFragmentManager)
-        } //else {
+        }
+    }
+
+    private fun checkLocationSettings(
+        locationName: String,
+        latitude: Double,
+        longitude: Double,
+        hourlyAdapter: HourlyWeatherAdapter
+    ) {
+        val locationService = LocationService(requireContext())
+        val isSwitchEnabled = sharedPreferences.getBoolean("USE_DEVICE_LOCATION", false)
+
+        if (isSwitchEnabled && !locationService.isLocationServiceEnabled()) {
+            val fragmentId = R.id.hourly
+            DialogUtils.showLocationEnableDialog(childFragmentManager, fragmentId)
+        } else {
             // Fetch the hourly weather data for the desired location
-                viewModel.fetchHourlyWeather(locationData.third)
+            viewModel.fetchHourlyWeather(locationName)
 
             // Observe the hourly weather data from the ViewModel
             viewModel.hourlyWeatherList.observe(viewLifecycleOwner) { hourlyWeatherList ->
-                adapter.updateData(hourlyWeatherList)
+                hourlyAdapter.updateData(hourlyWeatherList)
                 shimmerLayout.stopShimmer()
                 shimmerLayout.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
             }
-        //}
+        }
     }
 }

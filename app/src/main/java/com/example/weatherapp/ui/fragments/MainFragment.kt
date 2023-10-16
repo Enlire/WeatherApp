@@ -1,6 +1,8 @@
 package com.example.weatherapp.ui.fragments
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -13,8 +15,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +31,7 @@ import com.example.weatherapp.domain.models.WeatherCondition
 import com.example.weatherapp.ui.dialogs.DialogUtils
 import com.example.weatherapp.ui.adapters.DailyCardsAdapter
 import com.example.weatherapp.ui.adapters.HourlyCardsAdapter
+import com.example.weatherapp.ui.dialogs.LocationEnableDialogFragment
 import com.example.weatherapp.ui.viewModels.DailyWeatherViewModel
 import com.example.weatherapp.ui.viewModels.HourlyWeatherViewModel
 import com.example.weatherapp.ui.viewModels.MainViewModel
@@ -36,7 +41,7 @@ class MainFragment : Fragment() {
 
     private lateinit var shimmerLayout: ShimmerFrameLayout
     private lateinit var constraintLayout: ConstraintLayout
-    private lateinit var refreshLayout: SwipeRefreshLayout
+    //private lateinit var refreshLayout: SwipeRefreshLayout
 
     private lateinit var viewModel: MainViewModel
     private lateinit var viewModelHourly: HourlyWeatherViewModel
@@ -57,7 +62,6 @@ class MainFragment : Fragment() {
     private lateinit var visibility: TextView
     private lateinit var uvIndex: TextView
     private lateinit var pressure: TextView
-
     private var observationCount = 0
 
     companion object {
@@ -69,7 +73,6 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
-        //container?.removeAllViews();
 
         location = view.findViewById(R.id.location)
         weatherIcon = view.findViewById(R.id.weatherIcon)
@@ -105,7 +108,7 @@ class MainFragment : Fragment() {
 
         shimmerLayout = view.findViewById(R.id.shimmer_view_container)
         constraintLayout = view.findViewById(R.id.constraint_layout)
-        refreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        //refreshLayout = view.findViewById(R.id.swipe_refresh_layout)
 
         shimmerLayout.visibility = View.VISIBLE;
         shimmerLayout.startShimmer()
@@ -119,7 +122,7 @@ class MainFragment : Fragment() {
         val dailyAdapter = DailyCardsAdapter(emptyList())
         recyclerViewDaily.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerViewDaily.adapter = dailyAdapter
-        //sharedPreferences.edit().putBoolean("USE_DEVICE_LOCATION", false).apply()
+
         // Check Internet connection and display dialog if not available
         if (NetworkUtils.isInternetAvailable(requireContext())) {
             checkLocationSettings(locationName, latitude, longitude, hourlyAdapter, dailyAdapter)
@@ -128,7 +131,7 @@ class MainFragment : Fragment() {
             DialogUtils.showNoInternetDialog(childFragmentManager)
         }
 
-        refreshLayout.setOnRefreshListener {
+        /*refreshLayout.setOnRefreshListener {
             val currentFragment = childFragmentManager.findFragmentById(R.id.home)
             currentFragment?.let {
                 val transaction = childFragmentManager.beginTransaction()
@@ -138,7 +141,7 @@ class MainFragment : Fragment() {
             }
             checkLocationSettings(locationName, latitude, longitude, hourlyAdapter, dailyAdapter)
             refreshLayout.isRefreshing = false
-        }
+        }*/
     }
 
     private fun checkLocationSettings(
@@ -174,10 +177,6 @@ class MainFragment : Fragment() {
                 onObservationComplete()
             }
         }
-    }
-
-    private fun fetchCurrentWeatherData() {
-
     }
 
     @SuppressLint("SetTextI18n")
