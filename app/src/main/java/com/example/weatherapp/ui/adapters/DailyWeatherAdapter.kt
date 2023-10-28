@@ -40,13 +40,13 @@ class DailyWeatherAdapter(private var dailyWeatherList: List<DailyWeather>) :
         // Bind the views with the corresponding data
         holder.dateTextView.text = dailyWeather.date
         holder.dayTextView.text = dailyWeather.day
-        holder.tempTextView.text = "${dailyWeather.temp_min}°C / ${dailyWeather.temp_max}°C"
+        holder.tempTextView.text = "${dailyWeather.tempMin}°C / ${dailyWeather.tempMax}°C"
         holder.conditionTextView.text = dailyWeather.description
         holder.iconImageView.setImageResource(dailyWeather.icResId)
-        holder.chanceTextView.text = "${dailyWeather.chance_of_precip}%"
+        holder.chanceTextView.text = "${dailyWeather.chanceOfPrecip}%"
         holder.precipTextView.text = "${dailyWeather.precip} мм"
-        holder.windTextView.text = "${dailyWeather.wind_speed} м/с"
-        holder.uvTextView.text = dailyWeather.uv_index.toString()
+        holder.windTextView.text = "${dailyWeather.windSpeed} м/с"
+        holder.uvTextView.text = dailyWeather.uvIndex.toString()
         holder.sunriseTextView.text = dailyWeather.sunrise
         holder.sunsetTextView.text = dailyWeather.sunset
     }

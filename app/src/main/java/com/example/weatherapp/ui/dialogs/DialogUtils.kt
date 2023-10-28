@@ -1,10 +1,6 @@
 package com.example.weatherapp.ui.dialogs
 
-import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.FragmentManager
-import com.example.weatherapp.ui.dialogs.LocationEnableDialogFragment
-import com.example.weatherapp.ui.dialogs.NoInternetDialogFragment
 
 class DialogUtils {
     companion object {

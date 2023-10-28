@@ -1,6 +1,5 @@
 package com.example.weatherapp.data.mappers
 
-import android.util.Log
 import com.example.weatherapp.data.models.HourItem
 import com.example.weatherapp.data.models.HourlyWeatherResponse
 import com.example.weatherapp.domain.models.HourlyWeather
@@ -52,16 +51,16 @@ class HourlyWeatherMapper {
                 code = hourItem.condition.code,
                 icResId = weatherCondition.weatherCodeWeatherApiToIcon(hourItem.condition.code, hourItem.isDay),
                 temperature = temperature,
-                chance_of_rain = hourItem.chanceOfRain,
-                chance_of_snow = hourItem.chanceOfSnow,
+                chanceOfRain = hourItem.chanceOfRain,
+                chanceOfSnow = hourItem.chanceOfSnow,
                 precip = precip,
                 cloud = hourItem.cloud,
-                dew_point = dewPoint,
-                wind_dir = hourItem.windDir,
-                wind_speed = windSpeed.toInt(),
+                dewPoint = dewPoint,
+                windDir = hourItem.windDir,
+                windSpeed = windSpeed.toInt(),
                 humidity = hourItem.humidity,
                 visibility = visibility,
-                uv_index = uvIndex,
+                uvIndex = uvIndex,
                 pressure = pressure.toInt()
             )
             hourlyWeatherList.add(hourlyWeather)

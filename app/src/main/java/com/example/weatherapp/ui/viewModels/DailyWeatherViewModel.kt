@@ -36,8 +36,8 @@ class DailyWeatherViewModel : ViewModel() {
                         val dailyWeatherResponse: DailyWeatherResponse? = response.body()
                         if (dailyWeatherResponse != null) {
                             // Convert the API response to the domain model HourlyWeather
-                            val hourlyWeatherList  = dailyWeatherMapper.mapDailyResponseToDomain(dailyWeatherResponse)
-                            _dailyWeatherList.value = hourlyWeatherList
+                            val dailyWeatherList  = dailyWeatherMapper.mapDailyResponseToDomain(dailyWeatherResponse)
+                            _dailyWeatherList.value = dailyWeatherList
                         }
                     } else {
                         // TODO: Handle API error case

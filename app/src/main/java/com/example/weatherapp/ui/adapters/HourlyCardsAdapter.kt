@@ -9,8 +9,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.domain.models.HourlyWeather
-import com.example.weatherapp.domain.models.WeatherCondition
-import java.time.format.DateTimeFormatter
 
 class HourlyCardsAdapter(private var hourlyWeatherList: List<HourlyWeather>) :
     RecyclerView.Adapter<HourlyCardsAdapter.HourlyCardsViewHolder>() {
@@ -38,7 +36,7 @@ class HourlyCardsAdapter(private var hourlyWeatherList: List<HourlyWeather>) :
         holder.tempTextView.text = "${hourlyWeather.temperature}°C"
         holder.conditionTextView.text = hourlyWeather.description
         holder.iconImageView.setImageResource(hourlyWeather.icResId)
-        holder.chanceTextView.text = "${hourlyWeather.chance_of_rain}%"
+        holder.chanceTextView.text = "${hourlyWeather.chanceOfRain}%"
     }
 
     override fun getItemCount(): Int {

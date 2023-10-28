@@ -1,20 +1,19 @@
 package com.example.weatherapp.ui.fragments
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.data.networking.NetworkUtils
 import com.example.weatherapp.domain.LocationService
-import com.example.weatherapp.ui.dialogs.DialogUtils
 import com.example.weatherapp.ui.adapters.DailyWeatherAdapter
-import com.example.weatherapp.ui.adapters.HourlyWeatherAdapter
+import com.example.weatherapp.ui.dialogs.DialogUtils
 import com.example.weatherapp.ui.viewModels.DailyWeatherViewModel
 import com.facebook.shimmer.ShimmerFrameLayout
 
@@ -52,12 +51,12 @@ class DailyWeatherFragment : Fragment() {
         viewModel = ViewModelProvider(this)[DailyWeatherViewModel::class.java]
 
         shimmerLayout = view.findViewById(R.id.shimmer_view_container)
-        shimmerLayout.visibility = View.VISIBLE;
+        shimmerLayout.visibility = View.VISIBLE
         shimmerLayout.startShimmer()
 
         // Check Internet connection and display dialog if not available
         if (NetworkUtils.isInternetAvailable(requireContext())) {
-            checkLocationSettings(locationName, latitude, longitude, dailyAdapter)
+            checkLocationSettings(/*locationName,*/ latitude, longitude, dailyAdapter)
         }
         else {
             DialogUtils.showNoInternetDialog(childFragmentManager)
@@ -71,7 +70,7 @@ class DailyWeatherFragment : Fragment() {
     }
 
     private fun checkLocationSettings(
-        locationName: String,
+        //locationName: String,
         latitude: Double,
         longitude: Double,
         dailyAdapter: DailyWeatherAdapter

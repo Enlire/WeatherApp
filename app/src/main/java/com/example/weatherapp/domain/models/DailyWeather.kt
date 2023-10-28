@@ -5,12 +5,12 @@ data class DailyWeather(
     val day: String,
     val description: String,
     val icResId: Int,
-    val temp_max: Int,
-    val temp_min: Int,
-    val chance_of_precip: Int,
+    val tempMax: Int,
+    val tempMin: Int,
+    val chanceOfPrecip: Int,
     val precip: Int,
-    val wind_speed: Int,
-    val uv_index: Int,
+    val windSpeed: Int,
+    val uvIndex: Int,
     val sunrise: String,
     val sunset: String
 )

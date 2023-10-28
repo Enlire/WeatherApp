@@ -1,23 +1,19 @@
 package com.example.weatherapp.ui.fragments
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.data.networking.NetworkUtils
 import com.example.weatherapp.domain.LocationService
-import com.example.weatherapp.ui.adapters.DailyCardsAdapter
-import com.example.weatherapp.ui.adapters.HourlyCardsAdapter
-import com.example.weatherapp.ui.dialogs.DialogUtils
 import com.example.weatherapp.ui.adapters.HourlyWeatherAdapter
+import com.example.weatherapp.ui.dialogs.DialogUtils
 import com.example.weatherapp.ui.viewModels.HourlyWeatherViewModel
 import com.facebook.shimmer.ShimmerFrameLayout
 
@@ -61,12 +57,12 @@ class HourlyWeatherFragment : Fragment() {
         viewModel = ViewModelProvider(this)[HourlyWeatherViewModel::class.java]
 
         shimmerLayout = view.findViewById(R.id.shimmer_view_container)
-        shimmerLayout.visibility = View.VISIBLE;
+        shimmerLayout.visibility = View.VISIBLE
         shimmerLayout.startShimmer()
 
         // Check Internet connection and display dialog if not available
         if (NetworkUtils.isInternetAvailable(requireContext())) {
-            checkLocationSettings(locationName, latitude, longitude, hourlyAdapter)
+            checkLocationSettings(locationName, /*latitude, longitude,*/ hourlyAdapter)
         }
         else {
             DialogUtils.showNoInternetDialog(childFragmentManager)
@@ -75,8 +71,8 @@ class HourlyWeatherFragment : Fragment() {
 
     private fun checkLocationSettings(
         locationName: String,
-        latitude: Double,
-        longitude: Double,
+        //latitude: Double,
+        //longitude: Double,
         hourlyAdapter: HourlyWeatherAdapter
     ) {
         val locationService = LocationService(requireContext())

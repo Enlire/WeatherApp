@@ -7,11 +7,11 @@ data class CurrentWeather (
     val isDay: Int,
     val icResId: Int,
     val temperature: Int,
-    val feels_like: Int,
-    val wind_dir: String,
-    val wind_speed: Int,
+    val feelsLike: Int,
+    val windDir: String,
+    val windSpeed: Int,
     val humidity: Int,
     val visibility: Int,
-    val uv_index: Int,
+    val uvIndex: Int,
     val pressure: Int
 )

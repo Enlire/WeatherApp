@@ -46,13 +46,13 @@ class HourlyWeatherAdapter(private var hourlyWeatherList: List<HourlyWeather>) :
         holder.tempTextView.text = "${hourlyWeather.temperature}°C"
         holder.conditionTextView.text = hourlyWeather.description
         holder.iconImageView.setImageResource(hourlyWeather.icResId)
-        holder.chanceTextView.text = "${hourlyWeather.chance_of_rain}%"
+        holder.chanceTextView.text = "${hourlyWeather.chanceOfRain}%"
         holder.precipTextView.text = "${hourlyWeather.precip} мм"
         holder.cloudTextView.text = "${hourlyWeather.cloud}%"
         holder.humidityTextView.text = "${hourlyWeather.humidity}%"
-        holder.windTextView.text = "${hourlyWeather.wind_speed} м/с ${weatherDescription.translateWindDir(hourlyWeather.wind_dir)}"
+        holder.windTextView.text = "${hourlyWeather.windSpeed} м/с ${weatherDescription.translateWindDir(hourlyWeather.windDir)}"
         holder.pressureTextView.text = "${hourlyWeather.pressure} мм рт. ст."
-        holder.uvTextView.text = hourlyWeather.uv_index.toString()
+        holder.uvTextView.text = hourlyWeather.uvIndex.toString()
     }
 
     override fun getItemCount(): Int {

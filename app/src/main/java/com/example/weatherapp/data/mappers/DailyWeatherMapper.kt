@@ -1,12 +1,17 @@
 package com.example.weatherapp.data.mappers
 
+import android.util.Log
 import com.example.weatherapp.data.models.DailyWeatherResponse
+import com.example.weatherapp.data.models.PastWeatherResponse
 import com.example.weatherapp.domain.models.DailyWeather
+import com.example.weatherapp.domain.models.PastWeather
 import com.example.weatherapp.domain.models.WeatherCondition
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.math.round
+import kotlin.math.roundToInt
 
 class DailyWeatherMapper {
     fun mapDailyResponseToDomain (response: DailyWeatherResponse) : List<DailyWeather> {
@@ -59,6 +64,32 @@ class DailyWeatherMapper {
         }
 
         return dailyWeatherList
+    }
+
+    fun mapPastResponseToDomain (response: PastWeatherResponse) : List<PastWeather> {
+        val pastWeatherList = mutableListOf<PastWeather>()
+
+        val daily = response.daily
+        val timeList = daily.time
+        val temperature2mMaxList = daily.temperature2mMax
+        val temperature2mMinList = daily.temperature2mMin
+        Log.i("list", temperature2mMaxList.toString())
+        Log.i("list", temperature2mMinList.toString())
+
+        for (i in timeList.indices) {
+            val dateFormat = formatDate(timeList[i])
+            val tempMax = temperature2mMaxList[i].roundToInt()
+            val tempMin = temperature2mMinList[i].roundToInt()
+
+            val pastWeather = PastWeather(
+                dateFormat,
+                tempMax,
+                tempMin
+            )
+            pastWeatherList.add(pastWeather)
+        }
+        Log.i("list", pastWeatherList.toString())
+        return pastWeatherList
     }
 
     private fun formatDate(dateString: String): String {

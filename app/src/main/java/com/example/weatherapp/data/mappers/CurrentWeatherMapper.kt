@@ -21,12 +21,12 @@ class CurrentWeatherMapper {
             isDay = response.current.isDay,
             icResId = weatherCondition.weatherCodeWeatherApiToIcon(response.current.condition.code, response.current.isDay),
             temperature = temperature,
-            feels_like = feelsLike,
-            wind_dir = response.current.windDir,
-            wind_speed = windSpeed.toInt(),
+            feelsLike = feelsLike,
+            windDir = response.current.windDir,
+            windSpeed = windSpeed.toInt(),
             humidity = response.current.humidity,
             visibility = visibility,
-            uv_index = uvIndex,
+            uvIndex = uvIndex,
             pressure = pressure.toInt()
         )
     }

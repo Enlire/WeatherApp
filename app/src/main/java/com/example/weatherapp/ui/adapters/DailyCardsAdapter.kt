@@ -33,7 +33,7 @@ class DailyCardsAdapter(private var dailyWeatherList: List<DailyWeather>) :
 
         // Bind the views with the corresponding data
         holder.dayTextView.text = dailyWeather.day
-        holder.tempTextView.text = "${dailyWeather.temp_min}°C / ${dailyWeather.temp_max}°C"
+        holder.tempTextView.text = "${dailyWeather.tempMin}°C / ${dailyWeather.tempMax}°C"
         holder.conditionTextView.text = dailyWeather.description
         holder.iconImageView.setImageResource(dailyWeather.icResId)
         holder.dateTextView.text = dailyWeather.date

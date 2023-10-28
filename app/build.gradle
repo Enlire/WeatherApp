@@ -75,6 +75,6 @@ dependencies {
     // Location
     implementation 'com.google.android.gms:play-services-location:21.0.1'
 
-    // Swipe-to-refresh
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
+    // Charts
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }
