@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
+import android.location.Location
 import android.location.LocationManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
@@ -19,10 +20,12 @@ import java.util.Locale
 
 class LocationService(private val context: Context) {
 
+    var lastKnownLocation: Location? = null
     private val geocoder = Geocoder(context, Locale.getDefault())
     private val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
     private val settingsRepository = SettingsRepository(context)
     private val LOCATION_PERMISSION_REQUEST_CODE = 123
+
 
     fun getLocation() : Triple<Double, Double, String> {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -33,7 +36,6 @@ class LocationService(private val context: Context) {
             Triple(deviceLocation.first, deviceLocation.second, deviceLocation.third.toString())
         } else {
             val userLocation = settingsRepository.getSavedUserLocation().toString()
-            Log.d("loc5", userLocation)
             val userLocationCoordinates = getCoordinatesFromAddress(userLocation)
             Triple(userLocationCoordinates.first, userLocationCoordinates.second, userLocation)
         }
@@ -55,6 +57,7 @@ class LocationService(private val context: Context) {
         if (hasLocationPermission()) {
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 if (location != null) {
+                    lastKnownLocation = location
                     val latitude = location.latitude
                     val longitude = location.longitude
                     val deviceLocationName = getAddressFromCoordinates(latitude, longitude)

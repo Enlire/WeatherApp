@@ -15,7 +15,7 @@ import retrofit2.Response
 
 class WeatherRepository {
 
-    private val apiService = ApiConfig.getWeatherApiService()
+    /*private val apiService = ApiConfig.getWeatherApiService()
 
     fun fetchCurrentWeatherData(location: String) {
         apiService.getCurrentWeather(location = location)
@@ -72,5 +72,5 @@ class WeatherRepository {
                     // Handle network failure or other exceptions
                 }
             })
-    }
+    }*/
 }

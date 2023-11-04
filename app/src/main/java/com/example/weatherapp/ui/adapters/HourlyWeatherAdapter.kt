@@ -39,6 +39,8 @@ class HourlyWeatherAdapter(private var hourlyWeatherList: List<HourlyWeather>) :
     override fun onBindViewHolder(holder: HourlyWeatherViewHolder, position: Int) {
         val hourlyWeather = hourlyWeatherList[position]
         val weatherDescription = WeatherCondition()
+        var chance = hourlyWeather.chanceOfRain + hourlyWeather.chanceOfSnow
+        if (chance > 100) chance = 100
 
         // Bind the views with the corresponding data
         holder.dayTextView.text = hourlyWeather.day
@@ -46,7 +48,7 @@ class HourlyWeatherAdapter(private var hourlyWeatherList: List<HourlyWeather>) :
         holder.tempTextView.text = "${hourlyWeather.temperature}°C"
         holder.conditionTextView.text = hourlyWeather.description
         holder.iconImageView.setImageResource(hourlyWeather.icResId)
-        holder.chanceTextView.text = "${hourlyWeather.chanceOfRain}%"
+        holder.chanceTextView.text = "${chance}%"
         holder.precipTextView.text = "${hourlyWeather.precip} мм"
         holder.cloudTextView.text = "${hourlyWeather.cloud}%"
         holder.humidityTextView.text = "${hourlyWeather.humidity}%"

@@ -49,6 +49,28 @@ class ApiConfig {
             return retrofit.create(OpenMeteoApiService::class.java)
         }
 
+        fun getTimezoneApiService(): TimezoneDBService {
+
+            // API response interceptor
+            val loggingInterceptor = HttpLoggingInterceptor()
+                .setLevel(HttpLoggingInterceptor.Level.BODY)
+
+            // Client
+            val client = OkHttpClient.Builder()
+                .addInterceptor(loggingInterceptor)
+                .build()
+
+            // Retrofit
+            val retrofit = Retrofit.Builder()
+                .baseUrl("https://api.timezonedb.com/v2.1/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build()
+
+            return retrofit.create(TimezoneDBService::class.java)
+        }
+
         const val API_KEY = "50a3be20b7454b1482d113119232303"
+        const val TIMEZONE_API_KEY = "SEKL40HAN2VC"
     }
 }

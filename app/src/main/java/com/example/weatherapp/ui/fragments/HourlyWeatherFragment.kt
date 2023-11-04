@@ -62,7 +62,7 @@ class HourlyWeatherFragment : Fragment() {
 
         // Check Internet connection and display dialog if not available
         if (NetworkUtils.isInternetAvailable(requireContext())) {
-            checkLocationSettings(locationName, /*latitude, longitude,*/ hourlyAdapter)
+            checkLocationSettings(locationName, latitude, longitude, hourlyAdapter)
         }
         else {
             DialogUtils.showNoInternetDialog(childFragmentManager)
@@ -71,8 +71,8 @@ class HourlyWeatherFragment : Fragment() {
 
     private fun checkLocationSettings(
         locationName: String,
-        //latitude: Double,
-        //longitude: Double,
+        latitude: Double,
+        longitude: Double,
         hourlyAdapter: HourlyWeatherAdapter
     ) {
         val locationService = LocationService(requireContext())
@@ -83,7 +83,7 @@ class HourlyWeatherFragment : Fragment() {
             DialogUtils.showLocationEnableDialog(childFragmentManager, fragmentId)
         } else {
             // Fetch the hourly weather data for the desired location
-            viewModel.fetchHourlyWeather(locationName)
+            viewModel.fetchHourlyWeather(locationName, latitude, longitude)
 
             // Observe the hourly weather data from the ViewModel
             viewModel.hourlyWeatherList.observe(viewLifecycleOwner) { hourlyWeatherList ->

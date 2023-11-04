@@ -73,8 +73,6 @@ class DailyWeatherMapper {
         val timeList = daily.time
         val temperature2mMaxList = daily.temperature2mMax
         val temperature2mMinList = daily.temperature2mMin
-        Log.i("list", temperature2mMaxList.toString())
-        Log.i("list", temperature2mMinList.toString())
 
         for (i in timeList.indices) {
             val dateFormat = formatDate(timeList[i])

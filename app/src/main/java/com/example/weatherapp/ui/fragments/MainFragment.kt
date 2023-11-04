@@ -100,6 +100,8 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //sharedPreferences.edit().putBoolean("USE_DEVICE_LOCATION", false).apply()
+
         val locationService = LocationService(requireContext())
         val locationData: Triple<Double, Double, String> = locationService.getLocation()
         val (latitude, longitude, locationName) = locationData
@@ -231,7 +233,7 @@ class MainFragment : Fragment() {
             // Fetch weather data and update UI based on location settings
             viewModelDaily.fetchDailyWeather(latitude, longitude)
             viewModel.fetchCurrentWeatherData(locationName)
-            viewModelHourly.fetchHourlyWeather(locationName)
+            viewModelHourly.fetchHourlyWeather(locationName, latitude, longitude)
 
             // Observe weather data changes
             viewModel.weatherData.observe(viewLifecycleOwner) { weatherResponse ->

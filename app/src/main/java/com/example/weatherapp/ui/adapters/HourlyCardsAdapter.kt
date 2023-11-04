@@ -30,13 +30,15 @@ class HourlyCardsAdapter(private var hourlyWeatherList: List<HourlyWeather>) :
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: HourlyCardsViewHolder, position: Int) {
         val hourlyWeather = hourlyWeatherList[position]
+        var chance = hourlyWeather.chanceOfRain + hourlyWeather.chanceOfSnow
+        if (chance > 100) chance = 100
 
         // Bind the views with the corresponding data
         holder.hourTextView.text = hourlyWeather.hour.substring(0, 2)
         holder.tempTextView.text = "${hourlyWeather.temperature}°C"
         holder.conditionTextView.text = hourlyWeather.description
         holder.iconImageView.setImageResource(hourlyWeather.icResId)
-        holder.chanceTextView.text = "${hourlyWeather.chanceOfRain}%"
+        holder.chanceTextView.text = "${chance}%"
     }
 
     override fun getItemCount(): Int {

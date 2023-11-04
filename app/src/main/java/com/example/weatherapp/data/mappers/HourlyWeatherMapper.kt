@@ -9,16 +9,16 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 class HourlyWeatherMapper {
-    fun mapHourlyResponseToDomain(response: HourlyWeatherResponse): List<HourlyWeather> {
-
-        val currentTime = getCurrentTime()
+    //private val locationService = LocationService(context)
+    fun mapHourlyResponseToDomain(response: HourlyWeatherResponse, currentTime: String): List<HourlyWeather> {
+        val currentHour = extractCurrentTime(currentTime)//locationService.lastKnownLocation?.time
         val location = response.location.name
 
-        val firstForecastday = response.forecast.forecastday[0]
-        val secondForecastday = response.forecast.forecastday[1]
+        val firstForecastDay = response.forecast.forecastday[0]
+        val secondForecastDay = response.forecast.forecastday[1]
 
-        val firstDayHourItems = firstForecastday.hour.filter { extractTime(it.time) > currentTime && extractTime(it.time) <= "23:00" }
-        val secondDayHourItems = secondForecastday.hour.filter { extractTime(it.time) >= "00:00" && extractTime(it.time) < currentTime }
+        val firstDayHourItems = firstForecastDay.hour.filter { extractTime(it.time) > currentHour && extractTime(it.time) <= "23:00" }
+        val secondDayHourItems = secondForecastDay.hour.filter { extractTime(it.time) >= "00:00" && extractTime(it.time) < currentHour }
 
         val combinedHourItems = mutableListOf<HourlyWeather>()
         combinedHourItems.addAll(mapHourItem(firstDayHourItems, location))
@@ -87,6 +87,13 @@ class HourlyWeatherMapper {
         val dateTime = LocalDateTime.parse(inputString, dateTimeFormatter)
 
         // Format the time part as "HH:mm"
+        return dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+    }
+
+    private fun extractCurrentTime(inputString: String): String {
+        val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val dateTime = LocalDateTime.parse(inputString, dateTimeFormatter)
+
         return dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
     }
 

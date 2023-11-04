@@ -54,7 +54,7 @@ class MainViewModel() : ViewModel() {
     }
 
     fun fetchPastWeatherData(latitude: Double, longitude: Double) {
-        openMeteoApiService.getPastWeather(latitude, longitude)
+        openMeteoApiService.getPastWeather(latitude, longitude, pastDays=7)
             .enqueue(object : Callback<PastWeatherResponse> {
                 override fun onResponse(
                     call: Call<PastWeatherResponse>,
