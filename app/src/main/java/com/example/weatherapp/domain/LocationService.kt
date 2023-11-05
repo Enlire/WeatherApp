@@ -84,7 +84,7 @@ class LocationService(private val context: Context) {
         return null
     }
 
-    private fun getCoordinatesFromAddress(locationName: String) : Pair<Double, Double> {
+     fun getCoordinatesFromAddress(locationName: String) : Pair<Double, Double> {
         try {
             val addresses: List<Address>? = geocoder.getFromLocationName(locationName, 1)
             if (addresses?.isNotEmpty() == true) {

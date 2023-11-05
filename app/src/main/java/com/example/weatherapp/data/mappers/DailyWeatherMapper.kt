@@ -86,10 +86,27 @@ class DailyWeatherMapper {
             )
             pastWeatherList.add(pastWeather)
         }
-        Log.i("list", pastWeatherList.toString())
         return pastWeatherList
     }
 
+    fun mapCorrelationDataToDomain (response: PastWeatherResponse) : List<Int> {
+        val averageTemperatureList = mutableListOf<Int>()
+        val daily = response.daily
+        val timeList = daily.time
+        val temperature2mMaxList = daily.temperature2mMax
+        val temperature2mMinList = daily.temperature2mMin
+
+        for (i in timeList.indices) {
+            val tempMax = temperature2mMaxList[i].roundToInt()
+            val tempMin = temperature2mMinList[i].roundToInt()
+
+            val averageTemperature = (tempMax + tempMin) / 2
+
+            averageTemperatureList.add(averageTemperature)
+        }
+
+        return averageTemperatureList
+    }
     private fun formatDate(dateString: String): String {
         val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val date = LocalDate.parse(dateString, dateFormatter)

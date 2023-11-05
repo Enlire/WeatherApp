@@ -21,6 +21,7 @@
     <color name="hourly_card_background">#F2F6FF</color>
     <color name="shimmer_background">#CCCCCC</color>
     <color name="ripple">#1A2B2B2B</color>
+    <color name="edit_text_background">#FFFFFF</color>
 
     <!--Charts-->
     <color name="min_chart">#5F88F1</color>
