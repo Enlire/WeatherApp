@@ -10,7 +10,6 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.math.round
 import kotlin.math.roundToInt
 
 class DailyWeatherMapper {
@@ -73,40 +72,87 @@ class DailyWeatherMapper {
         val timeList = daily.time
         val temperature2mMaxList = daily.temperature2mMax
         val temperature2mMinList = daily.temperature2mMin
+        val precipSumList = daily.precipitationSum
+        Log.i("presipSum", precipSumList.toString())
 
         for (i in timeList.indices) {
             val dateFormat = formatDate(timeList[i])
-            val tempMax = temperature2mMaxList[i].roundToInt()
-            val tempMin = temperature2mMinList[i].roundToInt()
+            val tempMax = temperature2mMaxList[i]
+            val tempMin = temperature2mMinList[i]
+            val precipSum = precipSumList[i]
 
             val pastWeather = PastWeather(
                 dateFormat,
                 tempMax,
-                tempMin
+                tempMin,
+                precipSum
             )
             pastWeatherList.add(pastWeather)
         }
         return pastWeatherList
     }
 
-    fun mapCorrelationDataToDomain (response: PastWeatherResponse) : List<Int> {
-        val averageTemperatureList = mutableListOf<Int>()
+    fun mapCorrelationTempToDomain (response: PastWeatherResponse) : List<Float> {
+        val averageTemperatureList = mutableListOf<Float>()
+        val precipList = mutableListOf<Float>()
         val daily = response.daily
         val timeList = daily.time
         val temperature2mMaxList = daily.temperature2mMax
         val temperature2mMinList = daily.temperature2mMin
+        val precipSumList = daily.precipitationSum
 
         for (i in timeList.indices) {
-            val tempMax = temperature2mMaxList[i].roundToInt()
-            val tempMin = temperature2mMinList[i].roundToInt()
+            val tempMax = temperature2mMaxList[i]
+            val tempMin = temperature2mMinList[i]
+            val precipSum = precipSumList[i]
 
             val averageTemperature = (tempMax + tempMin) / 2
 
             averageTemperatureList.add(averageTemperature)
+            precipList.add(precipSum)
         }
 
         return averageTemperatureList
     }
+
+    fun mapCorrelationPrecipToDomain (response: PastWeatherResponse) : List<Float> {
+        val precipList = mutableListOf<Float>()
+        val daily = response.daily
+        val timeList = daily.time
+        val precipSumList = daily.precipitationSum
+
+        for (i in timeList.indices) {
+            val precipSum = precipSumList[i]
+            precipList.add(precipSum)
+        }
+
+        return precipList
+    }
+
+    fun calculateAverageTemperature(
+        maxTemperatureList: List<Float>,
+        minTemperatureList: List<Float>
+    ): List<Float> {
+        val result = mutableListOf<Float>()
+
+        val size = maxTemperatureList.size.coerceAtLeast(minTemperatureList.size)
+
+        for (i in 0 until size) {
+            val maxTemperature = maxTemperatureList.getOrNull(i) ?: 0.0f
+            val minTemperature = minTemperatureList.getOrNull(i) ?: 0.0f
+
+            val averageTemperature = (maxTemperature + minTemperature) / 2.0f
+            result.add(averageTemperature)
+        }
+
+        return result
+    }
+
+
+    fun getPrecipitationList(weatherDataList: List<PastWeather>): List<Float> {
+        return weatherDataList.map { it.presipSum }
+    }
+
     private fun formatDate(dateString: String): String {
         val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val date = LocalDate.parse(dateString, dateFormatter)

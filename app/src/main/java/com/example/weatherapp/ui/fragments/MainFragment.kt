@@ -2,6 +2,7 @@ package com.example.weatherapp.ui.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -39,6 +41,10 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class MainFragment : Fragment() {
@@ -67,7 +73,6 @@ class MainFragment : Fragment() {
     private lateinit var visibility: TextView
     private lateinit var uvIndex: TextView
     private lateinit var pressure: TextView
-    private var observationCount = 0
 
     companion object {
         fun newInstance() = MainFragment()
@@ -107,7 +112,6 @@ class MainFragment : Fragment() {
         val locationService = LocationService(requireContext())
         val locationData: Triple<Double, Double, String> = locationService.getLocation()
         val (latitude, longitude, locationName) = locationData
-        observationCount = 0
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModelHourly = ViewModelProvider(this)[HourlyWeatherViewModel::class.java]
@@ -232,24 +236,40 @@ class MainFragment : Fragment() {
             val fragmentId = R.id.home
             DialogUtils.showLocationEnableDialog(childFragmentManager, fragmentId)
         } else {
+            lifecycleScope.launch {
+                val deferredWeather = CompletableDeferred<Unit>()
+                val deferredHourly = CompletableDeferred<Unit>()
+                val deferredDaily = CompletableDeferred<Unit>()
+
+                // Observe weather data changes
+                viewModel.weatherData.observe(viewLifecycleOwner) { weatherResponse ->
+                    showCurrentWeather(weatherResponse)
+                    deferredWeather.complete(Unit)
+                }
+                viewModelHourly.hourlyWeatherList.observe(viewLifecycleOwner) { hourlyCardsList ->
+                    hourlyAdapter.updateData(hourlyCardsList)
+                    deferredHourly.complete(Unit)
+                }
+                viewModelDaily.dailyWeatherList.observe(viewLifecycleOwner) { dailyCardsList ->
+                    dailyAdapter.updateData(dailyCardsList)
+                    deferredDaily.complete(Unit)
+                }
+
+                // Wait for all deferreds to complete
+                deferredWeather.await()
+                deferredHourly.await()
+                deferredDaily.await()
+
+                // All observations are complete, update UI
+                shimmerLayout.stopShimmer()
+                shimmerLayout.visibility = View.GONE
+                constraintLayout.visibility = View.VISIBLE
+            }
+
             // Fetch weather data and update UI based on location settings
             viewModelDaily.fetchDailyWeather(latitude, longitude)
             viewModel.fetchCurrentWeatherData(locationName)
             viewModelHourly.fetchHourlyWeather(locationName, latitude, longitude)
-
-            // Observe weather data changes
-            viewModel.weatherData.observe(viewLifecycleOwner) { weatherResponse ->
-                showCurrentWeather(weatherResponse)
-                onObservationComplete()
-            }
-            viewModelHourly.hourlyWeatherList.observe(viewLifecycleOwner) { hourlyCardsList ->
-                hourlyAdapter.updateData(hourlyCardsList)
-                onObservationComplete()
-            }
-            viewModelDaily.dailyWeatherList.observe(viewLifecycleOwner) { dailyCardsList ->
-                dailyAdapter.updateData(dailyCardsList)
-                onObservationComplete()
-            }
         }
     }
 
@@ -268,15 +288,5 @@ class MainFragment : Fragment() {
         visibility.text = "${currentWeather.visibility} км"
         uvIndex.text = currentWeather.uvIndex.toString()
         pressure.text = "${currentWeather.pressure} мм рт. ст."
-    }
-
-    private fun onObservationComplete() {
-        observationCount++
-
-        if (observationCount == 3) {
-            shimmerLayout.stopShimmer()
-            shimmerLayout.visibility = View.GONE
-            constraintLayout.visibility = View.VISIBLE
-        }
     }
 }

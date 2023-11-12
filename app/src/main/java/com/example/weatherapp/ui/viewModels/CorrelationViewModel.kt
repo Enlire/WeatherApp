@@ -1,15 +1,11 @@
 package com.example.weatherapp.ui.viewModels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.weatherapp.data.mappers.CurrentWeatherMapper
 import com.example.weatherapp.data.mappers.DailyWeatherMapper
 import com.example.weatherapp.data.models.PastWeatherResponse
 import com.example.weatherapp.data.networking.ApiConfig
-import com.example.weatherapp.domain.models.CurrentWeather
-import com.example.weatherapp.domain.models.PastWeather
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,15 +13,20 @@ import retrofit2.Response
 class CorrelationViewModel : ViewModel() {
     private val openMeteoApiService = ApiConfig.getOpenMeteoApiService()
     private val dailyWeatherMapper = DailyWeatherMapper()
-    private val _correlationList = MutableLiveData<List<Int>>()
-    val correlationList: LiveData<List<Int>> = _correlationList
+    private val _correlationList = MutableLiveData<List<Float>>()
+    val correlationList: LiveData<List<Float>> = _correlationList
 
-    private val _correlationListCity1 = MutableLiveData<List<Int>>()
-    val correlationListCity1: LiveData<List<Int>> = _correlationListCity1
-    private val _correlationListCity2 = MutableLiveData<List<Int>>()
-    val correlationListCity2: LiveData<List<Int>> = _correlationListCity2
+    private val _correlationTempListCity1 = MutableLiveData<List<Float>>()
+    val correlationListTempCity1: LiveData<List<Float>> = _correlationTempListCity1
+    private val _correlationTempListCity2 = MutableLiveData<List<Float>>()
+    val correlationListTempCity2: LiveData<List<Float>> = _correlationTempListCity2
+
+    private val _correlationPrecipListCity1 = MutableLiveData<List<Float>>()
+    val correlationListPrecipCity1: LiveData<List<Float>> = _correlationPrecipListCity1
+    private val _correlationPrecipListCity2 = MutableLiveData<List<Float>>()
+    val correlationListPrecipCity2: LiveData<List<Float>> = _correlationPrecipListCity2
     fun fetchCorrelationData(latitude: Double, longitude: Double, city: Int) {
-        openMeteoApiService.getPastWeather(latitude, longitude, pastDays=61)
+        openMeteoApiService.getPastWeather(latitude, longitude, pastDays=92)
             .enqueue(object : Callback<PastWeatherResponse> {
                 override fun onResponse(
                     call: Call<PastWeatherResponse>,
@@ -34,16 +35,18 @@ class CorrelationViewModel : ViewModel() {
                     if (response.isSuccessful) {
                         val pastWeatherResponse: PastWeatherResponse? = response.body()
                         if (pastWeatherResponse != null) {
-                            // Convert the API response to the domain model HourlyWeather
-                            val correlationList =
-                                dailyWeatherMapper.mapCorrelationDataToDomain(pastWeatherResponse)
+                            val correlationTempList =
+                                dailyWeatherMapper.mapCorrelationTempToDomain(pastWeatherResponse)
+                            val correlationPrecipList =
+                                dailyWeatherMapper.mapCorrelationPrecipToDomain(pastWeatherResponse)
+
                             if (city == 1) {
-                                _correlationListCity1.value = correlationList
+                                _correlationTempListCity1.value = correlationTempList
+                                _correlationPrecipListCity1.value = correlationPrecipList
                             } else if (city == 2) {
-                                _correlationListCity2.value = correlationList
+                                _correlationTempListCity2.value = correlationTempList
+                                _correlationPrecipListCity2.value = correlationPrecipList
                             }
-                            //val correlationList  = dailyWeatherMapper.mapCorrelationDataToDomain(pastWeatherResponse)
-                            //_correlationList.value = correlationList
                             //Log.i("entries", correlationList.toString())
                         }
                     } else {

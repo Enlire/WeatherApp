@@ -22,7 +22,7 @@ interface OpenMeteoApiService {
     fun getPastWeather(
         @Query("latitude") lat: Double,
         @Query("longitude") lon: Double,
-        @Query("daily") daily: String = "temperature_2m_max,temperature_2m_min",
+        @Query("daily") daily: String = "temperature_2m_max,temperature_2m_min,precipitation_sum",
         @Query("past_days") pastDays: Int,
         @Query("forecast_days") forecastDays: Int = 1,
         @Query("timezone") timezone: String = "auto"
