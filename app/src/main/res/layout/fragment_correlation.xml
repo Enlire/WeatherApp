@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingBottom="66dp"
     tools:ignore="HardcodedText"
     tools:context=".ui.fragments.CorrelationFragment">
 
@@ -113,6 +112,7 @@
                     android:layout_marginEnd="15dp"
                     android:background="@drawable/edit_text_style"
                     android:ems="10"
+                    android:maxLength="30"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:hint="Первый населенный пункт"
@@ -133,6 +133,7 @@
                     android:layout_marginEnd="15dp"
                     android:background="@drawable/edit_text_style"
                     android:ems="10"
+                    android:maxLength="30"
                     android:hint="Второй населенный пункт"
                     android:inputType="text"
                     android:maxLines="1"
@@ -184,6 +185,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp"
                 app:cardBackgroundColor="@color/shimmer_background"
                 app:cardCornerRadius="5dp"
                 app:cardElevation="0dp"

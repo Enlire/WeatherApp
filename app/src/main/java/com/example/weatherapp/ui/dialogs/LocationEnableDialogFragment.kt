@@ -12,7 +12,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.navigation.findNavController
 import androidx.preference.PreferenceManager
 import com.example.weatherapp.R
-import com.example.weatherapp.ui.SettingsFragment
+import com.example.weatherapp.ui.fragments.SettingsFragment
 
 class LocationEnableDialogFragment(private val currentFragmentId: Int) : DialogFragment() {
     private val sharedPreferences by lazy {

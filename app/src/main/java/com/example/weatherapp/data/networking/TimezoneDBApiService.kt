@@ -5,7 +5,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface TimezoneDBService {
+interface TimezoneDBApiService {
     @GET("get-time-zone")
     fun getTimezone(
         @Query("key") key: String = ApiConfig.TIMEZONE_API_KEY,

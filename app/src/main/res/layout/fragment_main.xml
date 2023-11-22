@@ -5,7 +5,6 @@
     android:id="@+id/home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="66dp"
     tools:context=".ui.fragments.MainFragment"
     android:scrollbars="none">
 
@@ -432,7 +431,7 @@
                             app:cardElevation="0dp"
                             android:layout_marginStart="13dp"
                             android:layout_marginEnd="13dp"
-                            android:layout_marginBottom="20dp">
+                            android:layout_marginBottom="15dp">
                             <ImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"

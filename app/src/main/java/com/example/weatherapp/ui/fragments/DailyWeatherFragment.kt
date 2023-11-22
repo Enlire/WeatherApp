@@ -1,6 +1,7 @@
 package com.example.weatherapp.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.data.networking.NetworkUtils
 import com.example.weatherapp.domain.LocationService
+import com.example.weatherapp.ui.ErrorCallback
 import com.example.weatherapp.ui.adapters.DailyWeatherAdapter
 import com.example.weatherapp.ui.dialogs.DialogUtils
 import com.example.weatherapp.ui.viewModels.DailyWeatherViewModel
@@ -43,6 +45,8 @@ class DailyWeatherFragment : Fragment() {
         val locationService = LocationService(requireContext())
         val locationData: Triple<Double, Double, String> = locationService.getLocation()
         val (latitude, longitude, locationName) = locationData
+        Log.i("lat", latitude.toString())
+        Log.i("lon", longitude.toString())
 
         recyclerView = view.findViewById(R.id.dailyWeatherRecyclerView)
         val dailyAdapter = DailyWeatherAdapter(emptyList())
@@ -56,7 +60,12 @@ class DailyWeatherFragment : Fragment() {
 
         // Check Internet connection and display dialog if not available
         if (NetworkUtils.isInternetAvailable(requireContext())) {
-            checkLocationSettings(/*locationName,*/ latitude, longitude, dailyAdapter)
+            if (latitude == 0.0 && longitude == 0.0) {
+                DialogUtils.showAPIErrorDialog(childFragmentManager, "Ошибка при получении данных о погоде. Попробуйте повторить запрос.")
+            }
+            else {
+                checkLocationSettings(/*locationName,*/ latitude, longitude, dailyAdapter)
+            }
         }
         else {
             DialogUtils.showNoInternetDialog(childFragmentManager)
@@ -66,7 +75,6 @@ class DailyWeatherFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(DailyWeatherViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
     private fun checkLocationSettings(
@@ -92,6 +100,20 @@ class DailyWeatherFragment : Fragment() {
                 shimmerLayout.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
             }
+
+            // Observe errors
+            viewModel.setErrorCallback(object : ErrorCallback {
+                override fun onError(errorMessage: String?) {
+                    if (!errorMessage.isNullOrEmpty()) {
+                        if (isAdded) {
+                            DialogUtils.showAPIErrorDialog(childFragmentManager, errorMessage)
+                            shimmerLayout.visibility = View.VISIBLE
+                            shimmerLayout.startShimmer()
+                            recyclerView.visibility = View.GONE
+                        }
+                    }
+                }
+            })
         }
     }
 }

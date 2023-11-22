@@ -22,6 +22,7 @@ import com.example.weatherapp.R
 import com.example.weatherapp.data.networking.NetworkUtils
 import com.example.weatherapp.domain.CorrelationCalculator
 import com.example.weatherapp.domain.LocationService
+import com.example.weatherapp.ui.ErrorCallback
 import com.example.weatherapp.ui.dialogs.DialogUtils
 import com.example.weatherapp.ui.viewModels.CorrelationViewModel
 import com.facebook.shimmer.ShimmerFrameLayout
@@ -166,10 +167,19 @@ class CorrelationFragment : Fragment() {
             onObservationComplete()
         }
 
+        // Observe errors
+        viewModel.setErrorCallback(object : ErrorCallback {
+            override fun onError(errorMessage: String?) {
+                if (!errorMessage.isNullOrEmpty()) {
+                    DialogUtils.showAPIErrorDialog(childFragmentManager, errorMessage)
+                }
+            }
+        })
+
         view.findViewById<Button>(R.id.button)
             .setOnClickListener {
-                val firstLocationName = firstLocationEditText.text.toString().trim()
-                val secondLocationName = secondLocationEditText.text.toString().trim()
+                val firstLocationName = "Москва"//firstLocationEditText.text.toString().trim()
+                val secondLocationName = "Волгоград"//secondLocationEditText.text.toString().trim()
 
                 if (firstLocationName.isEmpty() || secondLocationName.isEmpty()) {
                     showDialog("Пожалуйста, заполните оба поля.")
@@ -191,16 +201,23 @@ class CorrelationFragment : Fragment() {
                     val secondLocationCoordinates: Pair<Double, Double> =
                         locationService.getCoordinatesFromAddress(secondLocationName)
 
-                    viewModel.fetchCorrelationData(
-                        firstLocationCoordinates.first,
-                        firstLocationCoordinates.second,
-                        1
-                    )
-                    viewModel.fetchCorrelationData(
-                        secondLocationCoordinates.first,
-                        secondLocationCoordinates.second,
-                        2
-                    )
+                    if ((firstLocationCoordinates.first == 0.0 && firstLocationCoordinates.second == 0.0) || (secondLocationCoordinates.first == 0.0 && secondLocationCoordinates.second == 0.0)) {
+                        DialogUtils.showAPIErrorDialog(childFragmentManager, "Ошибка при получении данных. Попробуйте повторить запрос.")
+                        shimmerLayout.stopShimmer()
+                        shimmerLayout.visibility = View.GONE
+                    }
+                    else {
+                        viewModel.fetchCorrelationData(
+                            firstLocationCoordinates.first,
+                            firstLocationCoordinates.second,
+                            1
+                        )
+                        viewModel.fetchCorrelationData(
+                            secondLocationCoordinates.first,
+                            secondLocationCoordinates.second,
+                            2
+                        )
+                    }
                 }
             }
 
@@ -225,8 +242,6 @@ class CorrelationFragment : Fragment() {
             }
             entriesTemp.sortBy { it.x }
             entriesPrecip.sortBy { it.x }
-            Log.i("Temp", xValuesTemp.toString())
-            Log.i("Temp", yValuesTemp.toString())
 
             val correlationCoefficientTemp =
                 correlationCalculator.calculateCorrelationCoefficient(xValuesTemp, yValuesTemp)
@@ -264,7 +279,7 @@ class CorrelationFragment : Fragment() {
         val dataSet = ScatterDataSet(entries, "")
         dataSet.color = ContextCompat.getColor(requireContext(), colorId)
         dataSet.setScatterShape(ScatterChart.ScatterShape.CIRCLE)
-        dataSet.scatterShapeSize = 14f
+        dataSet.scatterShapeSize = 12f
         dataSet.setDrawValues(false)
 
         val data = ScatterData(dataSet)

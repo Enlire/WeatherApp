@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="66dp"
-    tools:context=".ui.SettingsFragment">
+    tools:context=".ui.fragments.SettingsFragment">
 
     <TextView
         android:layout_width="wrap_content"

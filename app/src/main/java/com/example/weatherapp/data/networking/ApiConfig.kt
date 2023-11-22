@@ -22,7 +22,7 @@ class ApiConfig {
             val retrofit = Retrofit.Builder()
                 .baseUrl("https://api.weatherapi.com/v1/")
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
+                //.client(client)
                 .build()
 
             return retrofit.create(WeatherApiService::class.java)
@@ -43,13 +43,13 @@ class ApiConfig {
             val retrofit = Retrofit.Builder()
                 .baseUrl("https://api.open-meteo.com/v1/")
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
+                //.client(client)
                 .build()
 
             return retrofit.create(OpenMeteoApiService::class.java)
         }
 
-        fun getTimezoneApiService(): TimezoneDBService {
+        fun getTimezoneApiService(): TimezoneDBApiService {
 
             // API response interceptor
             val loggingInterceptor = HttpLoggingInterceptor()
@@ -64,10 +64,10 @@ class ApiConfig {
             val retrofit = Retrofit.Builder()
                 .baseUrl("https://api.timezonedb.com/v2.1/")
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
+                //.client(client)
                 .build()
 
-            return retrofit.create(TimezoneDBService::class.java)
+            return retrofit.create(TimezoneDBApiService::class.java)
         }
 
         const val API_KEY = "50a3be20b7454b1482d113119232303"

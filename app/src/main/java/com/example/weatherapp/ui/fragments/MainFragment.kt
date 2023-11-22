@@ -25,6 +25,7 @@ import com.example.weatherapp.domain.LocationService
 import com.example.weatherapp.domain.models.CurrentWeather
 import com.example.weatherapp.domain.models.PastWeather
 import com.example.weatherapp.domain.models.WeatherCondition
+import com.example.weatherapp.ui.ErrorCallback
 import com.example.weatherapp.ui.adapters.DailyCardsAdapter
 import com.example.weatherapp.ui.adapters.HourlyCardsAdapter
 import com.example.weatherapp.ui.dialogs.DialogUtils
@@ -98,15 +99,11 @@ class MainFragment : Fragment() {
         return view
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Log.i("onViewCreated", "onViewCreated")
         //sharedPreferences.edit().putBoolean("USE_DEVICE_LOCATION", false).apply()
 
         val locationService = LocationService(requireContext())
@@ -148,6 +145,21 @@ class MainFragment : Fragment() {
         viewModel.pastWeatherList.observe(viewLifecycleOwner) { pastWeatherList ->
             updateLineChart(pastWeatherList)
         }
+
+        // Observe errors
+        viewModel.setErrorCallback(object : ErrorCallback {
+            override fun onError(errorMessage: String?) {
+                //Log.i("error", errorMessage.toString())
+                if (!errorMessage.isNullOrBlank()) {
+                    if (isAdded) {
+                        DialogUtils.showAPIErrorDialog(childFragmentManager, errorMessage)
+                        shimmerLayout.visibility = View.VISIBLE
+                        shimmerLayout.startShimmer()
+                        constraintLayout.visibility = View.GONE
+                    }
+                }
+            }
+        })
     }
 
     private fun updateLineChart(pastWeatherList: List<PastWeather>) {
@@ -229,6 +241,7 @@ class MainFragment : Fragment() {
         hourlyAdapter: HourlyCardsAdapter,
         dailyAdapter: DailyCardsAdapter
     ) {
+        //Log.i("checkLocationSettings", "checkLocationSettings")
         val locationService = LocationService(requireContext())
         val isSwitchEnabled = sharedPreferences.getBoolean("USE_DEVICE_LOCATION", false)
 

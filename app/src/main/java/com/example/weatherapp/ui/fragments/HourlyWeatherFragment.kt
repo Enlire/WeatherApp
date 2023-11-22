@@ -6,12 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.data.networking.NetworkUtils
 import com.example.weatherapp.domain.LocationService
+import com.example.weatherapp.ui.ErrorCallback
 import com.example.weatherapp.ui.adapters.HourlyWeatherAdapter
 import com.example.weatherapp.ui.dialogs.DialogUtils
 import com.example.weatherapp.ui.viewModels.HourlyWeatherViewModel
@@ -40,7 +42,6 @@ class HourlyWeatherFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this)[HourlyWeatherViewModel::class.java]
-        // TODO: Use the ViewModel
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -92,6 +93,20 @@ class HourlyWeatherFragment : Fragment() {
                 shimmerLayout.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
             }
+
+            // Observe errors
+            viewModel.setErrorCallback(object : ErrorCallback {
+                override fun onError(errorMessage: String?) {
+                    if (!errorMessage.isNullOrEmpty()) {
+                        if (isAdded) {
+                            DialogUtils.showAPIErrorDialog(childFragmentManager, errorMessage)
+                            shimmerLayout.visibility = View.VISIBLE
+                            shimmerLayout.startShimmer()
+                            recyclerView.visibility = View.GONE
+                        }
+                    }
+                }
+            })
         }
     }
 }

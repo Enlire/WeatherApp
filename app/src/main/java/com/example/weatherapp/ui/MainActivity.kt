@@ -10,11 +10,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.domain.LocationService
+import com.example.weatherapp.ui.fragments.SettingsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlin.math.abs
 
@@ -27,8 +29,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
         when (sharedPreferences.getString("APP_THEME", "light")) {
             "light" -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -43,6 +43,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -56,13 +58,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         WindowCompat.setDecorFitsSystemWindows(
-            window,
-            false
+            window, false
         )
 
         val navView: BottomNavigationView = binding.bottomNavigationView
-
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+        val navController = navHostFragment.navController
+        //val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        val navGraph = navController.navInflater.inflate(R.navigation.mobile_navigation)
+        navGraph.setStartDestination(R.id.home)
+        navController.graph = navGraph
         navView.setupWithNavController(navController)
     }
 

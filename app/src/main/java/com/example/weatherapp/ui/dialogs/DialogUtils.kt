@@ -15,5 +15,11 @@ class DialogUtils {
             dialogFragment.show(fragmentManager, "LocationEnableDialog")
             dialogFragment.isCancelable = false
         }
+
+        fun showAPIErrorDialog(fragmentManager: FragmentManager, message: String) {
+            val dialogFragment = APIErrorDialog(message)
+            dialogFragment.show(fragmentManager, "APIErrorDialog")
+            //dialogFragment.isCancelable = false
+        }
     }
 }

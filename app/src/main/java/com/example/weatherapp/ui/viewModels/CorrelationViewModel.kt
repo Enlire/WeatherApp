@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.weatherapp.data.mappers.DailyWeatherMapper
 import com.example.weatherapp.data.models.PastWeatherResponse
 import com.example.weatherapp.data.networking.ApiConfig
+import com.example.weatherapp.ui.ErrorCallback
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -13,8 +14,7 @@ import retrofit2.Response
 class CorrelationViewModel : ViewModel() {
     private val openMeteoApiService = ApiConfig.getOpenMeteoApiService()
     private val dailyWeatherMapper = DailyWeatherMapper()
-    private val _correlationList = MutableLiveData<List<Float>>()
-    val correlationList: LiveData<List<Float>> = _correlationList
+    private var errorCallback: ErrorCallback? = null
 
     private val _correlationTempListCity1 = MutableLiveData<List<Float>>()
     val correlationListTempCity1: LiveData<List<Float>> = _correlationTempListCity1
@@ -47,16 +47,19 @@ class CorrelationViewModel : ViewModel() {
                                 _correlationTempListCity2.value = correlationTempList
                                 _correlationPrecipListCity2.value = correlationPrecipList
                             }
-                            //Log.i("entries", correlationList.toString())
                         }
                     } else {
-                        // TODO: Handle API error case
+                        errorCallback?.onError("Ошибка при получении данных. Попробуйте повторить запрос.")
                     }
                 }
 
                 override fun onFailure(call: Call<PastWeatherResponse>, t: Throwable) {
-                    TODO("Not yet implemented")
+                    errorCallback?.onError("Ошибка при выполнении запроса к серверу. Попробуйте повторить запрос.")
                 }
             })
+    }
+
+    fun setErrorCallback(callback: ErrorCallback) {
+        errorCallback = callback
     }
 }
