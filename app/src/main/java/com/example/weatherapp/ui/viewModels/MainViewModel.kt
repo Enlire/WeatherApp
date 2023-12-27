@@ -45,7 +45,7 @@ class MainViewModel : ViewModel() {
                 }
 
                 override fun onFailure(call: Call<CurrentWeatherResponse>, t: Throwable) {
-                    //errorCallback?.onError("Ошибка при выполнении запроса к серверу. Попробуйте повторить запрос.")
+                    errorCallback?.onError("Ошибка при выполнении запроса к серверу. Попробуйте повторить запрос.")
                 }
             })
     }

@@ -178,8 +178,8 @@ class CorrelationFragment : Fragment() {
 
         view.findViewById<Button>(R.id.button)
             .setOnClickListener {
-                val firstLocationName = "Москва"//firstLocationEditText.text.toString().trim()
-                val secondLocationName = "Волгоград"//secondLocationEditText.text.toString().trim()
+                val firstLocationName = firstLocationEditText.text.toString().trim()
+                val secondLocationName = secondLocationEditText.text.toString().trim()
 
                 if (firstLocationName.isEmpty() || secondLocationName.isEmpty()) {
                     showDialog("Пожалуйста, заполните оба поля.")

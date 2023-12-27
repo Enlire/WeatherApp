@@ -12,12 +12,11 @@ class SettingsRepository(val context: Context) {
 
     fun getSavedDeviceLocation() : Triple<Double, Double, String?> {
         return Triple(sharedPreferences.getFloat("LATITUDE", 0.0f).toDouble(),
-        sharedPreferences.getFloat("LONGITUDE", 0.0f).toDouble(),
-        sharedPreferences.getString("DEVICE_LOCATION", null))
+                      sharedPreferences.getFloat("LONGITUDE", 0.0f).toDouble(),
+                      sharedPreferences.getString("DEVICE_LOCATION", null))
     }
 
     fun getSavedUserLocation() : String? {
-        Log.d("getSavedUserLocation", sharedPreferences.getString("USER_LOCATION", null).toString())
         return sharedPreferences.getString("USER_LOCATION", null)
     }
 

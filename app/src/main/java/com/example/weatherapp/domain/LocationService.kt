@@ -48,10 +48,6 @@ class LocationService(private val context: Context) {
             getDeviceLocation()
     }
 
-    fun stopLocationUpdates() {
-
-    }
-
     @SuppressLint("MissingPermission")
     fun getDeviceLocation() {
         if (hasLocationPermission()) {

@@ -22,11 +22,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private var locationEditText: EditTextPreference? = null
     private var themePreference: ListPreference? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     fun setLocationSwitchEnabled(isEnabled: Boolean) {
         locationSwitch = findPreference("USE_DEVICE_LOCATION")
         locationSwitch?.isEnabled = isEnabled
@@ -69,7 +64,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 locationEditText?.isEnabled = false
                 sharedPreferences.edit().putBoolean("USE_DEVICE_LOCATION", true).apply()
             } else {
-                locationService.stopLocationUpdates()
                 locationEditText?.isEnabled = true
                 sharedPreferences.edit().putBoolean("USE_DEVICE_LOCATION", false).apply()
             }

@@ -22,7 +22,7 @@ class ApiConfig {
             val retrofit = Retrofit.Builder()
                 .baseUrl("https://api.weatherapi.com/v1/")
                 .addConverterFactory(GsonConverterFactory.create())
-                //.client(client)
+                .client(client)
                 .build()
 
             return retrofit.create(WeatherApiService::class.java)
@@ -43,7 +43,7 @@ class ApiConfig {
             val retrofit = Retrofit.Builder()
                 .baseUrl("https://api.open-meteo.com/v1/")
                 .addConverterFactory(GsonConverterFactory.create())
-                //.client(client)
+                .client(client)
                 .build()
 
             return retrofit.create(OpenMeteoApiService::class.java)

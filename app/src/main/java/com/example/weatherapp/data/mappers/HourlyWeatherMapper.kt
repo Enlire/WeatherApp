@@ -7,6 +7,7 @@ import com.example.weatherapp.domain.models.WeatherCondition
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import kotlin.math.roundToInt
 
 class HourlyWeatherMapper {
     //private val locationService = LocationService(context)
@@ -33,12 +34,12 @@ class HourlyWeatherMapper {
 
         for (hourItem in response) {
             val (formattedDate, formattedTime) = extractDateAndTime(hourItem.time)
-            val temperature = hourItem.tempC.toInt()
-            val precip = hourItem.precipMm.toInt()
-            val dewPoint = hourItem.dewpointC.toInt()
+            val temperature = hourItem.tempC.roundToInt()
+            val precip = hourItem.precipMm.roundToInt()
+            val dewPoint = hourItem.dewpointC.roundToInt()
             val windSpeed = hourItem.windKph / 3.6
-            val visibility = hourItem.visKm.toInt()
-            val uvIndex = hourItem.uv.toInt()
+            val visibility = hourItem.visKm.roundToInt()
+            val uvIndex = hourItem.uv.roundToInt()
             val pressure = hourItem.pressureIn * 25.4
             val weatherCondition = WeatherCondition()
 
@@ -57,11 +58,11 @@ class HourlyWeatherMapper {
                 cloud = hourItem.cloud,
                 dewPoint = dewPoint,
                 windDir = hourItem.windDir,
-                windSpeed = windSpeed.toInt(),
+                windSpeed = windSpeed.roundToInt(),
                 humidity = hourItem.humidity,
                 visibility = visibility,
                 uvIndex = uvIndex,
-                pressure = pressure.toInt()
+                pressure = pressure.roundToInt()
             )
             hourlyWeatherList.add(hourlyWeather)
         }
@@ -95,10 +96,5 @@ class HourlyWeatherMapper {
         val dateTime = LocalDateTime.parse(inputString, dateTimeFormatter)
 
         return dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-    }
-
-    private fun getCurrentTime(): String {
-        val localTime = LocalTime.now()
-        return localTime.format(DateTimeFormatter.ofPattern("HH:mm"))
     }
 }

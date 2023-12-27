@@ -36,12 +36,12 @@ class DailyWeatherMapper {
             val day = getDayOfWeek(date)
             val description = weatherCondition.weatherCodeToDescription(weatherCode[i])
             val iconResId = weatherCondition.weatherCodeOpenMeteoToIcon(weatherCode[i])
-            val tempMax = temperature2mMaxList[i].toInt()
-            val tempMin = temperature2mMinList[i].toInt()
+            val tempMax = temperature2mMaxList[i].roundToInt()
+            val tempMin = temperature2mMinList[i].roundToInt()
             val chanceOfPrecip = precipitationProbabilityMaxList[i]
-            val precip = precipitationSumList[i].toInt()
-            val windSpeed = windspeed10mMaxList[i].toInt()
-            val uvIndex = uvIndexMaxList[i].toInt()
+            val precip = precipitationSumList[i].roundToInt()
+            val windSpeed = windspeed10mMaxList[i].roundToInt()
+            val uvIndex = uvIndexMaxList[i].roundToInt()
             val sunrise = formatTime(sunriseList[i])
             val sunset = formatTime(sunsetList[i])
 
@@ -146,11 +146,6 @@ class DailyWeatherMapper {
         }
 
         return result
-    }
-
-
-    fun getPrecipitationList(weatherDataList: List<PastWeather>): List<Float> {
-        return weatherDataList.map { it.presipSum }
     }
 
     private fun formatDate(dateString: String): String {
