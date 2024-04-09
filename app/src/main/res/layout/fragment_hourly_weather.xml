@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/fragment_background"
     tools:context=".ui.fragments.HourlyWeatherFragment">
 
     <com.facebook.shimmer.ShimmerFrameLayout
@@ -11,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
+        android:paddingTop="4dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -35,12 +37,12 @@
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
+            android:layout_marginStart="@dimen/horizontal_margin"
             android:layout_marginTop="50dp"
             android:fontFamily="@font/roboto_medium"
             android:text="Прогноз на 24 часа"
             android:textColor="@color/main_text"
-            android:textSize="20sp"
+            android:textSize="22sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,6 +53,8 @@
             android:layout_marginTop="100dp"
             android:orientation="vertical"
             android:visibility="gone"
+            android:paddingTop="4dp"
+            android:clipToPadding="false"
             app:layoutManager="LinearLayoutManager"
             app:layout_constraintTop_toTopOf="parent"
             tools:listitem="@layout/hourly_card"

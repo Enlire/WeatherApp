@@ -4,6 +4,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginEnd="10dp"
+    android:outlineAmbientShadowColor="@color/shadow_color"
+    android:outlineSpotShadowColor="@color/shadow_color"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp">
 

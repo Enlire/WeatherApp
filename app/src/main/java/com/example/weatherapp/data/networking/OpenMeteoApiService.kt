@@ -16,8 +16,6 @@ interface OpenMeteoApiService {
         @Query("windspeed_unit") windUnit: String = "ms",
         @Query("timezone") timezone: String = "auto"
     ): Call<DailyWeatherResponse>
-
-    //https://api.open-meteo.com/v1/forecast?latitude=48.7194&longitude=44.5018&daily=temperature_2m_max,temperature_2m_min&timezone=auto&past_days=7&forecast_days=1
     @GET("forecast")
     fun getPastWeather(
         @Query("latitude") lat: Double,

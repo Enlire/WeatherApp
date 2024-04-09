@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Bottom navigation view-->
-    <color name="background">#101523</color>
+    <color name="background">#2C2C2E</color>
     <color name="active_item">#FFFFFF</color>
     <color name="items">#5F88F1</color>
 
     <!--Text-->
     <color name="main_text">#FFFFFF</color>
-    <color name="secondary_text">#D6E5FF</color>
+    <color name="secondary_text">#DFDFDF</color>
     <color name="customButtonColor">#5F88F1</color>
 
     <!--Images-->
     <color name="icon">#FFFFFF</color>
 
     <!--Background-->
+    <!--Gradient colors
     <color name="background_top">#283348</color>
     <color name="background_center">#162233</color>
-    <color name="background_bottom">#101523</color>
-    <color name="card_background">#162233</color>
-    <color name="hourly_card_background">#283348</color>
-    <color name="shimmer_background">#162233</color>
+    <color name="background_bottom">#101523</color>-->
+    <color name="fragment_background">#1C1C1E</color>
+    <color name="card_background">#2C2C2E</color>
+    <color name="hourly_card_background">#3C3A3A</color>
+    <color name="shimmer_background">#2C2C2E</color>
     <color name="ripple">#1A162233</color>
-    <color name="edit_text_background">#162233</color>
+    <color name="edit_text_background">#3C3A3A</color>
+    <color name="edit_text_stroke">#938E8E</color>
+    <color name="shadow_color">#000000</color>
 
     <!--Charts-->
     <color name="min_chart">#5F88F1</color>

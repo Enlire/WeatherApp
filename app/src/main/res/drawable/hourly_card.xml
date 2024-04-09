@@ -10,10 +10,7 @@
     <item android:top="20dp">
         <shape android:shape="rectangle" >
             <size android:height="20dp" />
-            <gradient
-                android:angle="90"
-                android:endColor="@color/hourly_card_background"
-                android:startColor="@color/card_background"/>
+            <solid android:color="@color/hourly_card_background" />
         </shape>
     </item>
 </layer-list>

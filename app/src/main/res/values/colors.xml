@@ -14,14 +14,18 @@
     <color name="icon">#2B2B2B</color>
 
     <!--Background-->
+    <!--Gradient colors
     <color name="background_top">#625FF1</color>
     <color name="background_center">#A2B9FF</color>
-    <color name="background_bottom">#FFFFFF</color>
+    <color name="background_bottom">#FFFFFF</color>-->
+    <color name="fragment_background">#F2F6FF</color>
     <color name="card_background">#D6E0FF</color>
-    <color name="hourly_card_background">#F2F6FF</color>
-    <color name="shimmer_background">#CCCCCC</color>
+    <color name="hourly_card_background">#FFFFFF</color>
+    <color name="shimmer_background">#938E8E</color>
     <color name="ripple">#1A2B2B2B</color>
     <color name="edit_text_background">#FFFFFF</color>
+    <color name="edit_text_stroke">#938E8E</color>
+    <color name="shadow_color">#4B6CC0</color>
 
     <!--Charts-->
     <color name="min_chart">#5F88F1</color>
