@@ -1,29 +1,37 @@
 package com.example.weatherapp.data.models
 
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-data class CurrentWeatherResponse(
+//const val CURRENT_WEATHER_ID = 0
 
+//@Entity(tableName = "current_weather")
+data class CurrentWeatherResponse(
+	//@Embedded(prefix = "current_")
 	@field:SerializedName("current")
 	val current: Current,
 
+	//@Embedded(prefix = "location_")
 	@field:SerializedName("location")
-	val location: Location
+	val location: Location,
+
+	//@PrimaryKey(autoGenerate = false)
+	//val id: Int = CURRENT_WEATHER_ID
 )
 
 data class Condition(
-
 	@field:SerializedName("text")
 	val text: String,
-
-	@field:SerializedName("icon")
-	val icon: String,
 
 	@field:SerializedName("code")
 	val code: Int
 )
 
 data class Location(
+	@field:SerializedName("localtime")
+	val localtime: String,
 
 	@field:SerializedName("name")
 	val name: String,
@@ -36,6 +44,8 @@ data class Location(
 )
 
 data class Current(
+	@field:SerializedName("last_updated")
+	val lastUpdated: String,
 
 	@field:SerializedName("feelslike_c")
 	val feelslikeC: Double,
@@ -58,6 +68,7 @@ data class Current(
 	@field:SerializedName("wind_kph")
 	val windKph: Double,
 
+	//@Embedded(prefix = "condition_")
 	@field:SerializedName("condition")
 	val condition: Condition,
 
@@ -65,5 +76,6 @@ data class Current(
 	val visKm: Double,
 
 	@field:SerializedName("humidity")
-	val humidity: Int
+	val humidity: Int,
+	val icResId: Int
 )

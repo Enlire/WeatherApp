@@ -2,7 +2,11 @@ package com.example.weatherapp.data.networking
 
 import com.example.weatherapp.data.models.CurrentWeatherResponse
 import com.example.weatherapp.data.models.HourlyWeatherResponse
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 interface WeatherApiService {
@@ -23,4 +27,26 @@ interface WeatherApiService {
         @Query("alerts") alerts: String = "no",
         @Query("Lang") languageCode: String = "ru"
     ): Call<HourlyWeatherResponse>
+
+    companion object {
+        operator fun invoke(): WeatherApiService {
+            // API response interceptor
+            val loggingInterceptor = HttpLoggingInterceptor()
+                .setLevel(HttpLoggingInterceptor.Level.BODY)
+
+            // Client
+            val client = OkHttpClient.Builder()
+                .addInterceptor(loggingInterceptor)
+                .build()
+
+            // Retrofit
+            val retrofit = Retrofit.Builder()
+                .baseUrl("https://api.weatherapi.com/v1/")
+                .addConverterFactory(GsonConverterFactory.create())
+                //.client(client)
+                .build()
+
+            return retrofit.create(WeatherApiService::class.java)
+        }
+    }
 }

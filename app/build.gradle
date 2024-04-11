@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -78,4 +79,17 @@ dependencies {
 
     // Charts
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // Room local database
+    def room_version = "2.6.1"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    // Better dateTime-time support even on older Android versions
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.4.7'
+
+    // Kodein
+    implementation 'org.kodein.di:kodein-di-generic-jvm:6.3.3'
+    implementation 'org.kodein.di:kodein-di-framework-android-x:6.3.3'
 }

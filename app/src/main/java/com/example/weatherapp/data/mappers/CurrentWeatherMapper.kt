@@ -17,6 +17,8 @@ class CurrentWeatherMapper {
 
         return CurrentWeather(
             location = response.location.name,
+            localtime = response.location.localtime,
+            lastUpdated = response.current.lastUpdated,
             description = response.current.condition.text,
             code = response.current.condition.code,
             isDay = response.current.isDay,

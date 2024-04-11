@@ -1,22 +1,26 @@
 package com.example.weatherapp.ui.viewModels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.data.mappers.CurrentWeatherMapper
 import com.example.weatherapp.data.mappers.DailyWeatherMapper
-import com.example.weatherapp.data.models.CurrentWeatherResponse
 import com.example.weatherapp.data.models.PastWeatherResponse
 import com.example.weatherapp.data.networking.ApiConfig
+import com.example.weatherapp.domain.lazyDeferred
 import com.example.weatherapp.domain.models.CurrentWeather
 import com.example.weatherapp.domain.models.PastWeather
 import com.example.weatherapp.ui.ErrorCallback
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel : ViewModel() {
+class MainViewModel(
+    private val repository: com.example.weatherapp.data.repository.WeatherRepository
+) : ViewModel() {
+
     private val apiService = ApiConfig.getWeatherApiService()
     private val openMeteoApiService = ApiConfig.getOpenMeteoApiService()
     val weatherData: MutableLiveData<CurrentWeather> = MutableLiveData()
@@ -26,7 +30,17 @@ class MainViewModel : ViewModel() {
     val pastWeatherList: LiveData<List<PastWeather>> = _pastWeatherList
     private var errorCallback: ErrorCallback? = null
 
-    fun fetchCurrentWeatherData(location: String) {
+    val weather by lazyDeferred {
+        repository.getCurrentWeatherDataFromDb()
+    }
+
+    /*fun fetchCurrentWeatherData(location: String) {
+        viewModelScope.launch {
+            repository.fetchCurrentWeatherData(location)
+        }
+    }*/
+
+    /* fun fetchCurrentWeatherData(location: String) {
         apiService.getCurrentWeather(location = location)
             .enqueue(object : Callback<CurrentWeatherResponse> {
                 override fun onResponse(
@@ -48,7 +62,7 @@ class MainViewModel : ViewModel() {
                     errorCallback?.onError("Ошибка при выполнении запроса к серверу. Попробуйте повторить запрос.")
                 }
             })
-    }
+    }*/
 
     fun fetchPastWeatherData(latitude: Double, longitude: Double) {
         openMeteoApiService.getPastWeather(latitude, longitude, pastDays=7)

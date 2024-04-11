@@ -14,13 +14,17 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.NewInstanceFactory.Companion.instance
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.data.networking.NetworkUtils
+import com.example.weatherapp.data.repository.WeatherRepository
 import com.example.weatherapp.domain.LocationService
 import com.example.weatherapp.domain.models.CurrentWeather
 import com.example.weatherapp.domain.models.PastWeather
@@ -32,6 +36,7 @@ import com.example.weatherapp.ui.dialogs.DialogUtils
 import com.example.weatherapp.ui.viewModels.DailyWeatherViewModel
 import com.example.weatherapp.ui.viewModels.HourlyWeatherViewModel
 import com.example.weatherapp.ui.viewModels.MainViewModel
+import com.example.weatherapp.ui.viewModels.MainViewModelFactory
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
@@ -46,9 +51,16 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.x.closestKodein
+import org.kodein.di.generic.instance
 
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), KodeinAware {
+
+    override val kodein by closestKodein()
+    private val viewModelFactory: MainViewModelFactory by instance()
 
     private lateinit var shimmerLayout: ShimmerFrameLayout
     private lateinit var constraintLayout: ConstraintLayout
@@ -110,7 +122,12 @@ class MainFragment : Fragment() {
         val locationData: Triple<Double, Double, String> = locationService.getLocation()
         val (latitude, longitude, locationName) = locationData
 
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        //val factory = MainViewModelFactory(repository)
+        //viewModel = ViewModelProvider(this, factory).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
+
+
+        //viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModelHourly = ViewModelProvider(this)[HourlyWeatherViewModel::class.java]
         viewModelDaily = ViewModelProvider(this)[DailyWeatherViewModel::class.java]
 
@@ -250,15 +267,21 @@ class MainFragment : Fragment() {
             DialogUtils.showLocationEnableDialog(childFragmentManager, fragmentId)
         } else {
             lifecycleScope.launch {
+                val currentWeather = viewModel.weather.await()
+                currentWeather.observe(viewLifecycleOwner, Observer {
+                    if (it == null) return@Observer
+                    showCurrentWeather(it)
+                })
+
                 val deferredWeather = CompletableDeferred<Unit>()
                 val deferredHourly = CompletableDeferred<Unit>()
                 val deferredDaily = CompletableDeferred<Unit>()
 
                 // Observe weather data changes
-                viewModel.weatherData.observe(viewLifecycleOwner) { weatherResponse ->
+                /*viewModel.weatherData.observe(viewLifecycleOwner) { weatherResponse ->
                     showCurrentWeather(weatherResponse)
                     deferredWeather.complete(Unit)
-                }
+                }*/
                 viewModelHourly.hourlyWeatherList.observe(viewLifecycleOwner) { hourlyCardsList ->
                     hourlyAdapter.updateData(hourlyCardsList)
                     deferredHourly.complete(Unit)
@@ -269,7 +292,7 @@ class MainFragment : Fragment() {
                 }
 
                 // Wait for all deferreds to complete
-                deferredWeather.await()
+                //deferredWeather.await()
                 deferredHourly.await()
                 deferredDaily.await()
 
@@ -281,7 +304,7 @@ class MainFragment : Fragment() {
 
             // Fetch weather data and update UI based on location settings
             viewModelDaily.fetchDailyWeather(latitude, longitude)
-            viewModel.fetchCurrentWeatherData(locationName)
+            //viewModel.fetchCurrentWeatherData(locationName)
             viewModelHourly.fetchHourlyWeather(locationName, latitude, longitude)
         }
     }
