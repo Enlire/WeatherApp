@@ -6,13 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.data.networking.NetworkUtils
-import com.example.weatherapp.domain.LocationService
+import com.example.weatherapp.domain.LocationServiceImpl
 import com.example.weatherapp.ui.ErrorCallback
 import com.example.weatherapp.ui.adapters.HourlyWeatherAdapter
 import com.example.weatherapp.ui.dialogs.DialogUtils
@@ -47,9 +46,9 @@ class HourlyWeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val locationService = LocationService(requireContext())
-        val locationData: Triple<Double, Double, String> = locationService.getLocation()
-        val (latitude, longitude, locationName) = locationData
+        //val locationService = LocationServiceImpl(requireContext())
+        //val locationData: Triple<Double, Double, String> = locationService.getLocation()
+        val (latitude, longitude, locationName) = Triple(0,0,"vdg")//locationData
 
         recyclerView = view.findViewById(R.id.hourlyWeatherRecyclerView)
         val hourlyAdapter = HourlyWeatherAdapter(emptyList())
@@ -63,20 +62,20 @@ class HourlyWeatherFragment : Fragment() {
 
         // Check Internet connection and display dialog if not available
         if (NetworkUtils.isInternetAvailable(requireContext())) {
-            checkLocationSettings(locationName, latitude, longitude, hourlyAdapter)
+            //checkLocationSettings(locationName, latitude, longitude, hourlyAdapter)
         }
         else {
             DialogUtils.showNoInternetDialog(childFragmentManager)
         }
     }
 
-    private fun checkLocationSettings(
+    /*private fun checkLocationSettings(
         locationName: String,
         latitude: Double,
         longitude: Double,
         hourlyAdapter: HourlyWeatherAdapter
     ) {
-        val locationService = LocationService(requireContext())
+        val locationService = LocationServiceImpl(requireContext())
         val isSwitchEnabled = sharedPreferences.getBoolean("USE_DEVICE_LOCATION", false)
 
         if (isSwitchEnabled && !locationService.isLocationServiceEnabled()) {
@@ -108,5 +107,5 @@ class HourlyWeatherFragment : Fragment() {
                 }
             })
         }
-    }
+    }*/
 }

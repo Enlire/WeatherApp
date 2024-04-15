@@ -33,4 +33,8 @@ class SettingsRepository(val context: Context) {
             putString("USER_LOCATION", userLocation)
         }
     }
+
+    fun isUsingDeviceLocation(): Boolean {
+        return sharedPreferences.getBoolean("USE_DEVICE_LOCATION", true)
+    }
 }

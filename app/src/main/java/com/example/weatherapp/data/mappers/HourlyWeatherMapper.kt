@@ -5,7 +5,6 @@ import com.example.weatherapp.data.models.HourlyWeatherResponse
 import com.example.weatherapp.domain.models.HourlyWeather
 import com.example.weatherapp.domain.models.WeatherCondition
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
@@ -44,7 +43,6 @@ class HourlyWeatherMapper {
             val weatherCondition = WeatherCondition()
 
             val hourlyWeather = HourlyWeather(
-                location = location,
                 description = hourItem.condition.text,
                 day = formattedDate,
                 hour = formattedTime,
@@ -92,7 +90,7 @@ class HourlyWeatherMapper {
     }
 
     private fun extractCurrentTime(inputString: String): String {
-        val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         val dateTime = LocalDateTime.parse(inputString, dateTimeFormatter)
 
         return dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))

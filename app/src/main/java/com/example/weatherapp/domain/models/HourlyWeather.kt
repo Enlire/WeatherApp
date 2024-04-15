@@ -1,7 +1,12 @@
 package com.example.weatherapp.domain.models
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "hourly_weather")
 data class HourlyWeather(
-    val location: String,
+    @PrimaryKey(autoGenerate = true)
+    var id: Int? = null,
     val description: String,
     val day: String,
     val hour: String,

@@ -64,7 +64,7 @@ class ApiConfig {
             val retrofit = Retrofit.Builder()
                 .baseUrl("https://api.timezonedb.com/v2.1/")
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
+                //.client(client)
                 .build()
 
             return retrofit.create(TimezoneDBApiService::class.java)

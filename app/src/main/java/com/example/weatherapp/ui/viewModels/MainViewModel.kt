@@ -1,70 +1,25 @@
 package com.example.weatherapp.ui.viewModels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherapp.data.mappers.CurrentWeatherMapper
-import com.example.weatherapp.data.mappers.DailyWeatherMapper
-import com.example.weatherapp.data.models.PastWeatherResponse
-import com.example.weatherapp.data.networking.ApiConfig
+import com.example.weatherapp.data.repository.WeatherRepository
 import com.example.weatherapp.domain.lazyDeferred
-import com.example.weatherapp.domain.models.CurrentWeather
-import com.example.weatherapp.domain.models.PastWeather
-import com.example.weatherapp.ui.ErrorCallback
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class MainViewModel(
-    private val repository: com.example.weatherapp.data.repository.WeatherRepository
-) : ViewModel() {
+    private val repository: WeatherRepository
+) : WeatherViewModel(repository) {
 
-    private val apiService = ApiConfig.getWeatherApiService()
-    private val openMeteoApiService = ApiConfig.getOpenMeteoApiService()
-    val weatherData: MutableLiveData<CurrentWeather> = MutableLiveData()
-    private val currentWeatherMapper = CurrentWeatherMapper()
-    private val dailyWeatherMapper = DailyWeatherMapper()
-    private val _pastWeatherList = MutableLiveData<List<PastWeather>>()
-    val pastWeatherList: LiveData<List<PastWeather>> = _pastWeatherList
-    private var errorCallback: ErrorCallback? = null
-
-    val weather by lazyDeferred {
+    val currentWeather by lazyDeferred {
         repository.getCurrentWeatherDataFromDb()
     }
 
-    /*fun fetchCurrentWeatherData(location: String) {
+    fun fetchCurrentWeatherData() {
         viewModelScope.launch {
-            repository.fetchCurrentWeatherData(location)
+            repository.getCurrentWeatherDataFromDb()
         }
-    }*/
+    }
 
-    /* fun fetchCurrentWeatherData(location: String) {
-        apiService.getCurrentWeather(location = location)
-            .enqueue(object : Callback<CurrentWeatherResponse> {
-                override fun onResponse(
-                    call: Call<CurrentWeatherResponse>,
-                    response: Response<CurrentWeatherResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        val weatherResponse: CurrentWeatherResponse? = response.body()
-                        weatherResponse?.let {
-                            val currentWeather = currentWeatherMapper.mapCurrentResponseToDomain(it)
-                            weatherData.postValue(currentWeather)
-                        }
-                    } else {
-                        errorCallback?.onError("Ошибка при получении данных о погоде. Попробуйте повторить запрос.")
-                    }
-                }
-
-                override fun onFailure(call: Call<CurrentWeatherResponse>, t: Throwable) {
-                    errorCallback?.onError("Ошибка при выполнении запроса к серверу. Попробуйте повторить запрос.")
-                }
-            })
-    }*/
-
-    fun fetchPastWeatherData(latitude: Double, longitude: Double) {
+    /*fun fetchPastWeatherData(latitude: Double, longitude: Double) {
         openMeteoApiService.getPastWeather(latitude, longitude, pastDays=7)
             .enqueue(object : Callback<PastWeatherResponse> {
                 override fun onResponse(
@@ -92,5 +47,5 @@ class MainViewModel(
 
     fun setErrorCallback(callback: ErrorCallback) {
         errorCallback = callback
-    }
+    }*/
 }

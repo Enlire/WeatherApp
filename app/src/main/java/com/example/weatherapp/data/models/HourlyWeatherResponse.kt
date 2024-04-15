@@ -1,12 +1,13 @@
 package com.example.weatherapp.data.models
 
+import androidx.room.Entity
 import com.google.gson.annotations.SerializedName
 
 data class HourlyWeatherResponse(
-	@field:SerializedName("location")
-	val location: Location,
+    @field:SerializedName("location")
+	val location: WeatherLocation,
 
-	@field:SerializedName("forecast")
+    @field:SerializedName("forecast")
 	val forecast: Forecast
 )
 

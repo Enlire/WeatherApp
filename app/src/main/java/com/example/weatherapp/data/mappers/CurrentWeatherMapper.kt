@@ -16,9 +16,7 @@ class CurrentWeatherMapper {
         val weatherCondition = WeatherCondition()
 
         return CurrentWeather(
-            location = response.location.name,
-            localtime = response.location.localtime,
-            lastUpdated = response.current.lastUpdated,
+            location = response.location,
             description = response.current.condition.text,
             code = response.current.condition.code,
             isDay = response.current.isDay,

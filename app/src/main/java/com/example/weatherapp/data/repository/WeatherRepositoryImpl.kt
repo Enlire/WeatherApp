@@ -1,69 +1,109 @@
 package com.example.weatherapp.data.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.weatherapp.data.daos.CurrentWeatherDao
-import com.example.weatherapp.data.mappers.CurrentWeatherMapper
+import com.example.weatherapp.data.daos.HourlyWeatherDao
+import com.example.weatherapp.data.daos.WeatherLocationDao
 import com.example.weatherapp.data.models.CurrentWeatherResponse
 import com.example.weatherapp.data.networking.OpenMeteoApiService
 import com.example.weatherapp.data.networking.WeatherApiService
 import com.example.weatherapp.domain.models.CurrentWeather
-import com.example.weatherapp.ui.ErrorCallback
+import com.example.weatherapp.data.models.WeatherLocation
+import com.example.weatherapp.data.networking.WeatherNetworkDataSource
+import com.example.weatherapp.domain.LocationService
+import com.example.weatherapp.domain.models.HourlyWeather
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.ZonedDateTime
-import java.io.IOException
 
 class WeatherRepositoryImpl(
-    private val apiService: WeatherApiService,
-    private val openMeteoApiService: OpenMeteoApiService,
-    private val weatherDao: CurrentWeatherDao,
-    private val currentWeatherMapper: CurrentWeatherMapper
+    private val currentWeatherDao: CurrentWeatherDao,
+    private val hourlyWeatherDao: HourlyWeatherDao,
+    private val weatherLocationDao: WeatherLocationDao,
+    private val weatherNetworkDataSource: WeatherNetworkDataSource,
+    private val locationService: LocationService
 
 ) : WeatherRepository {
-    private var errorCallback: ErrorCallback? = null
-
-    override suspend fun getCurrentWeatherDataFromDb(): LiveData<CurrentWeather> {
-        return withContext(Dispatchers.IO) {
-            fetchCurrentWeatherData("Волгоград")
-            return@withContext weatherDao.getCurrentWeather()
-        }
-    }
-
-    private suspend fun fetchCurrentWeatherData(location: String): CurrentWeather? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.getCurrentWeather(location = location).execute()
-                if (response.isSuccessful) {
-                    val weatherResponse: CurrentWeatherResponse? = response.body()
-                    weatherResponse?.let {
-                        val currentWeather = currentWeatherMapper.mapCurrentResponseToDomain(it)
-                        saveCurrentWeatherDataToDb(currentWeather)
-                        return@withContext currentWeather
-                    }
-                } else {
-                    errorCallback?.onError("Ошибка при получении данных о погоде. Попробуйте повторить запрос.")
-                }
-                null
-            } catch (e: IOException) {
-                errorCallback?.onError("Ошибка при выполнении запроса к серверу. Попробуйте повторить запрос.")
-                null
+    init {
+        weatherNetworkDataSource.apply {
+            downloadedCurrentWeather.observeForever { newCurrentWeather ->
+                persistFetchedCurrentWeather(newCurrentWeather)
+            }
+            downloadedHourlyWeather.observeForever {newHourlyWeather ->
+                persistFetchedHourlyWeather(newHourlyWeather)
             }
         }
     }
 
-
-    private fun isFetchCurrentNeeded(lastFetchTime: ZonedDateTime, weather: CurrentWeather): Boolean {
-        val thirtyMinutesAgo = ZonedDateTime.now().minusMinutes(30)
-        return lastFetchTime.isBefore(thirtyMinutesAgo)
-    }
-
-    private suspend fun saveCurrentWeatherDataToDb(currentWeather: CurrentWeather) {
-        withContext(Dispatchers.IO) {
-            weatherDao.upsert(currentWeather)
+    override suspend fun getCurrentWeatherDataFromDb(): LiveData<out CurrentWeather> {
+        return withContext(Dispatchers.IO) {
+            initWeatherData()
+            return@withContext currentWeatherDao.getCurrentWeather()
         }
     }
 
-    private fun setErrorCallback(callback: ErrorCallback) {
-        errorCallback = callback
+    override suspend fun getHourlyWeatherDataFromDb(): LiveData<out List<HourlyWeather>> {
+        return withContext(Dispatchers.IO) {
+            initWeatherData()
+            return@withContext hourlyWeatherDao.getHourlyWeather()
+        }
+    }
+
+    override suspend fun getWeatherLocationFromDb(): LiveData<WeatherLocation> {
+        return withContext(Dispatchers.IO) {
+            return@withContext weatherLocationDao.getLocation()
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun persistFetchedCurrentWeather(fetchedCurrentWeather: CurrentWeather) {
+        GlobalScope.launch(Dispatchers.IO) {
+            currentWeatherDao.upsert(fetchedCurrentWeather)
+            weatherLocationDao.upsert(fetchedCurrentWeather.location)
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun persistFetchedHourlyWeather(fetchedHourlyWeather: List<HourlyWeather>) {
+        GlobalScope.launch(Dispatchers.IO) {
+            hourlyWeatherDao.deleteAllHourlyWeather()
+            hourlyWeatherDao.upsert(fetchedHourlyWeather)
+            //weatherLocationDao.upsert(fetchedHourlyWeather.)
+        }
+    }
+
+    private suspend fun initWeatherData() {
+        val lastWeatherLocation = weatherLocationDao.getLocationNonLive()
+
+        if (lastWeatherLocation == null
+            || locationService.hasLocationChanged(lastWeatherLocation)) {
+            fetchCurrentWeather()
+            fetchHourlyWeather()
+            return
+        }
+
+        if (isFetchCurrentNeeded(lastWeatherLocation.zonedDateTime))
+            fetchCurrentWeather()
+    }
+
+    private suspend fun fetchCurrentWeather() {
+        weatherNetworkDataSource.fetchCurrentWeather(
+            locationService.getPreferredLocation()
+        )
+    }
+
+    private suspend fun fetchHourlyWeather() {
+        weatherNetworkDataSource.fetchHourlyWeather(
+            locationService.getPreferredLocation()
+        )
+    }
+
+    private fun isFetchCurrentNeeded(lastFetchTime: ZonedDateTime): Boolean {
+        val thirtyMinutesAgo = ZonedDateTime.now().minusMinutes(1)
+        return lastFetchTime.isBefore(thirtyMinutesAgo)
     }
 }

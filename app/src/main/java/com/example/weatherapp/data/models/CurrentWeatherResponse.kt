@@ -1,27 +1,25 @@
 package com.example.weatherapp.data.models
 
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 
-//const val CURRENT_WEATHER_ID = 0
+const val WEATHER_LOCATION_ID = 0
 
-//@Entity(tableName = "current_weather")
 data class CurrentWeatherResponse(
-	//@Embedded(prefix = "current_")
+
 	@field:SerializedName("current")
 	val current: Current,
 
-	//@Embedded(prefix = "location_")
 	@field:SerializedName("location")
-	val location: Location,
-
-	//@PrimaryKey(autoGenerate = false)
-	//val id: Int = CURRENT_WEATHER_ID
+	val location: WeatherLocation,
 )
 
 data class Condition(
+
 	@field:SerializedName("text")
 	val text: String,
 
@@ -29,9 +27,26 @@ data class Condition(
 	val code: Int
 )
 
-data class Location(
+@Entity(tableName = "weather_location")
+data class WeatherLocation(
+
+	@PrimaryKey(autoGenerate = false)
+	var id: Int = WEATHER_LOCATION_ID,
+
 	@field:SerializedName("localtime")
 	val localtime: String,
+
+	@field:SerializedName("localtime_epoch")
+	val localTimeEpoch: Long,
+
+	@field:SerializedName("region")
+	val region: String,
+
+	@field:SerializedName("country")
+	val country: String,
+
+	@field:SerializedName("tz_id")
+	val tzId: String,
 
 	@field:SerializedName("name")
 	val name: String,
@@ -41,7 +56,14 @@ data class Location(
 
 	@field:SerializedName("lat")
 	val lat: Double
-)
+) {
+	val zonedDateTime: ZonedDateTime
+		get() {
+			val instant = Instant.ofEpochSecond(localTimeEpoch)
+			val zoneId = ZoneId.of(tzId)
+			return ZonedDateTime.ofInstant(instant, zoneId)
+		}
+}
 
 data class Current(
 	@field:SerializedName("last_updated")
@@ -68,7 +90,6 @@ data class Current(
 	@field:SerializedName("wind_kph")
 	val windKph: Double,
 
-	//@Embedded(prefix = "condition_")
 	@field:SerializedName("condition")
 	val condition: Condition,
 
@@ -77,5 +98,6 @@ data class Current(
 
 	@field:SerializedName("humidity")
 	val humidity: Int,
+
 	val icResId: Int
 )

@@ -4,18 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Switch
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.app.ActivityCompat.recreate
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
-import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreference
 import com.example.weatherapp.R
 import com.example.weatherapp.data.SettingsRepository
-import com.example.weatherapp.domain.LocationService
+import com.example.weatherapp.domain.LocationServiceImpl
 
 class SettingsFragment : PreferenceFragmentCompat() {
     private var locationSwitch: SwitchPreference? = null
@@ -32,14 +29,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         locationSwitch?.isChecked = isChecked
     }
 
-//    override fun onCreateView(
-//        inflater: LayoutInflater, container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View? {
-//        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_settings, container, false)
-//    }
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.preferences)
 
@@ -48,7 +37,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         themePreference = findPreference("APP_THEME")
 
         val settingsRepository = SettingsRepository(requireContext())
-        val locationService = LocationService(requireContext())
+        val locationService = LocationServiceImpl(requireContext())
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         val hasLocationPermission = locationService.hasLocationPermission()
 
@@ -60,7 +49,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         locationSwitch?.setOnPreferenceChangeListener { _, newValue ->
             val isChecked = newValue as Boolean
             if (isChecked) {
-                locationService.startLocationUpdates()
+                //locationService.startLocationUpdates()
                 locationEditText?.isEnabled = false
                 sharedPreferences.edit().putBoolean("USE_DEVICE_LOCATION", true).apply()
             } else {
@@ -108,9 +97,5 @@ class SettingsFragment : PreferenceFragmentCompat() {
     ): View {
         view?.setBackgroundColor(resources.getColor(R.color.background));
         return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    companion object {
-
     }
 }

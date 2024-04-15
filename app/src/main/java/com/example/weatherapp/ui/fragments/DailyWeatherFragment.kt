@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.data.networking.NetworkUtils
-import com.example.weatherapp.domain.LocationService
+import com.example.weatherapp.domain.LocationServiceImpl
 import com.example.weatherapp.ui.ErrorCallback
 import com.example.weatherapp.ui.adapters.DailyWeatherAdapter
 import com.example.weatherapp.ui.dialogs.DialogUtils
@@ -42,11 +42,11 @@ class DailyWeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val locationService = LocationService(requireContext())
-        val locationData: Triple<Double, Double, String> = locationService.getLocation()
-        val (latitude, longitude, locationName) = locationData
-        Log.i("lat", latitude.toString())
-        Log.i("lon", longitude.toString())
+        //val locationService = LocationServiceImpl(requireContext())
+        //val locationData: Triple<Double, Double, String> = locationService.getLocation()
+        val (latitude, longitude, locationName) = Triple(0.0, 0.0, "dvdf")//locationData
+        //Log.i("lat", latitude.toString())
+        //Log.i("lon", longitude.toString())
 
         recyclerView = view.findViewById(R.id.dailyWeatherRecyclerView)
         val dailyAdapter = DailyWeatherAdapter(emptyList())
@@ -64,7 +64,7 @@ class DailyWeatherFragment : Fragment() {
                 DialogUtils.showAPIErrorDialog(childFragmentManager, "Ошибка при получении данных о погоде. Попробуйте повторить запрос.")
             }
             else {
-                checkLocationSettings(/*locationName,*/ latitude, longitude, dailyAdapter)
+                //checkLocationSettings(/*locationName,*/ latitude, longitude, dailyAdapter)
             }
         }
         else {
@@ -77,13 +77,13 @@ class DailyWeatherFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(DailyWeatherViewModel::class.java)
     }
 
-    private fun checkLocationSettings(
+    /*private fun checkLocationSettings(
         //locationName: String,
         latitude: Double,
         longitude: Double,
         dailyAdapter: DailyWeatherAdapter
     ) {
-        val locationService = LocationService(requireContext())
+        val locationService = LocationServiceImpl(requireContext())
         val isSwitchEnabled = sharedPreferences.getBoolean("USE_DEVICE_LOCATION", false)
 
         if (isSwitchEnabled && !locationService.isLocationServiceEnabled()) {
@@ -115,5 +115,5 @@ class DailyWeatherFragment : Fragment() {
                 }
             })
         }
-    }
+    }*/
 }

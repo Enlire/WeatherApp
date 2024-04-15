@@ -4,25 +4,35 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.distinctUntilChanged
+import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.data.mappers.HourlyWeatherMapper
 import com.example.weatherapp.data.models.HourlyWeatherResponse
 import com.example.weatherapp.data.models.TimezoneResponse
 import com.example.weatherapp.data.networking.ApiConfig
+import com.example.weatherapp.data.repository.WeatherRepository
+import com.example.weatherapp.domain.lazyDeferred
 import com.example.weatherapp.domain.models.HourlyWeather
 import com.example.weatherapp.ui.ErrorCallback
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class HourlyWeatherViewModel : ViewModel() {
-    private val apiService = ApiConfig.getWeatherApiService()
-    private val timezoneApiService = ApiConfig.getTimezoneApiService()
-    private val hourlyWeatherMapper = HourlyWeatherMapper()
-    private val _hourlyWeatherList = MutableLiveData<List<HourlyWeather>>()
-    val hourlyWeatherList: LiveData<List<HourlyWeather>> = _hourlyWeatherList
-    private var errorCallback: ErrorCallback? = null
+class HourlyWeatherViewModel(
+    private val repository: WeatherRepository
+) : WeatherViewModel(repository) {
 
-    fun fetchHourlyWeather(location: String, lat: Double, lon: Double) {
+    val hourlyWeather by lazyDeferred {
+        repository.getHourlyWeatherDataFromDb()
+    }
+
+    fun fetchHourlyWeatherData() {
+        viewModelScope.launch {
+            repository.getHourlyWeatherDataFromDb()
+        }
+    }
+
+    /*fun fetchHourlyWeather(location: String, lat: Double, lon: Double) {
         fetchCurrentTime(lat, lon) { currentTime ->
             apiService.getHourlyWeather(location = location)
                 .enqueue(object : Callback<HourlyWeatherResponse> {
@@ -82,5 +92,5 @@ class HourlyWeatherViewModel : ViewModel() {
 
     fun setErrorCallback(callback: ErrorCallback) {
         errorCallback = callback
-    }
+    }*/
 }

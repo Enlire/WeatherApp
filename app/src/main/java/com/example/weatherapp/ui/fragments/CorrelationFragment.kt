@@ -2,7 +2,6 @@ package com.example.weatherapp.ui.fragments
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,6 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.TooltipCompat
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -21,7 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.weatherapp.R
 import com.example.weatherapp.data.networking.NetworkUtils
 import com.example.weatherapp.domain.CorrelationCalculator
-import com.example.weatherapp.domain.LocationService
+import com.example.weatherapp.domain.LocationServiceImpl
 import com.example.weatherapp.ui.ErrorCallback
 import com.example.weatherapp.ui.dialogs.DialogUtils
 import com.example.weatherapp.ui.viewModels.CorrelationViewModel
@@ -88,7 +86,7 @@ class CorrelationFragment : Fragment() {
         firstLocationEditText = view.findViewById(R.id.firstLocationEditText)
         secondLocationEditText = view.findViewById(R.id.secondLocationEditText)
         correlationCalculator = CorrelationCalculator()
-        val locationService = LocationService(requireContext())
+        //val locationService = LocationServiceImpl(requireContext())
 
         correlationHelpImageView = view.findViewById(R.id.correlationHelp)
         coefficientHelpImageView = view.findViewById(R.id.coefficientHelp)
@@ -196,10 +194,10 @@ class CorrelationFragment : Fragment() {
                     shimmerLayout.visibility = View.VISIBLE
                     shimmerLayout.startShimmer()
 
-                    val firstLocationCoordinates: Pair<Double, Double> =
-                        locationService.getCoordinatesFromAddress(firstLocationName)
-                    val secondLocationCoordinates: Pair<Double, Double> =
-                        locationService.getCoordinatesFromAddress(secondLocationName)
+                    val firstLocationCoordinates: Pair<Double, Double> = Pair(0.0, 0.0)
+                        //locationService.getCoordinatesFromAddress(firstLocationName)
+                    val secondLocationCoordinates: Pair<Double, Double> =Pair(0.0, 0.0)
+                        //locationService.getCoordinatesFromAddress(secondLocationName)
 
                     if ((firstLocationCoordinates.first == 0.0 && firstLocationCoordinates.second == 0.0) || (secondLocationCoordinates.first == 0.0 && secondLocationCoordinates.second == 0.0)) {
                         DialogUtils.showAPIErrorDialog(childFragmentManager, "Ошибка при получении данных. Попробуйте повторить запрос.")

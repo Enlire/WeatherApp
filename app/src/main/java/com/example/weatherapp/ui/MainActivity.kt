@@ -1,11 +1,14 @@
 package com.example.weatherapp.ui
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
@@ -15,17 +18,33 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.ActivityMainBinding
-import com.example.weatherapp.domain.LocationService
+import com.example.weatherapp.domain.LOCATION_PERMISSION_REQUEST_CODE
+import com.example.weatherapp.domain.LocationServiceImpl
 import com.example.weatherapp.ui.fragments.SettingsFragment
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import kotlin.math.abs
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), KodeinAware {
+    override val kodein by closestKodein()
+    private val fusedLocationProviderClient: FusedLocationProviderClient by instance()
+
     private lateinit var binding : ActivityMainBinding
     private var downX: Int = 0
     private val sharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(this)
+    }
+
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(p0: LocationResult) {
+            super.onLocationResult(p0)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,14 +67,31 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val locationService = LocationService(this)
-        locationService.requestLocationPermissions()
-        if (!locationService.hasLocationPermission()) {
+        val locationService = LocationServiceImpl(this)
+
+        locationService.requestLocationPermissions(this)
+        if (locationService.hasLocationPermission()) {
+            bindLocationManager()
+        }
+        else {
+            //locationService.requestLocationPermissions(this)
+            //val settingsFragment = supportFragmentManager.findFragmentById(R.id.settings) as? SettingsFragment
+            //settingsFragment?.setLocationSwitchEnabled(false)
+            //settingsFragment?.setLocationSwitchChecked(false)
+            //sharedPreferences.edit().putBoolean("USE_DEVICE_LOCATION", false).apply()
+        }
+
+        //locationService.requestLocationPermissions()
+        /*if (!locationService.hasLocationPermission()) {
             val settingsFragment = supportFragmentManager.findFragmentById(R.id.settings) as? SettingsFragment
             settingsFragment?.setLocationSwitchEnabled(false)
             settingsFragment?.setLocationSwitchChecked(false)
             sharedPreferences.edit().putBoolean("USE_DEVICE_LOCATION", false).apply()
         }
+        else {
+            bindLocationManager()
+        }*/
+
 
         WindowCompat.setDecorFitsSystemWindows(
             window, false
@@ -64,11 +100,18 @@ class MainActivity : AppCompatActivity() {
         val navView: BottomNavigationView = binding.bottomNavigationView
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         val navController = navHostFragment.navController
-        //val navController = findNavController(R.id.nav_host_fragment_activity_main)
         val navGraph = navController.navInflater.inflate(R.navigation.mobile_navigation)
         navGraph.setStartDestination(R.id.home)
         navController.graph = navGraph
         navView.setupWithNavController(navController)
+    }
+
+    private fun bindLocationManager() {
+        LifecycleBoundLocationManager(
+            this,
+            fusedLocationProviderClient,
+            locationCallback
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -76,6 +119,20 @@ class MainActivity : AppCompatActivity() {
         val callingFragmentId = sharedPreferences.getInt("currentFragmentId", -1)
         if (callingFragmentId != -1) {
             findNavController(R.id.nav_host_fragment_activity_main).navigate(callingFragmentId)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                bindLocationManager()
+            else
+                Toast.makeText(this, "Please, set location manually in settings", Toast.LENGTH_LONG).show()
         }
     }
 
