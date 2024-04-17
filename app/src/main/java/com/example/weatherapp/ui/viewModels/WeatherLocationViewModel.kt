@@ -1,25 +1,22 @@
 package com.example.weatherapp.ui.viewModels
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.data.repository.WeatherRepository
 import com.example.weatherapp.domain.lazyDeferred
 import kotlinx.coroutines.launch
 
-class MainViewModel(
+abstract class WeatherLocationViewModel(
     private val repository: WeatherRepository
-) : WeatherLocationViewModel(repository) {
+) : ViewModel() {
 
-    val currentWeather by lazyDeferred {
-        repository.getCurrentWeatherDataFromDb()
+    val weatherLocation by lazyDeferred {
+        repository.getWeatherLocationFromDb()
     }
 
-    val pastWeather by lazyDeferred {
-        repository.getPastWeatherFromDb()
-    }
-
-    fun fetchCurrentWeatherData() {
+    fun fetchLocationData() {
         viewModelScope.launch {
-            repository.getCurrentWeatherDataFromDb()
+            repository.getWeatherLocationFromDb()
         }
     }
 }

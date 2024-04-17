@@ -11,12 +11,11 @@ import org.threeten.bp.LocalDate
 @Dao
 interface HourlyWeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upsert(futureWeatherEntries: List<HourlyWeather>)
+    fun upsert(hourlyWeatherEntries: List<HourlyWeather>)
 
     @Query("SELECT * FROM hourly_weather")
     fun getHourlyWeather(): LiveData<List<HourlyWeather>>
 
     @Query("DELETE FROM hourly_weather")
     fun deleteAllHourlyWeather()
-
 }

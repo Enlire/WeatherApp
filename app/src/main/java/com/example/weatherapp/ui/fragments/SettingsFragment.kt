@@ -11,7 +11,6 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreference
 import com.example.weatherapp.R
-import com.example.weatherapp.data.SettingsRepository
 import com.example.weatherapp.domain.LocationServiceImpl
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -36,7 +35,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         locationEditText = findPreference("USER_LOCATION")
         themePreference = findPreference("APP_THEME")
 
-        val settingsRepository = SettingsRepository(requireContext())
         val locationService = LocationServiceImpl(requireContext())
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         val hasLocationPermission = locationService.hasLocationPermission()
@@ -61,7 +59,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         locationEditText?.setOnPreferenceChangeListener { _, newValue ->
             if (newValue is String) {
-                settingsRepository.saveUserLocation(newValue)
+                sharedPreferences.edit().putString("USER_LOCATION", newValue).apply()
                 locationEditText?.summary = newValue
                 true
             } else {

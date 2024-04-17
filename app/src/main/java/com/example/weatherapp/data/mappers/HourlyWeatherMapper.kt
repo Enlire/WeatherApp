@@ -90,7 +90,11 @@ class HourlyWeatherMapper {
     }
 
     private fun extractCurrentTime(inputString: String): String {
-        val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+        val dateTimeFormatter = if (inputString.split(" ")[1].split(":")[0].length == 1) {
+            DateTimeFormatter.ofPattern("yyyy-MM-dd H:mm")
+        } else {
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+        }
         val dateTime = LocalDateTime.parse(inputString, dateTimeFormatter)
 
         return dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))

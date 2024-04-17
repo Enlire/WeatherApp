@@ -11,10 +11,13 @@ import com.example.weatherapp.ui.ErrorCallback
 interface WeatherNetworkDataSource {
     val downloadedCurrentWeather: LiveData<CurrentWeather>
     val downloadedHourlyWeather: LiveData<List<HourlyWeather>>
-    val downloadedDailyWeather: LiveData<DailyWeather>
-    val downloadedPastWeather: LiveData<PastWeather>
+    val downloadedDailyWeather: LiveData<List<DailyWeather>>
+    val downloadedPastWeather: LiveData<List<PastWeather>>
+    val downloadedLocation: LiveData<WeatherLocation>
 
     suspend fun fetchCurrentWeather(location: String)
     suspend fun fetchHourlyWeather(location: String)
+    suspend fun fetchDailyWeather(lat: Double, lon: Double)
+    suspend fun fetchPastWeather(lat: Double, lon: Double)
     fun setErrorCallback(callback: ErrorCallback)
 }

@@ -46,18 +46,18 @@ class DailyWeatherMapper {
             val sunset = formatTime(sunsetList[i])
 
             val dailyWeather = DailyWeather(
-                dateFormat,
-                day,
-                description,
-                iconResId,
-                tempMax,
-                tempMin,
-                chanceOfPrecip,
-                precip,
-                windSpeed,
-                uvIndex,
-                sunrise,
-                sunset
+                date = dateFormat,
+                day = day,
+                description = description,
+                icResId = iconResId,
+                tempMax = tempMax,
+                tempMin = tempMin,
+                chanceOfPrecip = chanceOfPrecip,
+                precip = precip,
+                windSpeed = windSpeed,
+                uvIndex = uvIndex,
+                sunrise = sunrise,
+                sunset = sunset
             )
             dailyWeatherList.add(dailyWeather)
         }
@@ -73,7 +73,6 @@ class DailyWeatherMapper {
         val temperature2mMaxList = daily.temperature2mMax
         val temperature2mMinList = daily.temperature2mMin
         val precipSumList = daily.precipitationSum
-        Log.i("presipSum", precipSumList.toString())
 
         for (i in timeList.indices) {
             val dateFormat = formatDate(timeList[i])
@@ -82,10 +81,10 @@ class DailyWeatherMapper {
             val precipSum = precipSumList[i]
 
             val pastWeather = PastWeather(
-                dateFormat,
-                tempMax,
-                tempMin,
-                precipSum
+                date = dateFormat,
+                tempMax = tempMax,
+                tempMin = tempMin,
+                presipSum = precipSum
             )
             pastWeatherList.add(pastWeather)
         }

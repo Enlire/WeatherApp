@@ -11,8 +11,6 @@ const val CURRENT_WEATHER_ID = 0
 data class CurrentWeather(
     @PrimaryKey(autoGenerate = false)
     var id: Int = CURRENT_WEATHER_ID,
-    @Embedded(prefix = "location_")
-    val location: WeatherLocation,
     val description: String,
     val code: Int,
     val isDay: Int,
