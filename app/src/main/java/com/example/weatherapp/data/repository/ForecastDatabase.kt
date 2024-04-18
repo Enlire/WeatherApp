@@ -1,9 +1,10 @@
-package com.example.weatherapp.data
+package com.example.weatherapp.data.repository
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.weatherapp.data.daos.CurrentWeatherDao
 import com.example.weatherapp.data.daos.DailyWeatherDao
 import com.example.weatherapp.data.daos.HourlyWeatherDao
@@ -23,6 +24,7 @@ import com.example.weatherapp.domain.models.PastWeather
                 PastWeather::class],
     version = 1
 )
+@TypeConverters(Converters::class)
 abstract class ForecastDatabase: RoomDatabase() {
     abstract fun currentWeatherDao(): CurrentWeatherDao
     abstract fun weatherLocationDao(): WeatherLocationDao
@@ -34,8 +36,8 @@ abstract class ForecastDatabase: RoomDatabase() {
         @Volatile private var instance: ForecastDatabase? = null
         private val LOCK = Any()
 
-        operator fun invoke(context: Context) = instance?: synchronized(LOCK) {
-            instance?: buildDatabase(context).also { instance = it }
+        operator fun invoke(context: Context) = instance ?: synchronized(LOCK) {
+            instance ?: buildDatabase(context).also { instance = it }
         }
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(context.applicationContext,

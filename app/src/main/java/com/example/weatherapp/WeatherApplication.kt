@@ -3,7 +3,7 @@ package com.example.weatherapp
 import android.app.Application
 import android.content.Context
 import androidx.preference.PreferenceManager
-import com.example.weatherapp.data.ForecastDatabase
+import com.example.weatherapp.data.repository.ForecastDatabase
 import com.example.weatherapp.data.mappers.CurrentWeatherMapper
 import com.example.weatherapp.data.mappers.DailyWeatherMapper
 import com.example.weatherapp.data.mappers.HourlyWeatherMapper
@@ -38,7 +38,7 @@ class WeatherApp : Application(), KodeinAware {
         bind() from provider { LocationServices.getFusedLocationProviderClient(instance<Context>()) }
         bind<WeatherApiService>() with singleton { WeatherApiService() }
         bind<OpenMeteoApiService>() with singleton { OpenMeteoApiService() }
-        bind<WeatherRepository>() with singleton { WeatherRepositoryImpl(instance(), instance(), instance(), instance(), instance(), instance(), instance()) }
+        bind<WeatherRepository>() with singleton { WeatherRepositoryImpl(instance(), instance(), instance(), instance(), instance(), instance(), instance(), instance(), instance(), instance()) }
         bind<WeatherNetworkDataSource>() with singleton { WeatherNetworkDataSourceImpl(instance(), instance(), instance(), instance(), instance()) }
         bind<LocationService>() with singleton { LocationServiceImpl(instance())}
         bind() from provider { MainViewModelFactory(instance()) }
@@ -46,7 +46,7 @@ class WeatherApp : Application(), KodeinAware {
         bind() from provider { DailyWeatherViewModelFactory(instance()) }
         bind<CurrentWeatherMapper>() with singleton { CurrentWeatherMapper() }
         bind<HourlyWeatherMapper>() with singleton { HourlyWeatherMapper() }
-        bind<DailyWeatherMapper>() with singleton { DailyWeatherMapper() }
+        bind<DailyWeatherMapper>() with singleton { DailyWeatherMapper(instance()) }
     }
 
     override fun onCreate() {

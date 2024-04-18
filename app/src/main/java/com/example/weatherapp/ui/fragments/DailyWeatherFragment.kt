@@ -5,32 +5,31 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
-import com.example.weatherapp.data.networking.NetworkUtils
-import com.example.weatherapp.domain.LocationServiceImpl
+import com.example.weatherapp.data.networking.WeatherNetworkDataSource
 import com.example.weatherapp.ui.ErrorCallback
 import com.example.weatherapp.ui.adapters.DailyWeatherAdapter
 import com.example.weatherapp.ui.dialogs.DialogUtils
 import com.example.weatherapp.ui.viewModels.DailyWeatherViewModel
+import com.example.weatherapp.ui.viewModelsFactories.DailyWeatherViewModelFactory
 import com.facebook.shimmer.ShimmerFrameLayout
+import kotlinx.coroutines.launch
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.x.closestKodein
+import org.kodein.di.generic.instance
 
-class DailyWeatherFragment : Fragment() {
+class DailyWeatherFragment : ScopedFragment(), KodeinAware {
+    override val kodein by closestKodein()
+    private val dailyWeatherViewModelFactory: DailyWeatherViewModelFactory by instance()
+    private val weatherNetworkDataSource: WeatherNetworkDataSource by instance()
 
-    companion object {
-        fun newInstance() = DailyWeatherFragment()
-    }
-
-    private lateinit var viewModel: DailyWeatherViewModel
     private lateinit var shimmerLayout: ShimmerFrameLayout
     private lateinit var recyclerView: RecyclerView
-    private val sharedPreferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(requireContext())
-    }
+    private lateinit var viewModelDaily: DailyWeatherViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,69 +41,41 @@ class DailyWeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //val locationService = LocationServiceImpl(requireContext())
-        //val locationData: Triple<Double, Double, String> = locationService.getLocation()
-        val (latitude, longitude, locationName) = Triple(0.0, 0.0, "dvdf")//locationData
-        //Log.i("lat", latitude.toString())
-        //Log.i("lon", longitude.toString())
-
+        viewModelDaily = ViewModelProvider(this, dailyWeatherViewModelFactory)[DailyWeatherViewModel::class.java]
         recyclerView = view.findViewById(R.id.dailyWeatherRecyclerView)
-        val dailyAdapter = DailyWeatherAdapter(emptyList())
+        val dailyAdapter = DailyWeatherAdapter(emptyList(), requireContext())
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = dailyAdapter
-        viewModel = ViewModelProvider(this)[DailyWeatherViewModel::class.java]
 
         shimmerLayout = view.findViewById(R.id.shimmer_view_container)
         shimmerLayout.visibility = View.VISIBLE
         shimmerLayout.startShimmer()
 
-        // Check Internet connection and display dialog if not available
-        if (NetworkUtils.isInternetAvailable(requireContext())) {
-            if (latitude == 0.0 && longitude == 0.0) {
-                DialogUtils.showAPIErrorDialog(childFragmentManager, "Ошибка при получении данных о погоде. Попробуйте повторить запрос.")
-            }
-            else {
-                //checkLocationSettings(/*locationName,*/ latitude, longitude, dailyAdapter)
-            }
-        }
-        else {
-            DialogUtils.showNoInternetDialog(childFragmentManager)
-        }
+        observeDailyWeatherDataChanges(dailyAdapter)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(DailyWeatherViewModel::class.java)
-    }
+    private fun observeDailyWeatherDataChanges(dailyAdapter: DailyWeatherAdapter) = launch {
+        val dailyWeather = viewModelDaily.dailyWeather.await()
+        val weatherLocation = viewModelDaily.weatherLocation.await()
 
-    /*private fun checkLocationSettings(
-        //locationName: String,
-        latitude: Double,
-        longitude: Double,
-        dailyAdapter: DailyWeatherAdapter
-    ) {
-        val locationService = LocationServiceImpl(requireContext())
-        val isSwitchEnabled = sharedPreferences.getBoolean("USE_DEVICE_LOCATION", false)
+        dailyWeather.observe(viewLifecycleOwner, Observer {
+            if (it == null) return@Observer
+            dailyAdapter.updateData(it)
+        })
 
-        if (isSwitchEnabled && !locationService.isLocationServiceEnabled()) {
-            val fragmentId = R.id.daily
-            DialogUtils.showLocationEnableDialog(childFragmentManager, fragmentId)
-        } else {
-            // Fetch the hourly weather data for the desired location
-            viewModel.fetchDailyWeather(latitude, longitude)
+        weatherLocation.observe(viewLifecycleOwner, Observer {
+            if (it == null) return@Observer
+        })
 
-            // Observe the hourly weather data from the ViewModel
-            viewModel.dailyWeatherList.observe(viewLifecycleOwner) { dailyWeatherList ->
-                dailyAdapter.updateData(dailyWeatherList)
-                shimmerLayout.stopShimmer()
-                shimmerLayout.visibility = View.GONE
-                recyclerView.visibility = View.VISIBLE
-            }
+        shimmerLayout.stopShimmer()
+        shimmerLayout.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
 
-            // Observe errors
-            viewModel.setErrorCallback(object : ErrorCallback {
-                override fun onError(errorMessage: String?) {
-                    if (!errorMessage.isNullOrEmpty()) {
+        // Observe errors
+        weatherNetworkDataSource.setErrorCallback(object : ErrorCallback {
+            override fun onError(errorMessage: String?) {
+                if (!errorMessage.isNullOrBlank()) {
+                    requireActivity().runOnUiThread {
                         if (isAdded) {
                             DialogUtils.showAPIErrorDialog(childFragmentManager, errorMessage)
                             shimmerLayout.visibility = View.VISIBLE
@@ -113,7 +84,7 @@ class DailyWeatherFragment : Fragment() {
                         }
                     }
                 }
-            })
-        }
-    }*/
+            }
+        })
+    }
 }

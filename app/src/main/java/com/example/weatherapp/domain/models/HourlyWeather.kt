@@ -1,15 +1,15 @@
 package com.example.weatherapp.domain.models
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "hourly_weather")
+@Entity(tableName = "hourly_weather", indices = [Index (value = ["date"], unique = true)])
 data class HourlyWeather(
     @PrimaryKey(autoGenerate = false)
     var id: Int? = null,
     val description: String,
-    val day: String,
-    val hour: String,
+    val date: String,
     val isDay: Int,
     val code: Int,
     val icResId: Int,

@@ -8,11 +8,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
+import com.example.weatherapp.data.mappers.HourlyWeatherMapper
 import com.example.weatherapp.domain.models.HourlyWeather
 
 class HourlyCardsAdapter(private var hourlyWeatherList: List<HourlyWeather>) :
     RecyclerView.Adapter<HourlyCardsAdapter.HourlyCardsViewHolder>() {
-
+    private val hourlyWeatherMapper = HourlyWeatherMapper()
     class HourlyCardsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val hourTextView: TextView = itemView.findViewById(R.id.hour)
         val tempTextView: TextView = itemView.findViewById(R.id.temp)
@@ -34,7 +35,7 @@ class HourlyCardsAdapter(private var hourlyWeatherList: List<HourlyWeather>) :
         if (chance > 100) chance = 100
 
         // Bind the views with the corresponding data
-        holder.hourTextView.text = hourlyWeather.hour.substring(0, 2)
+        holder.hourTextView.text = hourlyWeatherMapper.extractDateAndTime(hourlyWeather.date).second.substring(0, 2)
         holder.tempTextView.text = "${hourlyWeather.temperature}°C"
         holder.conditionTextView.text = hourlyWeather.description
         holder.iconImageView.setImageResource(hourlyWeather.icResId)

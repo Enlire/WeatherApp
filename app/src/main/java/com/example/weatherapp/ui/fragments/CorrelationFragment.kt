@@ -166,13 +166,13 @@ class CorrelationFragment : Fragment() {
         }
 
         // Observe errors
-        viewModel.setErrorCallback(object : ErrorCallback {
-            override fun onError(errorMessage: String?) {
-                if (!errorMessage.isNullOrEmpty()) {
-                    DialogUtils.showAPIErrorDialog(childFragmentManager, errorMessage)
-                }
-            }
-        })
+//        viewModel.setErrorCallback(object : ErrorCallback {
+//            override fun onError(errorMessage: String?) {
+//                if (!errorMessage.isNullOrEmpty()) {
+//                    DialogUtils.showAPIErrorDialog(childFragmentManager, errorMessage)
+//                }
+//            }
+//        })
 
         view.findViewById<Button>(R.id.button)
             .setOnClickListener {
@@ -205,16 +205,16 @@ class CorrelationFragment : Fragment() {
                         shimmerLayout.visibility = View.GONE
                     }
                     else {
-                        viewModel.fetchCorrelationData(
-                            firstLocationCoordinates.first,
-                            firstLocationCoordinates.second,
-                            1
-                        )
-                        viewModel.fetchCorrelationData(
-                            secondLocationCoordinates.first,
-                            secondLocationCoordinates.second,
-                            2
-                        )
+//                        viewModel.fetchCorrelationData(
+//                            firstLocationCoordinates.first,
+//                            firstLocationCoordinates.second,
+//                            1
+//                        )
+//                        viewModel.fetchCorrelationData(
+//                            secondLocationCoordinates.first,
+//                            secondLocationCoordinates.second,
+//                            2
+//                        )
                     }
                 }
             }

@@ -112,7 +112,7 @@ class MainFragment : ScopedFragment(), KodeinAware {
         recyclerViewHourly.adapter = hourlyAdapter
 
         val recyclerViewDaily: RecyclerView = view.findViewById(R.id.dailyWeatherRecyclerView)
-        val dailyAdapter = DailyCardsAdapter(emptyList())
+        val dailyAdapter = DailyCardsAdapter(emptyList(), requireContext())
         recyclerViewDaily.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerViewDaily.adapter = dailyAdapter
 
@@ -164,7 +164,7 @@ class MainFragment : ScopedFragment(), KodeinAware {
             updateLineChart(it)
         })
 
-        viewModel.fetchCurrentWeatherData()
+        //viewModel.fetchCurrentWeatherData()
 
         shimmerLayout.stopShimmer()
         shimmerLayout.visibility = View.GONE

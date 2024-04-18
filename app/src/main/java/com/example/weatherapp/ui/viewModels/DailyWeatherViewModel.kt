@@ -14,20 +14,22 @@ import com.example.weatherapp.domain.lazyDeferred
 import com.example.weatherapp.domain.models.DailyWeather
 import com.example.weatherapp.ui.ErrorCallback
 import kotlinx.coroutines.launch
+import org.threeten.bp.LocalDate
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class DailyWeatherViewModel(
     private val repository: WeatherRepository
-) : ViewModel() {
+) : WeatherLocationViewModel(repository) {
+
     val dailyWeather by lazyDeferred {
-        repository.getDailyWeatherDataFromDb()
+        repository.getDailyWeatherDataFromDb(LocalDate.now())
     }
 
     fun fetchDailyWeatherData() {
         viewModelScope.launch {
-            repository.getDailyWeatherDataFromDb()
+            repository.getDailyWeatherDataFromDb(LocalDate.now())
         }
     }
 }

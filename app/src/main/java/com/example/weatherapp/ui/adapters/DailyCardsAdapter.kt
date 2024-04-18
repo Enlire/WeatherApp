@@ -1,6 +1,7 @@
 package com.example.weatherapp.ui.adapters
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,10 +9,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
+import com.example.weatherapp.data.mappers.DailyWeatherMapper
 import com.example.weatherapp.domain.models.DailyWeather
 
-class DailyCardsAdapter(private var dailyWeatherList: List<DailyWeather>) :
-    RecyclerView.Adapter<DailyCardsAdapter.DailyCardsViewHolder>() {
+class DailyCardsAdapter(
+    private var dailyWeatherList: List<DailyWeather>,
+    private val context: Context
+) : RecyclerView.Adapter<DailyCardsAdapter.DailyCardsViewHolder>() {
+    private val dailyWeatherMapper = DailyWeatherMapper(context)
 
     class DailyCardsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val dayTextView: TextView = itemView.findViewById(R.id.day)
@@ -32,11 +37,11 @@ class DailyCardsAdapter(private var dailyWeatherList: List<DailyWeather>) :
         val dailyWeather = dailyWeatherList[position]
 
         // Bind the views with the corresponding data
-        holder.dayTextView.text = dailyWeather.day
+        holder.dayTextView.text = dailyWeatherMapper.getDayOfWeek(dailyWeather.date)
         holder.tempTextView.text = "${dailyWeather.tempMin}°C / ${dailyWeather.tempMax}°C"
         holder.conditionTextView.text = dailyWeather.description
         holder.iconImageView.setImageResource(dailyWeather.icResId)
-        holder.dateTextView.text = dailyWeather.date
+        holder.dateTextView.text = dailyWeatherMapper.formatDate(dailyWeather.date)
     }
 
     override fun getItemCount(): Int {

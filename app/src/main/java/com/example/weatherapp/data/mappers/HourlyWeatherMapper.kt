@@ -32,7 +32,8 @@ class HourlyWeatherMapper {
         val hourlyWeatherList = mutableListOf<HourlyWeather>()
 
         for (hourItem in response) {
-            val (formattedDate, formattedTime) = extractDateAndTime(hourItem.time)
+//            val (formattedDate, formattedTime) = extractDateAndTime(hourItem.time)
+            val date = hourItem.time
             val temperature = hourItem.tempC.roundToInt()
             val precip = hourItem.precipMm.roundToInt()
             val dewPoint = hourItem.dewpointC.roundToInt()
@@ -44,8 +45,8 @@ class HourlyWeatherMapper {
 
             val hourlyWeather = HourlyWeather(
                 description = hourItem.condition.text,
-                day = formattedDate,
-                hour = formattedTime,
+                date = date,
+//                hour = formattedTime,
                 isDay = hourItem.isDay,
                 code = hourItem.condition.code,
                 icResId = weatherCondition.weatherCodeWeatherApiToIcon(hourItem.condition.code, hourItem.isDay),
@@ -68,7 +69,7 @@ class HourlyWeatherMapper {
         return hourlyWeatherList
     }
 
-    private fun extractDateAndTime(inputString: String): Pair<String, String> {
+     fun extractDateAndTime(inputString: String): Pair<String, String> {
         val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         val dateTime = LocalDateTime.parse(inputString, dateTimeFormatter)
 

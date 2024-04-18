@@ -31,19 +31,19 @@ class WeatherNetworkDataSourceImpl(
 ) : WeatherNetworkDataSource {
     private var errorCallback: ErrorCallback? = null
 
-    private val _downloadedCurrentWeather = MutableLiveData<CurrentWeather>()
-    private val _downloadedHourlyWeather = MutableLiveData<List<HourlyWeather>>()
-    private val _downloadedDailyWeather = MutableLiveData<List<DailyWeather>>()
-    private val _downloadedPastWeather = MutableLiveData<List<PastWeather>>()
+    private val _downloadedCurrentWeather = MutableLiveData<CurrentWeatherResponse>()
+    private val _downloadedHourlyWeather = MutableLiveData<HourlyWeatherResponse>()
+    private val _downloadedDailyWeather = MutableLiveData<DailyWeatherResponse>()
+    private val _downloadedPastWeather = MutableLiveData<PastWeatherResponse>()
     private val _downloadedLocation = MutableLiveData<WeatherLocation>()
 
-    override val downloadedCurrentWeather: LiveData<CurrentWeather>
+    override val downloadedCurrentWeather: LiveData<CurrentWeatherResponse>
         get() = _downloadedCurrentWeather
-    override val downloadedHourlyWeather: LiveData<List<HourlyWeather>>
+    override val downloadedHourlyWeather: LiveData<HourlyWeatherResponse>
         get() = _downloadedHourlyWeather
-    override val downloadedDailyWeather: LiveData<List<DailyWeather>>
+    override val downloadedDailyWeather: LiveData<DailyWeatherResponse>
         get() = _downloadedDailyWeather
-    override val downloadedPastWeather: LiveData<List<PastWeather>>
+    override val downloadedPastWeather: LiveData<PastWeatherResponse>
         get() = _downloadedPastWeather
     override val downloadedLocation: LiveData<WeatherLocation>
         get() = _downloadedLocation
@@ -52,12 +52,11 @@ class WeatherNetworkDataSourceImpl(
         try {
             val response = weatherApiService.getCurrentWeather(location = location).execute()
             if (response.isSuccessful) {
-                val weatherResponse: CurrentWeatherResponse? = response.body()
-                weatherResponse?.let {
+                val weatherResponse: CurrentWeatherResponse = response.body()!!
+                //weatherResponse?.let {
                     _downloadedLocation.postValue(weatherResponse.location)
-                    val currentWeather = currentWeatherMapper.mapCurrentResponseToDomain(it)
-                    _downloadedCurrentWeather.postValue(currentWeather)
-                }
+                    _downloadedCurrentWeather.postValue(weatherResponse)
+                //}
             } else {
                 errorCallback?.onError("Ошибка при получении данных о погоде. Попробуйте повторить запрос.")
             }
@@ -70,15 +69,15 @@ class WeatherNetworkDataSourceImpl(
         try {
             val response = weatherApiService.getHourlyWeather(location = location).execute()
             if (response.isSuccessful) {
-                val hourlyWeatherResponse: HourlyWeatherResponse? = response.body()
-                hourlyWeatherResponse?.let {
-                    val hourlyWeatherList =
-                        hourlyWeatherMapper.mapHourlyResponseToDomain(
-                            hourlyWeatherResponse,
-                            hourlyWeatherResponse.location.localtime
-                        )
-                    _downloadedHourlyWeather.postValue(hourlyWeatherList)
-                }
+                val hourlyWeatherResponse: HourlyWeatherResponse = response.body()!!
+//                hourlyWeatherResponse?.let {
+//                    val hourlyWeatherList =
+//                        hourlyWeatherMapper.mapHourlyResponseToDomain(
+//                            hourlyWeatherResponse,
+//                            hourlyWeatherResponse.location.localtime
+//                        )
+                    _downloadedHourlyWeather.postValue(hourlyWeatherResponse)
+//                }
             } else {
                 errorCallback?.onError("Ошибка при получении данных о погоде. Попробуйте повторить запрос.")
             }
@@ -91,12 +90,12 @@ class WeatherNetworkDataSourceImpl(
         try {
             val response = openMeteoApiService.getDailyWeather(lat = lat, lon = lon).execute()
             if (response.isSuccessful) {
-                val dailyWeatherResponse: DailyWeatherResponse? = response.body()
-                dailyWeatherResponse?.let {
-                    val dailyWeatherList =
-                        dailyWeatherMapper.mapDailyResponseToDomain(dailyWeatherResponse)
-                    _downloadedDailyWeather.postValue(dailyWeatherList)
-                }
+                val dailyWeatherResponse: DailyWeatherResponse = response.body()!!
+//                dailyWeatherResponse?.let {
+//                    val dailyWeatherList =
+//                        dailyWeatherMapper.mapDailyResponseToDomain(dailyWeatherResponse)
+                    _downloadedDailyWeather.postValue(dailyWeatherResponse)
+//                }
             } else {
                 errorCallback?.onError("Ошибка при получении данных о погоде. Попробуйте повторить запрос.")
             }
@@ -110,12 +109,12 @@ class WeatherNetworkDataSourceImpl(
         try {
             val response = openMeteoApiService.getPastWeather(lat = lat, lon = lon, pastDays = 7).execute()
             if (response.isSuccessful) {
-                val pastWeatherResponse: PastWeatherResponse? = response.body()
-                pastWeatherResponse?.let {
-                    val pastWeatherList =
-                        dailyWeatherMapper.mapPastResponseToDomain(pastWeatherResponse)
-                    _downloadedPastWeather.postValue(pastWeatherList)
-                }
+                val pastWeatherResponse: PastWeatherResponse = response.body()!!
+//                pastWeatherResponse?.let {
+//                    val pastWeatherList =
+//                        dailyWeatherMapper.mapPastResponseToDomain(pastWeatherResponse)
+                    _downloadedPastWeather.postValue(pastWeatherResponse)
+//                }
             } else {
                 errorCallback?.onError("Ошибка при получении данных о погоде. Попробуйте повторить запрос.")
             }

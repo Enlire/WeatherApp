@@ -8,12 +8,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
+import com.example.weatherapp.data.mappers.HourlyWeatherMapper
 import com.example.weatherapp.domain.models.HourlyWeather
 import com.example.weatherapp.domain.models.WeatherCondition
 
 class HourlyWeatherAdapter(private var hourlyWeatherList: List<HourlyWeather>) :
     RecyclerView.Adapter<HourlyWeatherAdapter.HourlyWeatherViewHolder>() {
-
+    private val hourlyWeatherMapper = HourlyWeatherMapper()
     class HourlyWeatherViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val dayTextView: TextView = itemView.findViewById(R.id.day)
         val hourTextView: TextView = itemView.findViewById(R.id.hour)
@@ -39,12 +40,13 @@ class HourlyWeatherAdapter(private var hourlyWeatherList: List<HourlyWeather>) :
     override fun onBindViewHolder(holder: HourlyWeatherViewHolder, position: Int) {
         val hourlyWeather = hourlyWeatherList[position]
         val weatherDescription = WeatherCondition()
+        val dayAndHour = hourlyWeatherMapper.extractDateAndTime(hourlyWeather.date)
         var chance = hourlyWeather.chanceOfRain + hourlyWeather.chanceOfSnow
         if (chance > 100) chance = 100
 
         // Bind the views with the corresponding data
-        holder.dayTextView.text = hourlyWeather.day
-        holder.hourTextView.text = hourlyWeather.hour
+        holder.dayTextView.text = dayAndHour.first
+        holder.hourTextView.text = dayAndHour.second
         holder.tempTextView.text = "${hourlyWeather.temperature}°C"
         holder.conditionTextView.text = hourlyWeather.description
         holder.iconImageView.setImageResource(hourlyWeather.icResId)

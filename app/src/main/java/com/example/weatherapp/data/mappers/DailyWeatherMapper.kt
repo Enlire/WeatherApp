@@ -1,18 +1,27 @@
 package com.example.weatherapp.data.mappers
 
-import android.util.Log
+import android.content.Context
+import android.content.SharedPreferences
+import android.location.Address
+import android.location.Geocoder
+import androidx.preference.PreferenceManager
 import com.example.weatherapp.data.models.DailyWeatherResponse
 import com.example.weatherapp.data.models.PastWeatherResponse
+import com.example.weatherapp.data.models.WeatherLocation
 import com.example.weatherapp.domain.models.DailyWeather
 import com.example.weatherapp.domain.models.PastWeather
 import com.example.weatherapp.domain.models.WeatherCondition
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
+import org.threeten.bp.Instant
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZoneOffset
+import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.roundToInt
 
-class DailyWeatherMapper {
+class DailyWeatherMapper(private val context: Context) {
+    private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     fun mapDailyResponseToDomain (response: DailyWeatherResponse) : List<DailyWeather> {
 
         val dailyWeatherList = mutableListOf<DailyWeather>()
@@ -32,8 +41,8 @@ class DailyWeatherMapper {
 
         for (i in timeList.indices) {
             val date = timeList[i]
-            val dateFormat = formatDate(timeList[i])
-            val day = getDayOfWeek(date)
+//            val dateFormat = formatDate(timeList[i])
+//            val day = getDayOfWeek(date)
             val description = weatherCondition.weatherCodeToDescription(weatherCode[i])
             val iconResId = weatherCondition.weatherCodeOpenMeteoToIcon(weatherCode[i])
             val tempMax = temperature2mMaxList[i].roundToInt()
@@ -46,8 +55,8 @@ class DailyWeatherMapper {
             val sunset = formatTime(sunsetList[i])
 
             val dailyWeather = DailyWeather(
-                date = dateFormat,
-                day = day,
+                date = date,
+//                day = day,
                 description = description,
                 icResId = iconResId,
                 tempMax = tempMax,
@@ -128,6 +137,45 @@ class DailyWeatherMapper {
         return precipList
     }
 
+    fun mapLocationResponse(
+        latitude: Double,
+        longitude: Double,
+        utcOffsetSeconds: Int,
+        timezone: String
+    ): WeatherLocation {
+        val zoneId = ZoneId.of(timezone)
+        val name = getLocationNameFromCoordinates(latitude, longitude)!!
+        val instant = Instant.now()
+        val localDateTime = instant.atZone(zoneId).toLocalDateTime()
+        val localTimeEpoch = localDateTime.toEpochSecond(ZoneOffset.UTC)
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val localtimeString = localDateTime.format(formatter)
+
+        return WeatherLocation(
+            name = name,
+            lon = longitude,
+            lat = latitude,
+            localtime = localtimeString,
+            localTimeEpoch = localTimeEpoch,
+            tzId = timezone
+        )
+    }
+
+    private fun getLocationNameFromCoordinates (latitude: Double, longitude: Double) : String? {
+        val geocoder = Geocoder(context, Locale("ru", "RU"))
+        try {
+            val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
+            if (addresses?.isNotEmpty() == true) {
+                val address = addresses[0]
+                return address.locality
+            }
+        } catch (e: Exception) {
+            preferences.getString("USER_LOCATION", null)
+        }
+        return preferences.getString("USER_LOCATION", null)
+    }
+
+
     fun calculateAverageTemperature(
         maxTemperatureList: List<Float>,
         minTemperatureList: List<Float>
@@ -147,14 +195,14 @@ class DailyWeatherMapper {
         return result
     }
 
-    private fun formatDate(dateString: String): String {
+    fun formatDate(dateString: String): String {
         val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val date = LocalDate.parse(dateString, dateFormatter)
 
         return date.format(DateTimeFormatter.ofPattern("dd.MM"))
     }
 
-    private fun getDayOfWeek(dateString: String): String {
+    fun getDayOfWeek(dateString: String): String {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault())
         val date = LocalDate.parse(dateString, formatter)
 

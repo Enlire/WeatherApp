@@ -6,6 +6,13 @@ import com.example.weatherapp.data.daos.DailyWeatherDao
 import com.example.weatherapp.data.daos.HourlyWeatherDao
 import com.example.weatherapp.data.daos.PastWeatherDao
 import com.example.weatherapp.data.daos.WeatherLocationDao
+import com.example.weatherapp.data.mappers.CurrentWeatherMapper
+import com.example.weatherapp.data.mappers.DailyWeatherMapper
+import com.example.weatherapp.data.mappers.HourlyWeatherMapper
+import com.example.weatherapp.data.models.CurrentWeatherResponse
+import com.example.weatherapp.data.models.DailyWeatherResponse
+import com.example.weatherapp.data.models.HourlyWeatherResponse
+import com.example.weatherapp.data.models.PastWeatherResponse
 import com.example.weatherapp.domain.models.CurrentWeather
 import com.example.weatherapp.data.models.WeatherLocation
 import com.example.weatherapp.data.networking.WeatherNetworkDataSource
@@ -18,6 +25,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 import org.threeten.bp.ZonedDateTime
 
 class WeatherRepositoryImpl(
@@ -27,7 +37,10 @@ class WeatherRepositoryImpl(
     private val pastWeatherDao: PastWeatherDao,
     private val weatherLocationDao: WeatherLocationDao,
     private val weatherNetworkDataSource: WeatherNetworkDataSource,
-    private val locationService: LocationService
+    private val locationService: LocationService,
+    private val currentWeatherMapper: CurrentWeatherMapper,
+    private val hourlyWeatherMapper: HourlyWeatherMapper,
+    private val dailyWeatherMapper: DailyWeatherMapper
 
 ) : WeatherRepository {
     init {
@@ -37,9 +50,6 @@ class WeatherRepositoryImpl(
             }
             downloadedHourlyWeather.observeForever {newHourlyWeather ->
                 persistFetchedHourlyWeather(newHourlyWeather)
-            }
-            downloadedLocation.observeForever { newLocation ->
-                persistFetchedLocation(newLocation)
             }
             downloadedDailyWeather.observeForever { newDailyWeather ->
                 persistFetchedDailyWeather(newDailyWeather)
@@ -57,17 +67,17 @@ class WeatherRepositoryImpl(
         }
     }
 
-    override suspend fun getHourlyWeatherDataFromDb(): LiveData<out List<HourlyWeather>> {
+    override suspend fun getHourlyWeatherDataFromDb(startHour: LocalDateTime): LiveData<out List<HourlyWeather>> {
         return withContext(Dispatchers.IO) {
             initWeatherData()
-            return@withContext hourlyWeatherDao.getHourlyWeather()
+            return@withContext hourlyWeatherDao.getHourlyWeather(startHour)
         }
     }
 
-    override suspend fun getDailyWeatherDataFromDb(): LiveData<out List<DailyWeather>> {
+    override suspend fun getDailyWeatherDataFromDb(startDate: LocalDate): LiveData<out List<DailyWeather>> {
         return withContext(Dispatchers.IO) {
             initWeatherData()
-            return@withContext dailyWeatherDao.getDailyWeather()
+            return@withContext dailyWeatherDao.getDailyWeather(startDate)
         }
     }
 
@@ -85,9 +95,10 @@ class WeatherRepositoryImpl(
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun persistFetchedCurrentWeather(fetchedCurrentWeather: CurrentWeather) {
+    private fun persistFetchedCurrentWeather(fetchedCurrentWeather: CurrentWeatherResponse) {
         GlobalScope.launch(Dispatchers.IO) {
-            currentWeatherDao.upsert(fetchedCurrentWeather)
+            currentWeatherDao.upsert(currentWeatherMapper.mapCurrentResponseToDomain(fetchedCurrentWeather))
+            weatherLocationDao.upsert(fetchedCurrentWeather.location)
         }
     }
 
@@ -99,26 +110,46 @@ class WeatherRepositoryImpl(
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun persistFetchedHourlyWeather(fetchedHourlyWeather: List<HourlyWeather>) {
+    private fun persistFetchedHourlyWeather(fetchedHourlyWeather: HourlyWeatherResponse) {
+        fun deleteOldHourlyWeatherData() {
+            val currentTime = LocalDateTime.now()
+            hourlyWeatherDao.deleteOldHourlyWeatherEntries(currentTime)
+        }
+
         GlobalScope.launch(Dispatchers.IO) {
-            hourlyWeatherDao.deleteAllHourlyWeather()
-            hourlyWeatherDao.upsert(fetchedHourlyWeather)
+            deleteOldHourlyWeatherData()
+            hourlyWeatherDao.insert(hourlyWeatherMapper.mapHourlyResponseToDomain(
+                fetchedHourlyWeather,
+                fetchedHourlyWeather.location.localtime)
+            )
+            weatherLocationDao.upsert(fetchedHourlyWeather.location)
         }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun persistFetchedDailyWeather(fetchedDailyWeather: List<DailyWeather>) {
+    private fun persistFetchedDailyWeather(fetchedDailyWeather: DailyWeatherResponse) {
+        fun deleteOldDailyWeatherData() {
+            val today = LocalDate.now()
+            dailyWeatherDao.deleteOldDailyWeatherEntries(today)
+        }
+
         GlobalScope.launch(Dispatchers.IO) {
-            dailyWeatherDao.deleteAllDailyWeather()
-            dailyWeatherDao.upsert(fetchedDailyWeather)
+            deleteOldDailyWeatherData()
+            dailyWeatherDao.insert(dailyWeatherMapper.mapDailyResponseToDomain(fetchedDailyWeather))
+            weatherLocationDao.upsert(dailyWeatherMapper.mapLocationResponse(
+                fetchedDailyWeather.latitude,
+                fetchedDailyWeather.longitude,
+                fetchedDailyWeather.utcOffsetSeconds,
+                fetchedDailyWeather.timezone)
+            )
         }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun persistFetchedPastWeather(fetchedPastWeather: List<PastWeather>) {
+    private fun persistFetchedPastWeather(fetchedPastWeather: PastWeatherResponse) {
         GlobalScope.launch(Dispatchers.IO) {
             pastWeatherDao.deleteAllPastWeather()
-            pastWeatherDao.upsert(fetchedPastWeather)
+            pastWeatherDao.upsert(dailyWeatherMapper.mapPastResponseToDomain(fetchedPastWeather))
         }
     }
 
@@ -136,6 +167,12 @@ class WeatherRepositoryImpl(
 
         if (isFetchCurrentNeeded(lastWeatherLocation.zonedDateTime))
             fetchCurrentWeather()
+
+//        if (isFetchHourlyNeeded())
+//            fetchHourlyWeather()
+//
+//        if (isFetchDailyNeeded())
+//            fetchDailyWeather()
     }
 
     private suspend fun fetchCurrentWeather() {
@@ -165,15 +202,25 @@ class WeatherRepositoryImpl(
     }
 
     private fun isFetchCurrentNeeded(lastFetchTime: ZonedDateTime): Boolean {
-        val thirtyMinutesAgo = ZonedDateTime.now().minusMinutes(1)
+        val thirtyMinutesAgo = ZonedDateTime.now().minusMinutes(15)
         return lastFetchTime.isBefore(thirtyMinutesAgo)
     }
 
-    private fun isFetchHourlyNeeded(lastFetchTime: ZonedDateTime): Boolean {
-        TODO()
+    private fun isFetchHourlyNeeded(): Boolean {
+        val currentTime = LocalDateTime.now()
+        val hourlyWeatherCount = hourlyWeatherDao.countHourlyWeather(currentTime)
+        return hourlyWeatherCount < 24
     }
 
-    private fun isFetchDailyNeeded(lastFetchTime: ZonedDateTime): Boolean {
-        TODO()
+    private fun isFetchDailyNeeded(): Boolean {
+        val today = LocalDate.now()
+        val dailyWeatherCount = dailyWeatherDao.countDailyWeather(today)
+        return dailyWeatherCount < 7
+    }
+
+    private fun isFetchPastNeeded(): Boolean {
+        val today = LocalDate.now()
+        val dailyWeatherCount = dailyWeatherDao.countDailyWeather(today)
+        return dailyWeatherCount < 7
     }
 }

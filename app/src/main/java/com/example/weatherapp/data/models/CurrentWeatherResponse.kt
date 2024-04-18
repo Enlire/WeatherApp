@@ -39,12 +39,6 @@ data class WeatherLocation(
 	@field:SerializedName("localtime_epoch")
 	val localTimeEpoch: Long,
 
-	@field:SerializedName("region")
-	val region: String,
-
-	@field:SerializedName("country")
-	val country: String,
-
 	@field:SerializedName("tz_id")
 	val tzId: String,
 
