@@ -4,20 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class PastWeatherResponse(
 
-    @field:SerializedName("elevation")
-    val elevation: Any,
-
-    @field:SerializedName("generationtime_ms")
-    val generationtimeMs: Any,
-
-    @field:SerializedName("timezone_abbreviation")
-    val timezoneAbbreviation: String,
-
     @field:SerializedName("timezone")
     val timezone: String,
 
     @field:SerializedName("latitude")
-    val latitude: Any,
+    val latitude: Double,
 
     @field:SerializedName("daily")
     val daily: PastDaily,
@@ -26,7 +17,7 @@ data class PastWeatherResponse(
     val utcOffsetSeconds: Int,
 
     @field:SerializedName("longitude")
-    val longitude: Any
+    val longitude: Double
 )
 
 data class PastDaily(

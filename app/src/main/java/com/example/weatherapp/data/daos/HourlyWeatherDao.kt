@@ -5,25 +5,22 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.weatherapp.domain.models.DailyWeather
 import com.example.weatherapp.domain.models.HourlyWeather
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.LocalTime
+import org.threeten.bp.ZonedDateTime
 
 @Dao
 interface HourlyWeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(hourlyWeatherEntries: List<HourlyWeather>)
 
-    @Query("SELECT * FROM hourly_weather WHERE dateTime(date) >= dateTime(:startDateTime)")
-    fun getHourlyWeather(startDateTime: LocalDateTime): LiveData<List<HourlyWeather>>
+    @Query("SELECT location FROM hourly_weather WHERE id = 1")
+    fun getHourlyWeatherLocation(): String
 
-    @Query("SELECT count(id) FROM hourly_weather WHERE dateTime(date) >= date(:startDateTime)")
-    fun countHourlyWeather(startDateTime: LocalDateTime): Int
+    @Query("SELECT * FROM hourly_weather")
+    fun getHourlyWeather(): LiveData<List<HourlyWeather>>
 
-    @Query("DELETE FROM hourly_weather WHERE dateTime(date) < dateTime(:firstDateTimeToKeep)")
-    fun deleteOldHourlyWeatherEntries(firstDateTimeToKeep: LocalDateTime)
+    @Query("SELECT count(id) FROM hourly_weather WHERE dateTime(date) >= dateTime(:startDateTime)")
+    fun countHourlyWeather(startDateTime: ZonedDateTime): Int
 
     @Query("DELETE FROM hourly_weather")
     fun deleteAllHourlyWeather()

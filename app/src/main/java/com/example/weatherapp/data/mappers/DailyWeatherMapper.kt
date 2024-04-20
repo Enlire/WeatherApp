@@ -40,9 +40,10 @@ class DailyWeatherMapper(private val context: Context) {
         val windspeed10mMaxList = daily.windspeed10mMax
 
         for (i in timeList.indices) {
+            val latitude = response.latitude
+            val longitude = response.longitude
+            val location = getLocationNameFromCoordinates(latitude, longitude) ?: "unknown"
             val date = timeList[i]
-//            val dateFormat = formatDate(timeList[i])
-//            val day = getDayOfWeek(date)
             val description = weatherCondition.weatherCodeToDescription(weatherCode[i])
             val iconResId = weatherCondition.weatherCodeOpenMeteoToIcon(weatherCode[i])
             val tempMax = temperature2mMaxList[i].roundToInt()
@@ -55,8 +56,8 @@ class DailyWeatherMapper(private val context: Context) {
             val sunset = formatTime(sunsetList[i])
 
             val dailyWeather = DailyWeather(
+                location = location.trim(),
                 date = date,
-//                day = day,
                 description = description,
                 icResId = iconResId,
                 tempMax = tempMax,
@@ -76,7 +77,9 @@ class DailyWeatherMapper(private val context: Context) {
 
     fun mapPastResponseToDomain (response: PastWeatherResponse) : List<PastWeather> {
         val pastWeatherList = mutableListOf<PastWeather>()
-
+        val latitude = response.latitude
+        val longitude = response.longitude
+        val location = getLocationNameFromCoordinates(latitude, longitude) ?: "unknown"
         val daily = response.daily
         val timeList = daily.time
         val temperature2mMaxList = daily.temperature2mMax
@@ -90,6 +93,7 @@ class DailyWeatherMapper(private val context: Context) {
             val precipSum = precipSumList[i]
 
             val pastWeather = PastWeather(
+                location = location.trim(),
                 date = dateFormat,
                 tempMax = tempMax,
                 tempMin = tempMin,
@@ -137,14 +141,14 @@ class DailyWeatherMapper(private val context: Context) {
         return precipList
     }
 
-    fun mapLocationResponse(
+    fun mapLocationDailyResponse(
         latitude: Double,
         longitude: Double,
         utcOffsetSeconds: Int,
         timezone: String
     ): WeatherLocation {
         val zoneId = ZoneId.of(timezone)
-        val name = getLocationNameFromCoordinates(latitude, longitude)!!
+        val name = getLocationNameFromCoordinates(latitude, longitude) ?: "unknown"
         val instant = Instant.now()
         val localDateTime = instant.atZone(zoneId).toLocalDateTime()
         val localTimeEpoch = localDateTime.toEpochSecond(ZoneOffset.UTC)
@@ -152,7 +156,7 @@ class DailyWeatherMapper(private val context: Context) {
         val localtimeString = localDateTime.format(formatter)
 
         return WeatherLocation(
-            name = name,
+            name = name.trim(),
             lon = longitude,
             lat = latitude,
             localtime = localtimeString,

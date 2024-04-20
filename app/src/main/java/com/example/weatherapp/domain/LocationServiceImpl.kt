@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
@@ -86,15 +85,15 @@ class LocationServiceImpl(
         val deviceLocation = getLastDeviceLocation().await()
             ?: return false
 
-        val comparisonThreshold = 0.03
+        val comparisonThreshold = 0.1
         return abs(deviceLocation.latitude - lastWeatherLocation.lat) > comparisonThreshold &&
                 abs(deviceLocation.longitude - lastWeatherLocation.lon) > comparisonThreshold
     }
 
     private fun hasCustomLocationChanged(lastWeatherLocation: WeatherLocation): Boolean {
         if (!isUsingDeviceLocation()) {
-            val customLocationName = getCustomLocationName()
-            return customLocationName != lastWeatherLocation.name
+            val customLocationName = getCustomLocationName()?.trim()
+            return !customLocationName.equals(lastWeatherLocation.name, ignoreCase = true)
         }
         return false
     }

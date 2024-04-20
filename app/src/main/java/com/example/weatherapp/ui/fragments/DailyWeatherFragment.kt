@@ -1,7 +1,6 @@
 package com.example.weatherapp.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,6 +65,8 @@ class DailyWeatherFragment : ScopedFragment(), KodeinAware {
         weatherLocation.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
         })
+
+        viewModelDaily.fetchDailyWeatherData()
 
         shimmerLayout.stopShimmer()
         shimmerLayout.visibility = View.GONE

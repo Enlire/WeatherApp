@@ -12,7 +12,7 @@ class HourlyWeatherMapper {
     //private val locationService = LocationService(context)
     fun mapHourlyResponseToDomain(response: HourlyWeatherResponse, currentTime: String): List<HourlyWeather> {
         val currentHour = extractCurrentTime(currentTime)//locationService.lastKnownLocation?.time
-        val location = response.location.name
+        val location = response.location.name.trim()
 
         val firstForecastDay = response.forecast.forecastday[0]
         val secondForecastDay = response.forecast.forecastday[1]
@@ -32,7 +32,6 @@ class HourlyWeatherMapper {
         val hourlyWeatherList = mutableListOf<HourlyWeather>()
 
         for (hourItem in response) {
-//            val (formattedDate, formattedTime) = extractDateAndTime(hourItem.time)
             val date = hourItem.time
             val temperature = hourItem.tempC.roundToInt()
             val precip = hourItem.precipMm.roundToInt()
@@ -44,9 +43,9 @@ class HourlyWeatherMapper {
             val weatherCondition = WeatherCondition()
 
             val hourlyWeather = HourlyWeather(
+                location = location,
                 description = hourItem.condition.text,
                 date = date,
-//                hour = formattedTime,
                 isDay = hourItem.isDay,
                 code = hourItem.condition.code,
                 icResId = weatherCondition.weatherCodeWeatherApiToIcon(hourItem.condition.code, hourItem.isDay),

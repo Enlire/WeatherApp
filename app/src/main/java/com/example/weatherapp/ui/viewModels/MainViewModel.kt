@@ -22,4 +22,10 @@ class MainViewModel(
             repository.getCurrentWeatherDataFromDb()
         }
     }
+
+    fun fetchPastWeatherData() {
+        viewModelScope.launch {
+            repository.getPastWeatherFromDb()
+        }
+    }
 }

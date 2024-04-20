@@ -133,20 +133,15 @@ class MainFragment : ScopedFragment(), KodeinAware {
         hourlyAdapter: HourlyCardsAdapter,
         dailyAdapter: DailyCardsAdapter
     ) = launch {
-        val currentWeather = viewModel.currentWeather.await()
+        val weatherLocation = viewModel.weatherLocation.await()
         val hourlyWeather = viewModelHourly.hourlyWeather.await()
         val dailyWeather = viewModelDaily.dailyWeather.await()
-        val weatherLocation = viewModel.weatherLocation.await()
+        val currentWeather = viewModel.currentWeather.await()
         val pastWeather = viewModel.pastWeather.await()
 
         weatherLocation.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
             location.text = it.name
-        })
-
-        currentWeather.observe(viewLifecycleOwner, Observer {
-            if (it == null) return@Observer
-            showCurrentWeather(it)
         })
 
         hourlyWeather.observe(viewLifecycleOwner, Observer {
@@ -159,12 +154,20 @@ class MainFragment : ScopedFragment(), KodeinAware {
             dailyAdapter.updateData(it)
         })
 
+        currentWeather.observe(viewLifecycleOwner, Observer {
+            if (it == null) return@Observer
+            showCurrentWeather(it)
+        })
+
         pastWeather.observe(viewLifecycleOwner, Observer {
             if(it == null) return@Observer
             updateLineChart(it)
         })
 
-        //viewModel.fetchCurrentWeatherData()
+        viewModelHourly.fetchHourlyWeatherData()
+        viewModelDaily.fetchDailyWeatherData()
+        viewModel.fetchCurrentWeatherData()
+        viewModel.fetchPastWeatherData()
 
         shimmerLayout.stopShimmer()
         shimmerLayout.visibility = View.GONE

@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.data.networking.WeatherNetworkDataSource
 import com.example.weatherapp.ui.ErrorCallback
-import com.example.weatherapp.ui.adapters.DailyWeatherAdapter
 import com.example.weatherapp.ui.adapters.HourlyWeatherAdapter
 import com.example.weatherapp.ui.dialogs.DialogUtils
 import com.example.weatherapp.ui.viewModels.HourlyWeatherViewModel
@@ -67,6 +66,8 @@ class HourlyWeatherFragment : ScopedFragment(), KodeinAware {
         weatherLocation.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
         })
+
+        viewModelHourly.fetchHourlyWeatherData()
 
         shimmerLayout.stopShimmer()
         shimmerLayout.visibility = View.GONE

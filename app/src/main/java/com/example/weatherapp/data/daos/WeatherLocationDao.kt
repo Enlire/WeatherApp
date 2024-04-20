@@ -18,4 +18,13 @@ interface WeatherLocationDao {
 
     @Query("SELECT * FROM weather_location WHERE id = $WEATHER_LOCATION_ID")
     fun getLocationNonLive(): WeatherLocation?
+
+    @Query("SELECT name FROM weather_location WHERE id = $WEATHER_LOCATION_ID")
+    fun getLocationName(): String
+
+    @Query("SELECT localTimeEpoch FROM weather_location WHERE id = $WEATHER_LOCATION_ID")
+    fun getLocalTimeEpoch(): Long
+
+    @Query("SELECT tzId FROM weather_location WHERE id = $WEATHER_LOCATION_ID")
+    fun getTzId(): String
 }

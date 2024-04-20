@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class PastWeather(
     @PrimaryKey(autoGenerate = false)
     var id: Int? = null,
+    val location: String,
     val date: String,
     val tempMax: Float,
     val tempMin: Float,

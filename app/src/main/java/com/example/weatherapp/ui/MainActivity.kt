@@ -1,6 +1,5 @@
 package com.example.weatherapp.ui
 
-import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Rect
@@ -20,7 +19,6 @@ import com.example.weatherapp.R
 import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.domain.LOCATION_PERMISSION_REQUEST_CODE
 import com.example.weatherapp.domain.LocationServiceImpl
-import com.example.weatherapp.ui.fragments.SettingsFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
@@ -35,6 +33,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
     override val kodein by closestKodein()
     private val fusedLocationProviderClient: FusedLocationProviderClient by instance()
 
+    private lateinit var locationManager: LifecycleBoundLocationManager
     private lateinit var binding : ActivityMainBinding
     private var downX: Int = 0
     private val sharedPreferences by lazy {
@@ -107,11 +106,12 @@ class MainActivity : AppCompatActivity(), KodeinAware {
     }
 
     private fun bindLocationManager() {
-        LifecycleBoundLocationManager(
+        locationManager = LifecycleBoundLocationManager(
             this,
             fusedLocationProviderClient,
             locationCallback
         )
+        lifecycle.addObserver(locationManager)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

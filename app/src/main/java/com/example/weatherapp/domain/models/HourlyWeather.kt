@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey
 data class HourlyWeather(
     @PrimaryKey(autoGenerate = false)
     var id: Int? = null,
+    val location: String,
     val description: String,
     val date: String,
     val isDay: Int,

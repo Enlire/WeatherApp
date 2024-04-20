@@ -13,10 +13,10 @@ import com.example.weatherapp.data.models.CurrentWeatherResponse
 import com.example.weatherapp.data.models.DailyWeatherResponse
 import com.example.weatherapp.data.models.HourlyWeatherResponse
 import com.example.weatherapp.data.models.PastWeatherResponse
-import com.example.weatherapp.domain.models.CurrentWeather
 import com.example.weatherapp.data.models.WeatherLocation
 import com.example.weatherapp.data.networking.WeatherNetworkDataSource
 import com.example.weatherapp.domain.LocationService
+import com.example.weatherapp.domain.models.CurrentWeather
 import com.example.weatherapp.domain.models.DailyWeather
 import com.example.weatherapp.domain.models.HourlyWeather
 import com.example.weatherapp.domain.models.PastWeather
@@ -25,10 +25,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.LocalTime
+import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
 class WeatherRepositoryImpl(
     private val currentWeatherDao: CurrentWeatherDao,
@@ -62,28 +61,28 @@ class WeatherRepositoryImpl(
 
     override suspend fun getCurrentWeatherDataFromDb(): LiveData<out CurrentWeather> {
         return withContext(Dispatchers.IO) {
-            initWeatherData()
+            if (needToFetchCurrent()) fetchCurrentWeather()
             return@withContext currentWeatherDao.getCurrentWeather()
         }
     }
 
-    override suspend fun getHourlyWeatherDataFromDb(startHour: LocalDateTime): LiveData<out List<HourlyWeather>> {
+    override suspend fun getHourlyWeatherDataFromDb(): LiveData<out List<HourlyWeather>> {
         return withContext(Dispatchers.IO) {
-            initWeatherData()
-            return@withContext hourlyWeatherDao.getHourlyWeather(startHour)
+            if (needToFetchHourly()) fetchHourlyWeather()
+            return@withContext hourlyWeatherDao.getHourlyWeather()
         }
     }
 
-    override suspend fun getDailyWeatherDataFromDb(startDate: LocalDate): LiveData<out List<DailyWeather>> {
+    override suspend fun getDailyWeatherDataFromDb(): LiveData<out List<DailyWeather>> {
         return withContext(Dispatchers.IO) {
-            initWeatherData()
-            return@withContext dailyWeatherDao.getDailyWeather(startDate)
+            if (needToFetchDaily()) fetchDailyWeather()
+            return@withContext dailyWeatherDao.getDailyWeather()
         }
     }
 
     override suspend fun getPastWeatherFromDb(): LiveData<out List<PastWeather>> {
         return withContext(Dispatchers.IO) {
-            initWeatherData()
+            if (needToFetchPast()) fetchPastWeather()
             return@withContext pastWeatherDao.getPastWeather()
         }
     }
@@ -103,21 +102,9 @@ class WeatherRepositoryImpl(
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun persistFetchedLocation(fetchedLocation: WeatherLocation) {
-        GlobalScope.launch(Dispatchers.IO) {
-            weatherLocationDao.upsert(fetchedLocation)
-        }
-    }
-
-    @OptIn(DelicateCoroutinesApi::class)
     private fun persistFetchedHourlyWeather(fetchedHourlyWeather: HourlyWeatherResponse) {
-        fun deleteOldHourlyWeatherData() {
-            val currentTime = LocalDateTime.now()
-            hourlyWeatherDao.deleteOldHourlyWeatherEntries(currentTime)
-        }
-
         GlobalScope.launch(Dispatchers.IO) {
-            deleteOldHourlyWeatherData()
+            hourlyWeatherDao.deleteAllHourlyWeather()
             hourlyWeatherDao.insert(hourlyWeatherMapper.mapHourlyResponseToDomain(
                 fetchedHourlyWeather,
                 fetchedHourlyWeather.location.localtime)
@@ -128,15 +115,10 @@ class WeatherRepositoryImpl(
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun persistFetchedDailyWeather(fetchedDailyWeather: DailyWeatherResponse) {
-        fun deleteOldDailyWeatherData() {
-            val today = LocalDate.now()
-            dailyWeatherDao.deleteOldDailyWeatherEntries(today)
-        }
-
         GlobalScope.launch(Dispatchers.IO) {
-            deleteOldDailyWeatherData()
+            dailyWeatherDao.deleteAllDailyWeather()
             dailyWeatherDao.insert(dailyWeatherMapper.mapDailyResponseToDomain(fetchedDailyWeather))
-            weatherLocationDao.upsert(dailyWeatherMapper.mapLocationResponse(
+            weatherLocationDao.upsert(dailyWeatherMapper.mapLocationDailyResponse(
                 fetchedDailyWeather.latitude,
                 fetchedDailyWeather.longitude,
                 fetchedDailyWeather.utcOffsetSeconds,
@@ -150,29 +132,43 @@ class WeatherRepositoryImpl(
         GlobalScope.launch(Dispatchers.IO) {
             pastWeatherDao.deleteAllPastWeather()
             pastWeatherDao.upsert(dailyWeatherMapper.mapPastResponseToDomain(fetchedPastWeather))
+            weatherLocationDao.upsert(dailyWeatherMapper.mapLocationDailyResponse(fetchedPastWeather.latitude,
+                fetchedPastWeather.longitude,
+                fetchedPastWeather.utcOffsetSeconds,
+                fetchedPastWeather.timezone))
         }
     }
 
-    private suspend fun initWeatherData() {
+    private suspend fun needToFetchCurrent(): Boolean {
         val lastWeatherLocation = weatherLocationDao.getLocationNonLive()
+        return lastWeatherLocation == null
+                || locationService.hasLocationChanged(lastWeatherLocation)
+                || !(lastWeatherLocation.name.equals(currentWeatherDao.getCurrentWeatherLocation(), ignoreCase = true))
+                || isFetchCurrentNeeded(lastWeatherLocation.zonedDateTime)
+    }
 
-        if (lastWeatherLocation == null
-            || locationService.hasLocationChanged(lastWeatherLocation)) {
-            fetchCurrentWeather()
-            fetchHourlyWeather()
-            fetchDailyWeather()
-            fetchPastWeather()
-            return
-        }
+    private suspend fun needToFetchHourly(): Boolean {
+        val lastWeatherLocation = weatherLocationDao.getLocationNonLive()
+        return lastWeatherLocation == null
+                || locationService.hasLocationChanged(lastWeatherLocation)
+                || !(lastWeatherLocation.name.equals(hourlyWeatherDao.getHourlyWeatherLocation(), ignoreCase = true))
+                || isFetchHourlyNeeded()
+    }
 
-        if (isFetchCurrentNeeded(lastWeatherLocation.zonedDateTime))
-            fetchCurrentWeather()
+    private suspend fun needToFetchDaily(): Boolean {
+        val lastWeatherLocation = weatherLocationDao.getLocationNonLive()
+        return lastWeatherLocation == null
+                || locationService.hasLocationChanged(lastWeatherLocation)
+                || !(lastWeatherLocation.name.equals(dailyWeatherDao.getDailyWeatherLocation(), ignoreCase = true))
+                || isFetchDailyNeeded()
+    }
 
-//        if (isFetchHourlyNeeded())
-//            fetchHourlyWeather()
-//
-//        if (isFetchDailyNeeded())
-//            fetchDailyWeather()
+    private suspend fun needToFetchPast(): Boolean {
+        val lastWeatherLocation = weatherLocationDao.getLocationNonLive()
+        return lastWeatherLocation == null
+                || locationService.hasLocationChanged(lastWeatherLocation)
+                || !(lastWeatherLocation.name.equals(pastWeatherDao.getPastWeatherLocation(), ignoreCase = true))
+                || isFetchPastNeeded()
     }
 
     private suspend fun fetchCurrentWeather() {
@@ -202,25 +198,29 @@ class WeatherRepositoryImpl(
     }
 
     private fun isFetchCurrentNeeded(lastFetchTime: ZonedDateTime): Boolean {
-        val thirtyMinutesAgo = ZonedDateTime.now().minusMinutes(15)
-        return lastFetchTime.isBefore(thirtyMinutesAgo)
+        val fifteenMinutesAgo = ZonedDateTime.now(ZoneId.of(weatherLocationDao.getTzId())).minusMinutes(15)
+        return lastFetchTime.isBefore(fifteenMinutesAgo)
     }
 
     private fun isFetchHourlyNeeded(): Boolean {
-        val currentTime = LocalDateTime.now()
+        val currentTime = ZonedDateTime.now(ZoneId.of(weatherLocationDao.getTzId()))
         val hourlyWeatherCount = hourlyWeatherDao.countHourlyWeather(currentTime)
         return hourlyWeatherCount < 24
     }
 
     private fun isFetchDailyNeeded(): Boolean {
-        val today = LocalDate.now()
-        val dailyWeatherCount = dailyWeatherDao.countDailyWeather(today)
+        val date = ZonedDateTime.now(ZoneId.of(weatherLocationDao.getTzId()))
+        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val formattedDate = date.format(dateFormatter)
+        val dailyWeatherCount = dailyWeatherDao.countDailyWeather(formattedDate)
         return dailyWeatherCount < 7
     }
 
     private fun isFetchPastNeeded(): Boolean {
-        val today = LocalDate.now()
-        val dailyWeatherCount = dailyWeatherDao.countDailyWeather(today)
-        return dailyWeatherCount < 7
+        val date = ZonedDateTime.now(ZoneId.of(weatherLocationDao.getTzId()))
+        val dateFormatter = DateTimeFormatter.ofPattern("dd.MM")
+        val formattedDate = date.format(dateFormatter)
+        val pastWeatherCount = pastWeatherDao.countPastWeather(formattedDate)
+        return pastWeatherCount == 8
     }
 }

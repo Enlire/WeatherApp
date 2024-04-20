@@ -1,10 +1,11 @@
 package com.example.weatherapp.data.networking
 
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.example.weatherapp.data.models.CurrentWeatherResponse
 import com.example.weatherapp.data.models.HourlyWeatherResponse
+import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
@@ -18,7 +19,7 @@ interface WeatherApiService {
         @Query("q") location: String,
         @Query("Lang") languageCode: String = "ru",
         @Query("aqi") aqi: String = "no"
-    ): Call<CurrentWeatherResponse>
+    ): Deferred<CurrentWeatherResponse>
 
     @GET("forecast.json")
     fun getHourlyWeather(
@@ -28,13 +29,13 @@ interface WeatherApiService {
         @Query("aqi") aqi: String = "no",
         @Query("alerts") alerts: String = "no",
         @Query("Lang") languageCode: String = "ru"
-    ): Call<HourlyWeatherResponse>
+    ): Deferred<HourlyWeatherResponse>
 
     companion object {
         operator fun invoke(): WeatherApiService {
             // API response interceptor
             val loggingInterceptor = HttpLoggingInterceptor()
-                .setLevel(HttpLoggingInterceptor.Level.BODY)
+                .setLevel(HttpLoggingInterceptor.Level.BASIC)
 
             // Client
             val client = OkHttpClient.Builder()
@@ -45,6 +46,7 @@ interface WeatherApiService {
             val retrofit = Retrofit.Builder()
                 .baseUrl("https://api.weatherapi.com/v1/")
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .client(client)
                 .build()
 
