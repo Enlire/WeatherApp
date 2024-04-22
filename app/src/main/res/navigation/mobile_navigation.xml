@@ -29,4 +29,9 @@
         android:id="@+id/settings"
         android:name="com.example.weatherapp.ui.fragments.SettingsFragment"
         tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/cities"
+        android:name="com.example.weatherapp.ui.fragments.CitiesListFragment"
+        tools:layout="@layout/cities_list"/>
 </navigation>

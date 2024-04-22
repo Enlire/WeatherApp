@@ -14,7 +14,7 @@ import com.example.weatherapp.domain.models.DailyWeather
 
 class DailyCardsAdapter(
     private var dailyWeatherList: List<DailyWeather>,
-    private val context: Context
+    context: Context
 ) : RecyclerView.Adapter<DailyCardsAdapter.DailyCardsViewHolder>() {
     private val dailyWeatherMapper = DailyWeatherMapper(context)
 

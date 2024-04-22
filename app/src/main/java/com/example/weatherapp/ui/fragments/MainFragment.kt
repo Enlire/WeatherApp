@@ -12,6 +12,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
@@ -56,6 +58,7 @@ class MainFragment : ScopedFragment(), KodeinAware {
     private lateinit var constraintLayout: ConstraintLayout
     private lateinit var lineChart: LineChart
     private lateinit var chartCardView: CardView
+    private lateinit var citiesButton: ImageView
 
     // ViewModels
     private lateinit var viewModel: MainViewModel
@@ -83,6 +86,7 @@ class MainFragment : ScopedFragment(), KodeinAware {
 
         shimmerLayout = view.findViewById(R.id.shimmer_view_container)
         constraintLayout = view.findViewById(R.id.constraint_layout)
+        citiesButton = view.findViewById(R.id.city_button)
 
         location = view.findViewById(R.id.location)
         weatherIcon = view.findViewById(R.id.weatherIcon)
@@ -127,6 +131,14 @@ class MainFragment : ScopedFragment(), KodeinAware {
         shimmerLayout.startShimmer()
 
         observeWeatherDataChanges(hourlyAdapter, dailyAdapter)
+
+        citiesButton.setOnClickListener {
+            val fragment = CitiesListFragment()
+            val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+            val navController = navHostFragment.navController
+            navController.navigate(R.id.cities)
+        }
+
     }
 
     private fun observeWeatherDataChanges(

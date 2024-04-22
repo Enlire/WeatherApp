@@ -50,4 +50,8 @@
         <item name="android:textColorPrimary">@color/items</item>
         <item name="android:colorBackground">@color/items</item>
     </style>
+
+    <style name="RoundedSquareShape">
+        <item name="cornerSize">20%</item>
+    </style>
 </resources>
