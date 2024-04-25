@@ -1,7 +1,9 @@
 package com.example.weatherapp.ui.fragments
 
 import android.annotation.SuppressLint
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +14,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
@@ -130,15 +133,15 @@ class MainFragment : ScopedFragment(), KodeinAware {
         shimmerLayout.visibility = View.VISIBLE
         shimmerLayout.startShimmer()
 
+        //val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        //sharedPreferences.edit().putString("USER_LOCATION", "Волгоград").apply()
+
+
         observeWeatherDataChanges(hourlyAdapter, dailyAdapter)
 
         citiesButton.setOnClickListener {
-            val fragment = CitiesListFragment()
-            val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
-            val navController = navHostFragment.navController
-            navController.navigate(R.id.cities)
+            requireActivity().findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.cities)
         }
-
     }
 
     private fun observeWeatherDataChanges(

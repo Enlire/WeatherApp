@@ -9,21 +9,20 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.core.view.marginStart
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.ui.adapters.CitiesListAdapter
-import com.example.weatherapp.ui.adapters.HourlyCardsAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class CitiesListFragment() : Fragment() {
+class CitiesListFragment : Fragment() {
     private lateinit var backButton: ImageView
-    private lateinit var citiesList: MutableList<String>
     private lateinit var addButton: FloatingActionButton
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: CitiesListAdapter
+    private lateinit var citiesList: MutableList<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,10 +31,8 @@ class CitiesListFragment() : Fragment() {
         val view = inflater.inflate(R.layout.cities_list, container, false)
 
         recyclerView = view.findViewById(R.id.citiesRecyclerView)
-        adapter = CitiesListAdapter(requireContext(), mutableListOf())
         backButton = view.findViewById(R.id.back_button)
         addButton = view.findViewById(R.id.add_button)
-        citiesList = mutableListOf()
 
         return view
     }
@@ -44,8 +41,21 @@ class CitiesListFragment() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         citiesList = loadCitiesListFromSharedPreferences(requireContext()).toMutableList()
-        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        checkListSize()
+
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        adapter = CitiesListAdapter(requireContext(), citiesList) { cityName ->
+            context?.let { onItemClick(it, cityName) }
+        }
         recyclerView.adapter = adapter
+
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onChanged() {
+                super.onChanged()
+                citiesList = loadCitiesListFromSharedPreferences(requireContext()).toMutableList()
+                checkListSize()
+            }
+        })
 
         backButton.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
@@ -81,9 +91,9 @@ class CitiesListFragment() : Fragment() {
         builder.setPositiveButton("OK") { dialog, _ ->
             val cityName = editText.text.toString()
             if (cityName.isNotBlank()) {
-                addCity(cityName)
-            } else {
-                // Вывод сообщения об ошибке или некорректном вводе
+                citiesList.add(cityName)
+                saveCitiesListToSharedPreferences(requireContext(), citiesList)
+                adapter.updateData(citiesList)
             }
             dialog.dismiss()
         }
@@ -95,22 +105,32 @@ class CitiesListFragment() : Fragment() {
         builder.show()
     }
 
+    private fun checkListSize() {
+        if (citiesList.size >= 10) {
+            addButton.visibility = View.GONE
+        } else {
+            addButton.visibility = View.VISIBLE
+        }
+    }
+
+    private fun onItemClick(context: Context, cityName: String) {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        sharedPreferences.edit().putString("USER_LOCATION", cityName).apply()
+        val settingsFragment = parentFragmentManager.findFragmentById(R.id.settings) as? SettingsFragment
+        settingsFragment?.setLocationSwitchChecked(false)
+        sharedPreferences.edit().putBoolean("USE_DEVICE_LOCATION", false).apply()
+        requireActivity().supportFragmentManager.popBackStack()
+    }
+
+
     private fun saveCitiesListToSharedPreferences(context: Context, citiesList: List<String>) {
         val sharedPreferences = context.getSharedPreferences("CitiesList", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putStringSet("cities", HashSet(citiesList))
-        editor.apply()
+        sharedPreferences.edit().putStringSet("cities", HashSet(citiesList)).apply()
     }
 
     private fun loadCitiesListFromSharedPreferences(context: Context): List<String> {
         val sharedPreferences = context.getSharedPreferences("CitiesList", Context.MODE_PRIVATE)
         val citiesSet = sharedPreferences.getStringSet("cities", HashSet()) ?: HashSet()
-        return ArrayList(citiesSet)
-    }
-
-    private fun addCity(cityName: String) {
-        citiesList.add(cityName)
-        adapter.updateData(citiesList)
-        saveCitiesListToSharedPreferences(requireContext(), citiesList)
+        return citiesSet.toList()
     }
 }

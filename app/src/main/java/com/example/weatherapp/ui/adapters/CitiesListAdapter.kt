@@ -2,6 +2,7 @@ package com.example.weatherapp.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +10,19 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
-import com.example.weatherapp.domain.models.DailyWeather
 
 class CitiesListAdapter(
     context: Context,
-    private var citiesList: MutableList<String>
+    private var citiesList: MutableList<String>,
+    private val onItemClick: (String) -> Unit
 ) : RecyclerView.Adapter<CitiesListAdapter.CitiesListViewHolder>() {
+
+    private val sharedPreferences: SharedPreferences = context.getSharedPreferences("CitiesList", Context.MODE_PRIVATE)
+    private val editor: SharedPreferences.Editor = sharedPreferences.edit()
+
+    init {
+        loadCitiesListFromSharedPreferences(context)
+    }
 
     class CitiesListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cityTextView: TextView = itemView.findViewById(R.id.city_name)
@@ -31,10 +39,27 @@ class CitiesListAdapter(
     override fun onBindViewHolder(holder: CitiesListViewHolder, position: Int) {
         val cityName = citiesList[position]
         holder.cityTextView.text = cityName
+
         holder.deleteButton.setOnClickListener {
-            citiesList.removeAt(holder.adapterPosition)
-            notifyDataSetChanged()
+            citiesList.removeAt(position)
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, citiesList.size)
+            saveCitiesListToSharedPreferences(holder.itemView.context, citiesList)
+            updateData(citiesList)
         }
+
+        holder.itemView.setOnClickListener {
+            onItemClick(cityName)
+        }
+    }
+
+    private fun saveCitiesListToSharedPreferences(context: Context, citiesList: List<String>) {
+        editor.putStringSet("cities", HashSet(citiesList))
+        editor.apply()
+    }
+
+    private fun loadCitiesListFromSharedPreferences(context: Context) {
+        citiesList = sharedPreferences.getStringSet("cities", HashSet())?.toMutableList() ?: mutableListOf()
     }
 
     override fun getItemCount(): Int {
