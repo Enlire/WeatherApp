@@ -6,6 +6,7 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -21,6 +22,7 @@ interface OpenMeteoApiService {
         @Query("windspeed_unit") windUnit: String = "ms",
         @Query("timezone") timezone: String = "auto"
     ): Deferred<DailyWeatherResponse>
+
     @GET("forecast")
     fun getPastWeather(
         @Query("latitude") lat: Double,
@@ -30,6 +32,16 @@ interface OpenMeteoApiService {
         @Query("forecast_days") forecastDays: Int = 1,
         @Query("timezone") timezone: String = "auto"
     ): Deferred<PastWeatherResponse>
+
+    @GET("forecast")
+    fun getCorrelationData(
+        @Query("latitude") lat: Double,
+        @Query("longitude") lon: Double,
+        @Query("daily") daily: String = "temperature_2m_max,temperature_2m_min,precipitation_sum",
+        @Query("past_days") pastDays: Int = 92,
+        @Query("forecast_days") forecastDays: Int = 1,
+        @Query("timezone") timezone: String = "auto"
+    ): Call<PastWeatherResponse>
 
     companion object {
         operator fun invoke(): OpenMeteoApiService {

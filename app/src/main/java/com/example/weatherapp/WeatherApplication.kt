@@ -15,6 +15,7 @@ import com.example.weatherapp.data.repository.WeatherRepository
 import com.example.weatherapp.data.repository.WeatherRepositoryImpl
 import com.example.weatherapp.domain.LocationService
 import com.example.weatherapp.domain.LocationServiceImpl
+import com.example.weatherapp.ui.viewModelsFactories.CorrelationViewModelFactory
 import com.example.weatherapp.ui.viewModelsFactories.DailyWeatherViewModelFactory
 import com.example.weatherapp.ui.viewModelsFactories.HourlyWeatherViewModelFactory
 import com.example.weatherapp.ui.viewModelsFactories.MainViewModelFactory
@@ -39,11 +40,12 @@ class WeatherApp : Application(), KodeinAware {
         bind<WeatherApiService>() with singleton { WeatherApiService() }
         bind<OpenMeteoApiService>() with singleton { OpenMeteoApiService() }
         bind<WeatherRepository>() with singleton { WeatherRepositoryImpl(instance(), instance(), instance(), instance(), instance(), instance(), instance(), instance(), instance(), instance()) }
-        bind<WeatherNetworkDataSource>() with singleton { WeatherNetworkDataSourceImpl(instance(), instance()) }
+        bind<WeatherNetworkDataSource>() with singleton { WeatherNetworkDataSourceImpl(instance(), instance(), instance()) }
         bind<LocationService>() with singleton { LocationServiceImpl(instance())}
         bind() from provider { MainViewModelFactory(instance()) }
         bind() from provider { HourlyWeatherViewModelFactory(instance()) }
         bind() from provider { DailyWeatherViewModelFactory(instance()) }
+        bind() from provider { CorrelationViewModelFactory(instance())}
         bind<CurrentWeatherMapper>() with singleton { CurrentWeatherMapper() }
         bind<HourlyWeatherMapper>() with singleton { HourlyWeatherMapper() }
         bind<DailyWeatherMapper>() with singleton { DailyWeatherMapper(instance()) }

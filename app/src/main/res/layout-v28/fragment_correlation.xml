@@ -13,287 +13,423 @@
         android:layout_height="match_parent"
         android:scrollbars="none">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:clipToPadding="false">
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/horizontal_margin"
-            android:layout_marginTop="50dp"
-            android:fontFamily="@font/roboto_medium"
-            android:text="Корреляция"
-            android:textColor="@color/main_text"
-            android:textSize="22sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/correlationHelp"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/help"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="@dimen/horizontal_margin"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textView7"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/horizontal_margin"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="@dimen/horizontal_margin"
-            android:fontFamily="@font/roboto_light"
-            android:text="Здесь вы можете узнать, насколько сильно похожи погодные условия (температура воздуха и количество осадков) двух населенных пунктов. Это может быть полезно, если вы, например, собираетесь в поездку: так вы сможете понять, насколько условия климата в новом месте будут отличаться от привычных."
-            android:textColor="@color/main_text"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
-        <TextView
-            android:id="@+id/textView8"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/horizontal_margin"
-            android:layout_marginEnd="@dimen/horizontal_margin"
-            android:layout_marginTop="10dp"
-            android:text="В расчетах учитываются данные за последние 3 месяца."
-            android:fontFamily="@font/roboto_light"
-            android:textColor="@color/main_text"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView7" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/horizontal_margin"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="@dimen/horizontal_margin"
-            android:outlineAmbientShadowColor="@color/shadow_color"
-            android:outlineSpotShadowColor="@color/shadow_color"
-            app:cardBackgroundColor="@color/hourly_card_background"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView8">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/textView9"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/horizontal_margin"
-                    android:layout_marginTop="@dimen/horizontal_margin"
-                    android:fontFamily="@font/roboto_medium"
-                    android:text="Введите названия населенных пунктов"
-                    android:textColor="@color/main_text"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <EditText
-                    android:id="@+id/firstLocationEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginStart="@dimen/horizontal_margin"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="@dimen/horizontal_margin"
-                    android:background="@drawable/edit_text_style"
-                    android:ems="10"
-                    android:maxLength="30"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:hint="Первый населенный пункт"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView9" />
-
-                <EditText
-                    android:id="@+id/secondLocationEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginStart="@dimen/horizontal_margin"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginEnd="@dimen/horizontal_margin"
-                    android:background="@drawable/edit_text_style"
-                    android:ems="10"
-                    android:maxLength="30"
-                    android:hint="Второй населенный пункт"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/firstLocationEditText" />
-
-                <Button
-                    android:id="@+id/button"
-                    android:background="@drawable/button_shape"
-                    android:layout_width="150dp"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="@dimen/horizontal_margin"
-                    android:fontFamily="@font/roboto_medium"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
-                    android:text="Рассчитать"
-                    android:textAllCaps="true"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/secondLocationEditText" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/shimmer_view_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:layout_constraintTop_toBottomOf="@id/cardView"
-            android:layout_marginTop="30dp"
-            android:layout_marginStart="@dimen/horizontal_margin"
-            android:layout_marginEnd="@dimen/horizontal_margin"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="200dp"
-                android:layout_height="20dp"
-                android:layout_marginBottom="10dp"
-                android:background="@color/shimmer_background"/>
-
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="260dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="20dp"
-                app:cardBackgroundColor="@color/shimmer_background"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                app:cardMaxElevation="0dp"/>
-        </com.facebook.shimmer.ShimmerFrameLayout>
-
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/chartsLayout"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="@dimen/horizontal_margin"
-            android:clipToPadding="false"
-            android:layout_marginTop="30dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardView">
+            android:paddingBottom="10dp"
+            android:clipToPadding="false">
 
             <TextView
-                android:id="@+id/textView10"
-                android:layout_width="match_parent"
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Средняя температура воздуха"
-                android:textAlignment="textStart"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:layout_marginTop="50dp"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Корреляция"
                 android:textColor="@color/main_text"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="22sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/tempChartCardView"
-                android:layout_width="match_parent"
-                android:layout_height="260dp"
-                android:layout_marginTop="15dp"
-                android:paddingBottom="5dp"
-                android:outlineAmbientShadowColor="@color/shadow_color"
-                android:outlineSpotShadowColor="@color/shadow_color"
-                app:cardBackgroundColor="@color/hourly_card_background"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textView10" />
-
-            <TextView
-                android:id="@+id/textView11"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Количество осадков"
-                android:textAlignment="textStart"
-                android:textColor="@color/main_text"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tempChartCardView" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/precipChartCardView"
-                android:layout_width="match_parent"
-                android:layout_height="260dp"
-                android:layout_marginTop="15dp"
-                android:paddingBottom="5dp"
-                android:outlineAmbientShadowColor="@color/shadow_color"
-                android:outlineSpotShadowColor="@color/shadow_color"
-                app:cardBackgroundColor="@color/hourly_card_background"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textView11" />
-
-            <TextView
-                android:id="@+id/textView12"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
-                android:fontFamily="@font/roboto_light"
-                android:text="r — коэффициент линейной корреляции"
-                android:textColor="@color/main_text"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/precipChartCardView" />
-
             <ImageView
-                android:id="@+id/coefficientHelp"
+                android:id="@+id/correlationHelp"
                 android:clickable="true"
                 android:focusable="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/help"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="@dimen/horizontal_margin"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/precipChartCardView" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="@dimen/horizontal_margin"
+                android:fontFamily="@font/roboto_light"
+                android:text="Здесь вы можете узнать, насколько схожи погодные условия (среднесуточные температура воздуха и количество осадков) двух населенных пунктов. Это может быть полезно, если вы, например, собираетесь в поездку: так вы сможете понять, как сильно климатические условия в новом месте будут отличаться от привычных."
+                android:textColor="@color/main_text"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:layout_marginEnd="@dimen/horizontal_margin"
+                android:layout_marginTop="10dp"
+                android:text="В расчетах учитываются данные за последние 3 месяца."
+                android:fontFamily="@font/roboto_light"
+                android:textColor="@color/main_text"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="@dimen/horizontal_margin"
+                android:outlineAmbientShadowColor="@color/shadow_color"
+                android:outlineSpotShadowColor="@color/shadow_color"
+                app:cardBackgroundColor="@color/hourly_card_background"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView8">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/horizontal_margin"
+                        android:layout_marginTop="@dimen/horizontal_margin"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="Введите названия населенных пунктов"
+                        android:textColor="@color/main_text"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <EditText
+                        android:id="@+id/firstLocationEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="@dimen/horizontal_margin"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="@dimen/horizontal_margin"
+                        android:background="@drawable/edit_text_style"
+                        android:ems="10"
+                        android:maxLength="30"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:hint="Первый населенный пункт"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+                    <EditText
+                        android:id="@+id/secondLocationEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="@dimen/horizontal_margin"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="@dimen/horizontal_margin"
+                        android:background="@drawable/edit_text_style"
+                        android:ems="10"
+                        android:maxLength="30"
+                        android:hint="Второй населенный пункт"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/firstLocationEditText" />
+
+                    <Button
+                        android:id="@+id/button"
+                        android:background="@drawable/button_shape"
+                        android:layout_width="150dp"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="@dimen/horizontal_margin"
+                        android:fontFamily="@font/roboto_medium"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:text="Рассчитать"
+                        android:textAllCaps="true"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/secondLocationEditText" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_view_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/cardView"
+                android:layout_marginTop="30dp"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:layout_marginEnd="@dimen/horizontal_margin"
+                android:visibility="gone">
+
+                <include layout="@layout/correlation_placeholder"/>
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/chartsLayout"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/horizontal_margin"
+                android:clipToPadding="false"
+                android:layout_marginTop="30dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardView">
+
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_light"
+                    android:text="Ниже представлены графики зависимости среднесуточных показателей температуры воздуха и количества осадков для выбранных вами населенных пунктов. Чем больше точки на графике похожи на возрастающую диагональную линию, тем сильнее схожесть."
+                    android:textColor="@color/main_text"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Средняя температура воздуха"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/main_text"
+                    android:layout_marginTop="20dp"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textView13" />
+
+                <TextView
+                    android:id="@+id/textTemp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_light"
+                    android:textColor="@color/main_text"
+                    android:textSize="16sp"
+                    android:layout_marginTop="15dp"
+                    android:text="Среднесуточная температура воздуха "
+                    app:layout_constraintTop_toBottomOf="@id/textView10"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/tempChartCardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="360dp"
+                    android:layout_marginTop="15dp"
+                    android:paddingBottom="5dp"
+                    android:outlineAmbientShadowColor="@color/shadow_color"
+                    android:outlineSpotShadowColor="@color/shadow_color"
+                    app:cardBackgroundColor="@color/hourly_card_background"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textTemp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/textView14"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_regular"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginHorizontal="@dimen/horizontal_margin"
+                            android:textAlignment="center"
+                            android:text="График совпадения среднесуточной температуры"
+                            android:textColor="@color/main_text"
+                            android:textSize="18sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                        <com.example.weatherapp.ui.VerticalTextView
+                            android:id="@+id/city2"
+                            android:layout_width="360dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center_horizontal"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/secondary_text"
+                            android:text="Город 1"
+                            android:layout_marginStart="5dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/textView14" />
+
+
+                        <TextView
+                            android:id="@+id/city1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="35dp"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center_horizontal"
+                            android:text="Город 2"
+                            android:textColor="@color/secondary_text"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                        <TextView
+                            android:id="@+id/coefficient"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/main_text"
+                            android:textSize="18sp"
+                            android:layout_marginBottom="5dp"
+                            app:layout_constraintTop_toBottomOf="@id/city2"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:id="@+id/textView11"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Количество осадков"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/main_text"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tempChartCardView" />
+
+                <TextView
+                    android:id="@+id/textPrecip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_light"
+                    android:textColor="@color/main_text"
+                    android:textSize="16sp"
+                    android:layout_marginTop="15dp"
+                    android:text="Среднесуточное количество осадков "
+                    app:layout_constraintTop_toBottomOf="@id/textView11"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/precipChartCardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="360dp"
+                    android:layout_marginTop="15dp"
+                    android:paddingBottom="5dp"
+                    android:outlineAmbientShadowColor="@color/shadow_color"
+                    android:outlineSpotShadowColor="@color/shadow_color"
+                    app:cardBackgroundColor="@color/hourly_card_background"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textPrecip">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/textView15"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_regular"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginHorizontal="@dimen/horizontal_margin"
+                            android:textAlignment="center"
+                            android:text="График совпадения среднесуточного количества осадков"
+                            android:textColor="@color/main_text"
+                            android:textSize="18sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                        <com.example.weatherapp.ui.VerticalTextView
+                            android:id="@+id/cityPrecip2"
+                            android:layout_width="360dp"
+                            android:layout_height="match_parent"
+                            android:gravity="center_horizontal"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/secondary_text"
+                            android:text="Город 1"
+                            android:layout_marginStart="5dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/textView15" />
+
+
+                        <TextView
+                            android:id="@+id/cityPrecip1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="35dp"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="center_horizontal"
+                            android:text="Город 2"
+                            android:textColor="@color/secondary_text"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:fontFamily="@font/roboto_light"
+                    android:text="r — коэффициент линейной корреляции"
+                    android:textColor="@color/main_text"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/precipChartCardView" />
+
+                <ImageView
+                    android:id="@+id/coefficientHelp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/help"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/precipChartCardView" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </FrameLayout>

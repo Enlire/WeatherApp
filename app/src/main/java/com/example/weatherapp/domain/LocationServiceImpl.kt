@@ -121,7 +121,7 @@ class LocationServiceImpl(
         }
     }
 
-    private fun getCoordinatesFromAddress(locationName: String?) : Pair<Double, Double> {
+    fun getCoordinatesFromAddress(locationName: String?) : Pair<Double, Double> {
         try {
             val geocoder = Geocoder(context, Locale.getDefault())
             val addresses: List<Address>? = locationName?.let { geocoder.getFromLocationName(it, 1) }

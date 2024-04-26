@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:ignore="HardcodedText,TextContrastCheck"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView131"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/shimmer_background"
+        android:fontFamily="@font/roboto_light"
+        android:text="Ниже представлены графики зависимости среднесуточных показателей температуры воздуха и количества осадков для выбранных вами населенных пунктов. Чем больше точки на графике похожи на возрастающую диагональную линию, тем сильнее схожесть."
+        android:textColor="@color/shimmer_background"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/textView101"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:text="Средняя температура воздуха"
+        android:textAlignment="textStart"
+        android:textColor="@color/shimmer_background"
+        android:layout_marginTop="20dp"
+        android:textSize="18sp"
+        android:background="@color/shimmer_background"/>
+
+    <TextView
+        android:id="@+id/text1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_light"
+        android:textColor="@color/shimmer_background"
+        android:background="@color/shimmer_background"
+        android:textSize="16sp"
+        android:layout_marginTop="15dp"
+        android:text="Данные совпадают на" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView1"
+        android:layout_width="match_parent"
+        android:layout_height="360dp"
+        android:layout_marginTop="15dp"
+        android:paddingBottom="5dp"
+        app:cardBackgroundColor="@color/shimmer_background"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"/>
+
+    <TextView
+        android:id="@+id/textView111"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:text="Средняя температура воздуха"
+        android:textAlignment="textStart"
+        android:textColor="@color/shimmer_background"
+        android:layout_marginTop="20dp"
+        android:textSize="18sp"
+        android:background="@color/shimmer_background"/>
+
+    <TextView
+        android:id="@+id/text2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_light"
+        android:textColor="@color/shimmer_background"
+        android:background="@color/shimmer_background"
+        android:textSize="16sp"
+        android:layout_marginTop="15dp"
+        android:text="Данные совпадают на" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView2"
+        android:layout_width="match_parent"
+        android:layout_height="360dp"
+        android:layout_marginTop="15dp"
+        android:paddingBottom="5dp"
+        app:cardBackgroundColor="@color/shimmer_background"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"/>
+</LinearLayout>

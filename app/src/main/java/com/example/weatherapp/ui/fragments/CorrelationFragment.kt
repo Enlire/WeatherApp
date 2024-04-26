@@ -2,6 +2,7 @@ package com.example.weatherapp.ui.fragments
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -14,15 +15,17 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.weatherapp.R
 import com.example.weatherapp.data.networking.NetworkUtils
 import com.example.weatherapp.domain.CorrelationCalculator
 import com.example.weatherapp.domain.LocationServiceImpl
 import com.example.weatherapp.ui.ErrorCallback
+import com.example.weatherapp.ui.VerticalTextView
 import com.example.weatherapp.ui.dialogs.DialogUtils
 import com.example.weatherapp.ui.viewModels.CorrelationViewModel
+import com.example.weatherapp.ui.viewModelsFactories.CorrelationViewModelFactory
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.github.mikephil.charting.charts.ScatterChart
 import com.github.mikephil.charting.components.AxisBase
@@ -31,9 +34,17 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.ScatterData
 import com.github.mikephil.charting.data.ScatterDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
+import kotlinx.coroutines.launch
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.x.closestKodein
+import org.kodein.di.generic.instance
+import kotlin.math.abs
+import kotlin.math.roundToInt
 
 
-class CorrelationFragment : Fragment() {
+class CorrelationFragment : ScopedFragment(), KodeinAware {
+    override val kodein by closestKodein()
+    val correlationViewModelFactory: CorrelationViewModelFactory by instance()
 
     companion object {
         fun newInstance() = CorrelationFragment()
@@ -51,6 +62,13 @@ class CorrelationFragment : Fragment() {
     private lateinit var correlationCalculator: CorrelationCalculator
     private lateinit var correlationHelpImageView: ImageView
     private lateinit var coefficientHelpImageView: ImageView
+    private lateinit var tempCity1: TextView
+    private lateinit var tempCity2: VerticalTextView
+    private lateinit var precipCity1: TextView
+    private lateinit var precipCity2: VerticalTextView
+    private lateinit var textTemp: TextView
+    private lateinit var textPrecip: TextView
+    private lateinit var tempCoefficient: TextView
 
     private var xAxisNameTemp: TextView? = null
     private var xAxisNamePrecip: TextView? = null
@@ -61,35 +79,50 @@ class CorrelationFragment : Fragment() {
     private var yValuesPrecip = mutableListOf<Float>()
     private val entriesPrecip = ArrayList<Entry>()
     private var observationCounter = 0
+    private lateinit var firstLocationName: String
+    private lateinit var secondLocationName: String
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("first_location_name", firstLocationName)
+        outState.putString("second_location_name", secondLocationName)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_correlation, container, false)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(CorrelationViewModel::class.java)
-        // TODO: Use the ViewModel
+        val view = inflater.inflate(R.layout.fragment_correlation, container, false)
+        shimmerLayout = view.findViewById(R.id.shimmer_view_container)
+        constraintLayout = view.findViewById(R.id.chartsLayout)
+        firstLocationEditText = view.findViewById(R.id.firstLocationEditText)
+        secondLocationEditText = view.findViewById(R.id.secondLocationEditText)
+        tempCity1 = view.findViewById(R.id.city1)
+        tempCity2 = view.findViewById(R.id.city2)
+        precipCity1 = view.findViewById(R.id.cityPrecip1)
+        precipCity2 = view.findViewById(R.id.cityPrecip2)
+        textTemp = view.findViewById(R.id.textTemp)
+        textPrecip = view.findViewById(R.id.textPrecip)
+        tempCoefficient = view.findViewById(R.id.coefficient)
+        correlationHelpImageView = view.findViewById(R.id.correlationHelp)
+        coefficientHelpImageView = view.findViewById(R.id.coefficientHelp)
+        tempChartCardView = view.findViewById(R.id.tempChartCardView)
+        precipChartCardView = view.findViewById(R.id.precipChartCardView)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        shimmerLayout = view.findViewById(R.id.shimmer_view_container)
-        constraintLayout = view.findViewById(R.id.chartsLayout)
+        viewModel = ViewModelProvider(this, correlationViewModelFactory)[CorrelationViewModel::class.java]
 
-        viewModel = ViewModelProvider(this)[CorrelationViewModel::class.java]
-        firstLocationEditText = view.findViewById(R.id.firstLocationEditText)
-        secondLocationEditText = view.findViewById(R.id.secondLocationEditText)
+        if (savedInstanceState != null) {
+            firstLocationName = savedInstanceState.getString("first_location_name", "")
+            secondLocationName = savedInstanceState.getString("second_location_name", "")
+        }
+
         correlationCalculator = CorrelationCalculator()
-        //val locationService = LocationServiceImpl(requireContext())
-
-        correlationHelpImageView = view.findViewById(R.id.correlationHelp)
-        coefficientHelpImageView = view.findViewById(R.id.coefficientHelp)
+        val locationService = LocationServiceImpl(requireContext())
 
         correlationHelpImageView.setOnClickListener {
             showDialog("Корреляция — это статистическая взаимосвязь двух или более случайных величин.")
@@ -108,9 +141,6 @@ class CorrelationFragment : Fragment() {
         }
 
         // Setting up charts
-        tempChartCardView = view.findViewById(R.id.tempChartCardView)
-        precipChartCardView = view.findViewById(R.id.precipChartCardView)
-
         tempScatterChart = ScatterChart(requireContext())
         precipScatterChart = ScatterChart(requireContext())
 
@@ -129,7 +159,7 @@ class CorrelationFragment : Fragment() {
             FrameLayout.LayoutParams.WRAP_CONTENT
         )
         params.gravity = Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM
-        params.setMargins(0, 30, 0, 20)
+        params.setMargins(15, 40, 10, 40)
 
         tempChartCardView.addView(xAxisNameTemp, params)
         precipChartCardView.addView(xAxisNamePrecip, params)
@@ -166,18 +196,18 @@ class CorrelationFragment : Fragment() {
         }
 
         // Observe errors
-//        viewModel.setErrorCallback(object : ErrorCallback {
-//            override fun onError(errorMessage: String?) {
-//                if (!errorMessage.isNullOrEmpty()) {
-//                    DialogUtils.showAPIErrorDialog(childFragmentManager, errorMessage)
-//                }
-//            }
-//        })
+        viewModel.setErrorCallback(object : ErrorCallback {
+            override fun onError(errorMessage: String?) {
+                if (!errorMessage.isNullOrEmpty()) {
+                    DialogUtils.showAPIErrorDialog(childFragmentManager, errorMessage)
+                }
+            }
+        })
 
         view.findViewById<Button>(R.id.button)
             .setOnClickListener {
-                val firstLocationName = firstLocationEditText.text.toString().trim()
-                val secondLocationName = secondLocationEditText.text.toString().trim()
+                firstLocationName = firstLocationEditText.text.toString().trim()
+                secondLocationName = secondLocationEditText.text.toString().trim()
 
                 if (firstLocationName.isEmpty() || secondLocationName.isEmpty()) {
                     showDialog("Пожалуйста, заполните оба поля.")
@@ -194,10 +224,8 @@ class CorrelationFragment : Fragment() {
                     shimmerLayout.visibility = View.VISIBLE
                     shimmerLayout.startShimmer()
 
-                    val firstLocationCoordinates: Pair<Double, Double> = Pair(0.0, 0.0)
-                        //locationService.getCoordinatesFromAddress(firstLocationName)
-                    val secondLocationCoordinates: Pair<Double, Double> =Pair(0.0, 0.0)
-                        //locationService.getCoordinatesFromAddress(secondLocationName)
+                    val firstLocationCoordinates: Pair<Double, Double> = locationService.getCoordinatesFromAddress(firstLocationName)
+                    val secondLocationCoordinates: Pair<Double, Double> = locationService.getCoordinatesFromAddress(secondLocationName)
 
                     if ((firstLocationCoordinates.first == 0.0 && firstLocationCoordinates.second == 0.0) || (secondLocationCoordinates.first == 0.0 && secondLocationCoordinates.second == 0.0)) {
                         DialogUtils.showAPIErrorDialog(childFragmentManager, "Ошибка при получении данных. Попробуйте повторить запрос.")
@@ -205,16 +233,18 @@ class CorrelationFragment : Fragment() {
                         shimmerLayout.visibility = View.GONE
                     }
                     else {
-//                        viewModel.fetchCorrelationData(
-//                            firstLocationCoordinates.first,
-//                            firstLocationCoordinates.second,
-//                            1
-//                        )
-//                        viewModel.fetchCorrelationData(
-//                            secondLocationCoordinates.first,
-//                            secondLocationCoordinates.second,
-//                            2
-//                        )
+                        lifecycleScope.launch {
+                            viewModel.getCorrelationData(
+                                firstLocationCoordinates.first,
+                                firstLocationCoordinates.second,
+                                1
+                            )
+                            viewModel.getCorrelationData(
+                                secondLocationCoordinates.first,
+                                secondLocationCoordinates.second,
+                                2
+                            )
+                        }
                     }
                 }
             }
@@ -255,7 +285,10 @@ class CorrelationFragment : Fragment() {
                 entriesTemp,
                 R.color.min_chart,
                 "°C",
-                correlationCoefficientTemp
+                correlationCoefficientTemp,
+                tempCity1,
+                tempCity2,
+                textTemp
             )
             updateChart(
                 precipScatterChart,
@@ -263,7 +296,10 @@ class CorrelationFragment : Fragment() {
                 entriesPrecip,
                 R.color.max_chart,
                 " мм",
-                correlationCoefficientPrecip
+                correlationCoefficientPrecip,
+                precipCity1,
+                precipCity2,
+                textPrecip
             )
 
             shimmerLayout.stopShimmer()
@@ -273,7 +309,17 @@ class CorrelationFragment : Fragment() {
         }
     }
 
-    private fun updateChart(scatterChart: ScatterChart, cardView: CardView, entries: ArrayList<Entry>, colorId: Int, unit: String, coefficient: Float) {
+    private fun updateChart(
+        scatterChart: ScatterChart,
+        cardView: CardView,
+        entries: ArrayList<Entry>,
+        colorId: Int,
+        unit: String,
+        coefficient: Float,
+        city1: TextView,
+        city2: TextView,
+        text: TextView
+    ) {
         val dataSet = ScatterDataSet(entries, "")
         dataSet.color = ContextCompat.getColor(requireContext(), colorId)
         dataSet.setScatterShape(ScatterChart.ScatterShape.CIRCLE)
@@ -318,13 +364,22 @@ class CorrelationFragment : Fragment() {
         val paddingDp = 6
         val density = resources.displayMetrics.density
         val padding = (paddingDp * density)
-        val paddingLeft = (3 * density)
-        val paddingBottom = 10 * density
-        scatterChart.setExtraOffsets(paddingLeft, padding, padding, paddingBottom)
+        val paddingLeft = (6 * density)
+        val paddingBottom = 18 * density
+        scatterChart.setExtraOffsets(paddingLeft, paddingBottom, padding, paddingBottom)
 
         // Legend Settings
         val legend = scatterChart.legend
         legend.isEnabled = false
+
+        // Texts update
+        city1.text = firstLocationName
+        city2.text = secondLocationName
+        text.text = "Данные совпадают на ${abs(coefficient * 100).roundToInt()}% "
+        if (coefficient >= 0)
+            text.append("(прямая зависимость)")
+        else
+            text.append("(обратная зависимость)")
 
         scatterChart.notifyDataSetChanged()
         scatterChart.data = data

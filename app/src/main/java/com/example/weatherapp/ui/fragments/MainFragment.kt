@@ -156,7 +156,6 @@ class MainFragment : ScopedFragment(), KodeinAware {
 
         weatherLocation.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
-            location.text = it.name
         })
 
         hourlyWeather.observe(viewLifecycleOwner, Observer {
@@ -208,6 +207,7 @@ class MainFragment : ScopedFragment(), KodeinAware {
     @SuppressLint("SetTextI18n")
     private fun showCurrentWeather(currentWeather: CurrentWeather) {
         val windDirection = WeatherCondition().translateWindDir(currentWeather.windDir)
+        location.text = currentWeather.location
         temp.text = "${currentWeather.temperature}°C"
         weatherCondition.text = currentWeather.description
         weatherIcon.setImageResource(currentWeather.icResId)

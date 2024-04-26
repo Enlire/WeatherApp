@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.location.Address
 import android.location.Geocoder
+import android.util.Log
 import androidx.preference.PreferenceManager
 import com.example.weatherapp.data.models.DailyWeatherResponse
 import com.example.weatherapp.data.models.PastWeatherResponse

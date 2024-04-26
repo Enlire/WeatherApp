@@ -2,6 +2,7 @@ package com.example.weatherapp.data.networking
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.weatherapp.data.mappers.DailyWeatherMapper
 import com.example.weatherapp.data.models.CurrentWeatherResponse
 import com.example.weatherapp.data.models.DailyWeatherResponse
 import com.example.weatherapp.data.models.HourlyWeatherResponse
@@ -11,7 +12,8 @@ import java.io.IOException
 
 class WeatherNetworkDataSourceImpl(
     private val weatherApiService: WeatherApiService,
-    private val openMeteoApiService: OpenMeteoApiService
+    private val openMeteoApiService: OpenMeteoApiService,
+    private val dailyWeatherMapper: DailyWeatherMapper
 ) : WeatherNetworkDataSource {
     private var errorCallback: ErrorCallback? = null
 

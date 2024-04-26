@@ -40,7 +40,6 @@ class WeatherRepositoryImpl(
     private val currentWeatherMapper: CurrentWeatherMapper,
     private val hourlyWeatherMapper: HourlyWeatherMapper,
     private val dailyWeatherMapper: DailyWeatherMapper
-
 ) : WeatherRepository {
     init {
         weatherNetworkDataSource.apply {
