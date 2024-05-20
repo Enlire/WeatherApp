@@ -10,7 +10,7 @@ import com.example.weatherapp.domain.models.DailyWeather
 @Dao
 interface DailyWeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(dailyWeatherEntries: List<DailyWeather>)
+    fun insert(dailyWeather: List<DailyWeather>)
 
     @Query("SELECT location FROM daily_weather WHERE id = 1")
     fun getDailyWeatherLocation(): String

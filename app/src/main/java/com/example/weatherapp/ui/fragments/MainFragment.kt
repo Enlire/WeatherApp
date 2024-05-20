@@ -1,9 +1,7 @@
 package com.example.weatherapp.ui.fragments
 
 import android.annotation.SuppressLint
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,12 +13,13 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.weatherapp.R
 import com.example.weatherapp.data.networking.WeatherNetworkDataSource
+import com.example.weatherapp.domain.LocationService
 import com.example.weatherapp.domain.models.CurrentWeather
 import com.example.weatherapp.domain.models.PastWeather
 import com.example.weatherapp.domain.models.WeatherCondition
@@ -55,10 +54,12 @@ class MainFragment : ScopedFragment(), KodeinAware {
     private val hourlyWeatherViewModelFactory: HourlyWeatherViewModelFactory by instance()
     private val dailyWeatherViewModelFactory: DailyWeatherViewModelFactory by instance()
     private val weatherNetworkDataSource: WeatherNetworkDataSource by instance()
+    private val locationService: LocationService by instance()
 
     // Layouts and views
     private lateinit var shimmerLayout: ShimmerFrameLayout
     private lateinit var constraintLayout: ConstraintLayout
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var lineChart: LineChart
     private lateinit var chartCardView: CardView
     private lateinit var citiesButton: ImageView
@@ -81,6 +82,11 @@ class MainFragment : ScopedFragment(), KodeinAware {
     private lateinit var uvIndex: TextView
     private lateinit var pressure: TextView
 
+    private var isHourlyWeatherLoaded = false
+    private var isDailyWeatherLoaded = false
+    private var isCurrentWeatherLoaded = false
+    private var isPastWeatherLoaded = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -89,6 +95,7 @@ class MainFragment : ScopedFragment(), KodeinAware {
 
         shimmerLayout = view.findViewById(R.id.shimmer_view_container)
         constraintLayout = view.findViewById(R.id.constraint_layout)
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         citiesButton = view.findViewById(R.id.city_button)
 
         location = view.findViewById(R.id.location)
@@ -108,6 +115,8 @@ class MainFragment : ScopedFragment(), KodeinAware {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        resetDataLoadFlags()
+        weatherNetworkDataSource.resetErrorCount()
 
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         viewModelHourly = ViewModelProvider(this, hourlyWeatherViewModelFactory)[HourlyWeatherViewModel::class.java]
@@ -133,11 +142,18 @@ class MainFragment : ScopedFragment(), KodeinAware {
         shimmerLayout.visibility = View.VISIBLE
         shimmerLayout.startShimmer()
 
-        //val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        //sharedPreferences.edit().putString("USER_LOCATION", "Волгоград").apply()
-
+        val isSwitchEnabled = PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("USE_DEVICE_LOCATION", false)
+        if (isSwitchEnabled && !locationService.isLocationServiceEnabled()) {
+            val fragmentId = R.id.home
+            DialogUtils.showLocationEnableDialog(childFragmentManager, fragmentId)
+        }
 
         observeWeatherDataChanges(hourlyAdapter, dailyAdapter)
+
+        swipeRefreshLayout.setOnRefreshListener {
+            observeWeatherDataChanges(hourlyAdapter, dailyAdapter)
+            swipeRefreshLayout.isRefreshing = false
+        }
 
         citiesButton.setOnClickListener {
             requireActivity().findNavController(R.id.nav_host_fragment_activity_main).navigate(R.id.cities)
@@ -161,31 +177,35 @@ class MainFragment : ScopedFragment(), KodeinAware {
         hourlyWeather.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
             hourlyAdapter.updateData(it)
+            isHourlyWeatherLoaded = true
+            checkAllDataLoaded()
         })
 
         dailyWeather.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
             dailyAdapter.updateData(it)
+            isDailyWeatherLoaded = true
+            checkAllDataLoaded()
         })
 
         currentWeather.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
             showCurrentWeather(it)
+            isCurrentWeatherLoaded = true
+            checkAllDataLoaded()
         })
 
         pastWeather.observe(viewLifecycleOwner, Observer {
             if(it == null) return@Observer
             updateLineChart(it)
+            isPastWeatherLoaded = true
+            checkAllDataLoaded()
         })
 
         viewModelHourly.fetchHourlyWeatherData()
         viewModelDaily.fetchDailyWeatherData()
         viewModel.fetchCurrentWeatherData()
         viewModel.fetchPastWeatherData()
-
-        shimmerLayout.stopShimmer()
-        shimmerLayout.visibility = View.GONE
-        constraintLayout.visibility = View.VISIBLE
 
         // Observe errors
         weatherNetworkDataSource.setErrorCallback(object : ErrorCallback {
@@ -202,6 +222,25 @@ class MainFragment : ScopedFragment(), KodeinAware {
                 }
             }
         })
+    }
+
+    private fun resetDataLoadFlags() {
+        isHourlyWeatherLoaded = false
+        isDailyWeatherLoaded = false
+        isCurrentWeatherLoaded = false
+        isPastWeatherLoaded = false
+    }
+
+    private fun checkAllDataLoaded() {
+        if (isHourlyWeatherLoaded &&
+            isDailyWeatherLoaded &&
+            isCurrentWeatherLoaded &&
+            isPastWeatherLoaded
+        ) {
+            shimmerLayout.stopShimmer()
+            shimmerLayout.visibility = View.GONE
+            constraintLayout.visibility = View.VISIBLE
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -228,13 +267,13 @@ class MainFragment : ScopedFragment(), KodeinAware {
 
         // Transformation pastWeatherList into Entry
         for ((index, pastWeather) in pastWeatherList.take(7).withIndex()) {
-            val tempMin = pastWeather.tempMin.toFloat()
-            val tempMax = pastWeather.tempMax.toFloat()
+            val tempMin = pastWeather.tempMin
+            val tempMax = pastWeather.tempMax
             entriesTempMin.add(Entry(index.toFloat(), tempMin))
             entriesTempMax.add(Entry(index.toFloat(), tempMax))
         }
 
-        for ((index, pastWeather) in pastWeatherList.take(7).withIndex()) {
+        for (pastWeather in pastWeatherList.take(7)) {
             xValues.add(pastWeather.date)
         }
 

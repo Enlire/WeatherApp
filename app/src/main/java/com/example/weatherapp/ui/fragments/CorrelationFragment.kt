@@ -1,8 +1,8 @@
 package com.example.weatherapp.ui.fragments
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.weatherapp.R
-import com.example.weatherapp.data.networking.NetworkUtils
+import com.example.weatherapp.data.networking.WeatherNetworkDataSource
 import com.example.weatherapp.domain.CorrelationCalculator
 import com.example.weatherapp.domain.LocationServiceImpl
 import com.example.weatherapp.ui.ErrorCallback
@@ -44,11 +44,8 @@ import kotlin.math.roundToInt
 
 class CorrelationFragment : ScopedFragment(), KodeinAware {
     override val kodein by closestKodein()
-    val correlationViewModelFactory: CorrelationViewModelFactory by instance()
-
-    companion object {
-        fun newInstance() = CorrelationFragment()
-    }
+    private val correlationViewModelFactory: CorrelationViewModelFactory by instance()
+    private val weatherNetworkDataSource: WeatherNetworkDataSource by instance()
 
     private lateinit var viewModel: CorrelationViewModel
     private lateinit var tempScatterChart: ScatterChart
@@ -84,8 +81,12 @@ class CorrelationFragment : ScopedFragment(), KodeinAware {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("first_location_name", firstLocationName)
-        outState.putString("second_location_name", secondLocationName)
+        if (::firstLocationName.isInitialized) {
+            outState.putString("first_location_name", firstLocationName)
+        }
+        if (::secondLocationName.isInitialized) {
+            outState.putString("second_location_name", secondLocationName)
+        }
     }
 
     override fun onCreateView(
@@ -114,6 +115,8 @@ class CorrelationFragment : ScopedFragment(), KodeinAware {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        weatherNetworkDataSource.resetErrorCount()
+
         viewModel = ViewModelProvider(this, correlationViewModelFactory)[CorrelationViewModel::class.java]
 
         if (savedInstanceState != null) {
@@ -129,15 +132,17 @@ class CorrelationFragment : ScopedFragment(), KodeinAware {
         }
 
         coefficientHelpImageView.setOnClickListener {
-            showDialog("Чем ближе коэффициент корреляции к +1 или -1, тем сильнее похожи погодные условия. Если коэффициент отрицательный, значит параметры одного города обратно пропорциональны параметрам другого города.\n" +
-                    "\n" +
-                    "Сила взаимосвзяи определяется по абсолютному значению коэффициента корреляции (r):\n" +
-                    "- отсутствие корреляции (r = 0);\n" +
-                    "- очень слабая корреляция (r ≤ 0.2);\n" +
-                    "- слабая корреляция (r ≤ 0.5);\n" +
-                    "- средняя корреляция (r ≤ 0.7);\n" +
-                    "- сильная корреляция (r ≤ 0.9);\n" +
-                    "- очень сильная корреляция (r > 0.9)")
+            showDialog(
+                "Чем ближе коэффициент корреляции к +1 или -1, тем сильнее похожи погодные условия. Если коэффициент отрицательный, значит параметры одного города обратно пропорциональны параметрам другого города.\n" +
+                        "\n" +
+                        "Сила взаимосвзяи определяется по абсолютному значению коэффициента корреляции (r):\n" +
+                        "- отсутствие корреляции (r = 0);\n" +
+                        "- очень слабая корреляция (r ≤ 0.2);\n" +
+                        "- слабая корреляция (r ≤ 0.5);\n" +
+                        "- средняя корреляция (r ≤ 0.7);\n" +
+                        "- сильная корреляция (r ≤ 0.9);\n" +
+                        "- очень сильная корреляция (r > 0.9)"
+            )
         }
 
         // Setting up charts
@@ -224,15 +229,19 @@ class CorrelationFragment : ScopedFragment(), KodeinAware {
                     shimmerLayout.visibility = View.VISIBLE
                     shimmerLayout.startShimmer()
 
-                    val firstLocationCoordinates: Pair<Double, Double> = locationService.getCoordinatesFromAddress(firstLocationName)
-                    val secondLocationCoordinates: Pair<Double, Double> = locationService.getCoordinatesFromAddress(secondLocationName)
+                    val firstLocationCoordinates: Pair<Double, Double> =
+                        locationService.getCoordinatesFromAddress(firstLocationName)
+                    val secondLocationCoordinates: Pair<Double, Double> =
+                        locationService.getCoordinatesFromAddress(secondLocationName)
 
                     if ((firstLocationCoordinates.first == 0.0 && firstLocationCoordinates.second == 0.0) || (secondLocationCoordinates.first == 0.0 && secondLocationCoordinates.second == 0.0)) {
-                        DialogUtils.showAPIErrorDialog(childFragmentManager, "Ошибка при получении данных. Попробуйте повторить запрос.")
+                        DialogUtils.showAPIErrorDialog(
+                            childFragmentManager,
+                            "Ошибка при получении данных. Попробуйте повторить запрос."
+                        )
                         shimmerLayout.stopShimmer()
                         shimmerLayout.visibility = View.GONE
-                    }
-                    else {
+                    } else {
                         lifecycleScope.launch {
                             viewModel.getCorrelationData(
                                 firstLocationCoordinates.first,
@@ -248,14 +257,6 @@ class CorrelationFragment : ScopedFragment(), KodeinAware {
                     }
                 }
             }
-
-        // Check Internet connection and display dialog if not available
-        if (NetworkUtils.isInternetAvailable(requireContext())) {
-
-        }
-        else {
-            DialogUtils.showNoInternetDialog(childFragmentManager)
-        }
     }
 
     private fun onObservationComplete() {
@@ -309,6 +310,7 @@ class CorrelationFragment : ScopedFragment(), KodeinAware {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateChart(
         scatterChart: ScatterChart,
         cardView: CardView,

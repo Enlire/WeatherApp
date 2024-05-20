@@ -11,7 +11,7 @@ import org.threeten.bp.ZonedDateTime
 @Dao
 interface HourlyWeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(hourlyWeatherEntries: List<HourlyWeather>)
+    fun insert(hourlyWeather: List<HourlyWeather>)
 
     @Query("SELECT location FROM hourly_weather WHERE id = 1")
     fun getHourlyWeatherLocation(): String

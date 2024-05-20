@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.location.LocationManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
@@ -38,7 +39,7 @@ class LocationServiceImpl(
             try {
                 val deviceLocation = getLastDeviceLocation().await()
                     ?: return "${getCustomLocationName()}"
-                return "${deviceLocation.latitude},${deviceLocation.longitude}"
+                return "${getLocationNameFromCoordinates(deviceLocation.latitude, deviceLocation.longitude)}"
             } catch (e: LocationPermissionNotGrantedException) {
                 return "${getCustomLocationName()}"
             }
@@ -68,6 +69,12 @@ class LocationServiceImpl(
             false
         }
         return deviceLocationChanged || hasCustomLocationChanged(lastWeatherLocation)
+    }
+
+    override fun isLocationServiceEnabled(): Boolean {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
     @SuppressLint("MissingPermission")
@@ -134,6 +141,20 @@ class LocationServiceImpl(
             e.printStackTrace()
         }
         return Pair(0.0, 0.0)
+    }
+
+    private fun getLocationNameFromCoordinates (latitude: Double, longitude: Double) : String? {
+        val geocoder = Geocoder(context, Locale("ru", "RU"))
+        try {
+            val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
+            if (addresses?.isNotEmpty() == true) {
+                val address = addresses[0]
+                return address.locality
+            }
+        } catch (e: Exception) {
+            preferences.getString("USER_LOCATION", null)
+        }
+        return preferences.getString("USER_LOCATION", null)
     }
 
     private fun <T> Task<T>.asDeferred(): Deferred<T> {

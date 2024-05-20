@@ -16,7 +16,7 @@
         <include layout="@layout/main_placeholder" />
     </com.facebook.shimmer.ShimmerFrameLayout>
 
-    <!-- <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
-            android:scrollbars="none"> -->
+            android:scrollbars="none">
 
             <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint_layout"
@@ -43,7 +43,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:layout_marginBottom="20dp"
                         android:background="@color/fragment_background">
 
                         <RelativeLayout
@@ -58,7 +57,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/roboto_medium"
-                                android:text="..."
+                                android:text="@string/dots"
                                 android:textAlignment="textStart"
                                 android:textColor="@color/main_text"
                                 android:layout_centerHorizontal="true"
@@ -77,6 +76,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            app:tint="@color/main_text"
                             android:layout_marginTop="16dp"
                             android:layout_marginBottom="16dp"
                             android:minHeight="76dp"
@@ -91,7 +91,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="16dp"
                             android:fontFamily="@font/roboto_regular"
-                            android:text="..."
+                            android:text="@string/dots"
                             android:textAlignment="center"
                             android:textColor="@color/main_text"
                             android:textSize="38sp" />
@@ -104,7 +104,7 @@
                             android:width="300dp"
                             android:layout_gravity="center"
                             android:fontFamily="@font/roboto_regular"
-                            android:text="..."
+                            android:text="@string/dots"
                             android:textAlignment="center"
                             android:textColor="@color/main_text"
                             android:textSize="18sp" />
@@ -144,7 +144,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:fontFamily="@font/roboto_regular"
-                                        android:text="Ощущается как"
+                                        android:text="@string/feels"
                                         android:textAlignment="center"
                                         android:textColor="@color/secondary_text"
                                         android:textSize="12sp" />
@@ -155,7 +155,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:fontFamily="@font/roboto_regular"
-                                        android:text="..."
+                                        android:text="@string/dots"
                                         android:textAlignment="center"
                                         android:textColor="@color/main_text"
                                         android:textSize="14sp" />
@@ -191,7 +191,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:fontFamily="@font/roboto_regular"
-                                        android:text="..."
+                                        android:text="@string/dots"
                                         android:textAlignment="center"
                                         android:textColor="@color/secondary_text"
                                         android:textSize="12sp" />
@@ -202,7 +202,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:fontFamily="@font/roboto_regular"
-                                        android:text="..."
+                                        android:text="@string/dots"
                                         android:textAlignment="center"
                                         android:textColor="@color/main_text"
                                         android:textSize="14sp" />
@@ -235,7 +235,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:fontFamily="@font/roboto_regular"
-                                        android:text="Влажность"
+                                        android:text="@string/humidity"
                                         android:textAlignment="center"
                                         android:textColor="@color/secondary_text"
                                         android:textSize="12sp" />
@@ -246,7 +246,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:fontFamily="@font/roboto_regular"
-                                        android:text="..."
+                                        android:text="@string/dots"
                                         android:textAlignment="center"
                                         android:textColor="@color/main_text"
                                         android:textSize="14sp" />
@@ -289,7 +289,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:fontFamily="@font/roboto_regular"
-                                        android:text="Видимость"
+                                        android:text="@string/visibility"
                                         android:textAlignment="center"
                                         android:textColor="@color/secondary_text"
                                         android:textSize="12sp" />
@@ -300,7 +300,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:fontFamily="@font/roboto_regular"
-                                        android:text="..."
+                                        android:text="@string/dots"
                                         android:textAlignment="center"
                                         android:textColor="@color/main_text"
                                         android:textSize="14sp" />
@@ -335,7 +335,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:fontFamily="@font/roboto_regular"
-                                        android:text="УФ-индекс"
+                                        android:text="@string/uv"
                                         android:textAlignment="center"
                                         android:textColor="@color/secondary_text"
                                         android:textSize="12sp" />
@@ -346,7 +346,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:fontFamily="@font/roboto_regular"
-                                        android:text="..."
+                                        android:text="@string/dots"
                                         android:textAlignment="center"
                                         android:textColor="@color/main_text"
                                         android:textSize="14sp" />
@@ -379,7 +379,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:fontFamily="@font/roboto_regular"
-                                        android:text="Давление"
+                                        android:text="@string/pressure"
                                         android:textAlignment="center"
                                         android:textColor="@color/secondary_text"
                                         android:textSize="12sp" />
@@ -390,7 +390,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:fontFamily="@font/roboto_regular"
-                                        android:text="..."
+                                        android:text="@string/dots"
                                         android:textAlignment="center"
                                         android:textColor="@color/main_text"
                                         android:textSize="14sp" />
@@ -404,6 +404,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:paddingStart="@dimen/horizontal_margin"
+                            android:paddingEnd="@dimen/horizontal_margin"
                             android:layout_marginEnd="@dimen/horizontal_margin"
                             android:paddingVertical="10dp"
                             android:clipToPadding="false"
@@ -432,7 +433,7 @@
                             android:layout_marginBottom="15dp"
                             android:layout_marginStart="@dimen/horizontal_margin"
                             android:fontFamily="@font/roboto_regular"
-                            android:text="За последние 7 дней"
+                            android:text="@string/last_7"
                             android:textAlignment="textStart"
                             android:textColor="@color/main_text"
                             android:textSize="18sp"/>
@@ -451,6 +452,6 @@
                     </LinearLayout>
                 </ScrollView>
             </androidx.constraintlayout.widget.ConstraintLayout>
-        <!-- </androidx.core.widget.NestedScrollView>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout> -->
+        </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </FrameLayout>

@@ -17,5 +17,6 @@ interface WeatherNetworkDataSource {
     suspend fun fetchHourlyWeather(location: String)
     suspend fun fetchDailyWeather(lat: Double, lon: Double)
     suspend fun fetchPastWeather(lat: Double, lon: Double)
+    fun resetErrorCount()
     fun setErrorCallback(callback: ErrorCallback)
 }

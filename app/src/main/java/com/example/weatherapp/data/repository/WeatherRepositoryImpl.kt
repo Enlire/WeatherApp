@@ -95,8 +95,8 @@ class WeatherRepositoryImpl(
     @OptIn(DelicateCoroutinesApi::class)
     private fun persistFetchedCurrentWeather(fetchedCurrentWeather: CurrentWeatherResponse) {
         GlobalScope.launch(Dispatchers.IO) {
-            currentWeatherDao.upsert(currentWeatherMapper.mapCurrentResponseToDomain(fetchedCurrentWeather))
-            weatherLocationDao.upsert(fetchedCurrentWeather.location)
+            currentWeatherDao.insert(currentWeatherMapper.mapCurrentResponseToDomain(fetchedCurrentWeather))
+            weatherLocationDao.insert(fetchedCurrentWeather.location)
         }
     }
 
@@ -108,7 +108,7 @@ class WeatherRepositoryImpl(
                 fetchedHourlyWeather,
                 fetchedHourlyWeather.location.localtime)
             )
-            weatherLocationDao.upsert(fetchedHourlyWeather.location)
+            weatherLocationDao.insert(fetchedHourlyWeather.location)
         }
     }
 
@@ -117,10 +117,9 @@ class WeatherRepositoryImpl(
         GlobalScope.launch(Dispatchers.IO) {
             dailyWeatherDao.deleteAllDailyWeather()
             dailyWeatherDao.insert(dailyWeatherMapper.mapDailyResponseToDomain(fetchedDailyWeather))
-            weatherLocationDao.upsert(dailyWeatherMapper.mapLocationDailyResponse(
+            weatherLocationDao.insert(dailyWeatherMapper.mapLocationDailyResponse(
                 fetchedDailyWeather.latitude,
                 fetchedDailyWeather.longitude,
-                fetchedDailyWeather.utcOffsetSeconds,
                 fetchedDailyWeather.timezone)
             )
         }
@@ -130,10 +129,9 @@ class WeatherRepositoryImpl(
     private fun persistFetchedPastWeather(fetchedPastWeather: PastWeatherResponse) {
         GlobalScope.launch(Dispatchers.IO) {
             pastWeatherDao.deleteAllPastWeather()
-            pastWeatherDao.upsert(dailyWeatherMapper.mapPastResponseToDomain(fetchedPastWeather))
-            weatherLocationDao.upsert(dailyWeatherMapper.mapLocationDailyResponse(fetchedPastWeather.latitude,
+            pastWeatherDao.insert(dailyWeatherMapper.mapPastResponseToDomain(fetchedPastWeather))
+            weatherLocationDao.insert(dailyWeatherMapper.mapLocationDailyResponse(fetchedPastWeather.latitude,
                 fetchedPastWeather.longitude,
-                fetchedPastWeather.utcOffsetSeconds,
                 fetchedPastWeather.timezone))
         }
     }

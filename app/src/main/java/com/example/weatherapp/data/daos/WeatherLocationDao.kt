@@ -11,7 +11,7 @@ import com.example.weatherapp.data.models.WeatherLocation
 @Dao
 interface WeatherLocationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upsert(weatherLocation: WeatherLocation)
+    fun insert(weatherLocation: WeatherLocation)
 
     @Query("SELECT * FROM weather_location WHERE id = $WEATHER_LOCATION_ID")
     fun getLocation(): LiveData<WeatherLocation>

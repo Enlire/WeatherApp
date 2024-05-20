@@ -5,15 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weatherapp.data.mappers.DailyWeatherMapper
-import com.example.weatherapp.data.models.PastWeatherResponse
-import com.example.weatherapp.data.networking.ApiConfig
 import com.example.weatherapp.data.networking.OpenMeteoApiService
 import com.example.weatherapp.ui.ErrorCallback
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.IOException
 
 class CorrelationViewModel(context: Context) : ViewModel() {

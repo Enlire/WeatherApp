@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.weatherapp.R
 import com.example.weatherapp.data.networking.WeatherNetworkDataSource
 import com.example.weatherapp.ui.ErrorCallback
@@ -29,6 +30,9 @@ class DailyWeatherFragment : ScopedFragment(), KodeinAware {
     private lateinit var shimmerLayout: ShimmerFrameLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewModelDaily: DailyWeatherViewModel
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+
+    private var isDailyWeatherLoaded = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,6 +43,8 @@ class DailyWeatherFragment : ScopedFragment(), KodeinAware {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        weatherNetworkDataSource.resetErrorCount()
 
         viewModelDaily = ViewModelProvider(this, dailyWeatherViewModelFactory)[DailyWeatherViewModel::class.java]
         recyclerView = view.findViewById(R.id.dailyWeatherRecyclerView)
@@ -51,6 +57,12 @@ class DailyWeatherFragment : ScopedFragment(), KodeinAware {
         shimmerLayout.startShimmer()
 
         observeDailyWeatherDataChanges(dailyAdapter)
+
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        swipeRefreshLayout.setOnRefreshListener {
+            observeDailyWeatherDataChanges(dailyAdapter)
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     private fun observeDailyWeatherDataChanges(dailyAdapter: DailyWeatherAdapter) = launch {
@@ -60,6 +72,8 @@ class DailyWeatherFragment : ScopedFragment(), KodeinAware {
         dailyWeather.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
             dailyAdapter.updateData(it)
+            isDailyWeatherLoaded = true
+            checkAllDataLoaded()
         })
 
         weatherLocation.observe(viewLifecycleOwner, Observer {
@@ -67,10 +81,6 @@ class DailyWeatherFragment : ScopedFragment(), KodeinAware {
         })
 
         viewModelDaily.fetchDailyWeatherData()
-
-        shimmerLayout.stopShimmer()
-        shimmerLayout.visibility = View.GONE
-        recyclerView.visibility = View.VISIBLE
 
         // Observe errors
         weatherNetworkDataSource.setErrorCallback(object : ErrorCallback {
@@ -87,5 +97,13 @@ class DailyWeatherFragment : ScopedFragment(), KodeinAware {
                 }
             }
         })
+    }
+
+    private fun checkAllDataLoaded() {
+        if (isDailyWeatherLoaded) {
+            shimmerLayout.stopShimmer()
+            shimmerLayout.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+        }
     }
 }

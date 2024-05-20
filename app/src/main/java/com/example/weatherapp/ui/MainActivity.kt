@@ -1,13 +1,15 @@
 package com.example.weatherapp.ui
 
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Rect
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
@@ -19,6 +21,8 @@ import com.example.weatherapp.R
 import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.domain.LOCATION_PERMISSION_REQUEST_CODE
 import com.example.weatherapp.domain.LocationServiceImpl
+import com.example.weatherapp.ui.dialogs.DialogUtils
+import com.example.weatherapp.ui.fragments.SettingsFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
@@ -66,31 +70,15 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        if (!isInternetAvailable())
+            DialogUtils.showNoInternetDialog(supportFragmentManager)
+
         val locationService = LocationServiceImpl(this)
 
         locationService.requestLocationPermissions(this)
         if (locationService.hasLocationPermission()) {
             bindLocationManager()
         }
-        else {
-            //locationService.requestLocationPermissions(this)
-            //val settingsFragment = supportFragmentManager.findFragmentById(R.id.settings) as? SettingsFragment
-            //settingsFragment?.setLocationSwitchEnabled(false)
-            //settingsFragment?.setLocationSwitchChecked(false)
-            //sharedPreferences.edit().putBoolean("USE_DEVICE_LOCATION", false).apply()
-        }
-
-        //locationService.requestLocationPermissions()
-        /*if (!locationService.hasLocationPermission()) {
-            val settingsFragment = supportFragmentManager.findFragmentById(R.id.settings) as? SettingsFragment
-            settingsFragment?.setLocationSwitchEnabled(false)
-            settingsFragment?.setLocationSwitchChecked(false)
-            sharedPreferences.edit().putBoolean("USE_DEVICE_LOCATION", false).apply()
-        }
-        else {
-            bindLocationManager()
-        }*/
-
 
         WindowCompat.setDecorFitsSystemWindows(
             window, false
@@ -114,6 +102,13 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         lifecycle.addObserver(locationManager)
     }
 
+    private fun isInternetAvailable(): Boolean {
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkCapabilities = connectivityManager.activeNetwork ?: return false
+        val actNw = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+        return actNw.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val callingFragmentId = sharedPreferences.getInt("currentFragmentId", -1)
@@ -131,8 +126,12 @@ class MainActivity : AppCompatActivity(), KodeinAware {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 bindLocationManager()
-            else
-                Toast.makeText(this, "Please, set location manually in settings", Toast.LENGTH_LONG).show()
+            else {
+                val settingsFragment = supportFragmentManager.findFragmentById(R.id.settings) as? SettingsFragment
+                settingsFragment?.setLocationSwitchEnabled(false)
+                settingsFragment?.setLocationSwitchChecked(false)
+                sharedPreferences.edit().putBoolean("USE_DEVICE_LOCATION", false).apply()
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.weatherapp.R
 import com.example.weatherapp.data.networking.WeatherNetworkDataSource
 import com.example.weatherapp.ui.ErrorCallback
@@ -29,7 +30,10 @@ class HourlyWeatherFragment : ScopedFragment(), KodeinAware {
     private lateinit var viewModelHourly: HourlyWeatherViewModel
     private lateinit var shimmerLayout: ShimmerFrameLayout
     private lateinit var recyclerView: RecyclerView
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
+    private var isWeatherDataLoaded = false
+    private var isLocationDataLoaded = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +44,8 @@ class HourlyWeatherFragment : ScopedFragment(), KodeinAware {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        weatherNetworkDataSource.resetErrorCount()
 
         viewModelHourly = ViewModelProvider(this, hourlyWeatherViewModelFactory)[HourlyWeatherViewModel::class.java]
         recyclerView = view.findViewById(R.id.hourlyWeatherRecyclerView)
@@ -52,6 +58,12 @@ class HourlyWeatherFragment : ScopedFragment(), KodeinAware {
         shimmerLayout.startShimmer()
 
         observeHourlyWeatherDataChanges(hourlyAdapter)
+
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        swipeRefreshLayout.setOnRefreshListener {
+            observeHourlyWeatherDataChanges(hourlyAdapter)
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     private fun observeHourlyWeatherDataChanges(hourlyAdapter: HourlyWeatherAdapter) = launch {
@@ -61,17 +73,17 @@ class HourlyWeatherFragment : ScopedFragment(), KodeinAware {
         hourlyWeather.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
             hourlyAdapter.updateData(it)
+            isWeatherDataLoaded = true
+            checkDataAndStopShimmer()
         })
 
         weatherLocation.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
+            isLocationDataLoaded = true
+            checkDataAndStopShimmer()
         })
 
         viewModelHourly.fetchHourlyWeatherData()
-
-        shimmerLayout.stopShimmer()
-        shimmerLayout.visibility = View.GONE
-        recyclerView.visibility = View.VISIBLE
 
         // Observe errors
         weatherNetworkDataSource.setErrorCallback(object : ErrorCallback {
@@ -88,5 +100,13 @@ class HourlyWeatherFragment : ScopedFragment(), KodeinAware {
                 }
             }
         })
+    }
+
+    private fun checkDataAndStopShimmer() {
+        if (isWeatherDataLoaded && isLocationDataLoaded) {
+            shimmerLayout.stopShimmer()
+            shimmerLayout.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+        }
     }
 }

@@ -17,7 +17,7 @@ class NoInternetDialogFragment : DialogFragment() {
             .setTitle(title)
             .setMessage(message)
             .setPositiveButton(buttonText) { _, _ ->
-                activity?.finish()
+                dismiss()
             }
             .create()
 

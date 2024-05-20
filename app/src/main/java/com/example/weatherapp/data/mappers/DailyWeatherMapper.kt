@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.location.Address
 import android.location.Geocoder
-import android.util.Log
 import androidx.preference.PreferenceManager
 import com.example.weatherapp.data.models.DailyWeatherResponse
 import com.example.weatherapp.data.models.PastWeatherResponse
@@ -23,6 +22,7 @@ import kotlin.math.roundToInt
 
 class DailyWeatherMapper(private val context: Context) {
     private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
     fun mapDailyResponseToDomain (response: DailyWeatherResponse) : List<DailyWeather> {
 
         val dailyWeatherList = mutableListOf<DailyWeather>()
@@ -145,7 +145,6 @@ class DailyWeatherMapper(private val context: Context) {
     fun mapLocationDailyResponse(
         latitude: Double,
         longitude: Double,
-        utcOffsetSeconds: Int,
         timezone: String
     ): WeatherLocation {
         val zoneId = ZoneId.of(timezone)
@@ -178,26 +177,6 @@ class DailyWeatherMapper(private val context: Context) {
             preferences.getString("USER_LOCATION", null)
         }
         return preferences.getString("USER_LOCATION", null)
-    }
-
-
-    fun calculateAverageTemperature(
-        maxTemperatureList: List<Float>,
-        minTemperatureList: List<Float>
-    ): List<Float> {
-        val result = mutableListOf<Float>()
-
-        val size = maxTemperatureList.size.coerceAtLeast(minTemperatureList.size)
-
-        for (i in 0 until size) {
-            val maxTemperature = maxTemperatureList.getOrNull(i) ?: 0.0f
-            val minTemperature = minTemperatureList.getOrNull(i) ?: 0.0f
-
-            val averageTemperature = (maxTemperature + minTemperature) / 2.0f
-            result.add(averageTemperature)
-        }
-
-        return result
     }
 
     fun formatDate(dateString: String): String {

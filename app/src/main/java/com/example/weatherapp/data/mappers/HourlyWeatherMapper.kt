@@ -9,9 +9,9 @@ import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
 class HourlyWeatherMapper {
-    //private val locationService = LocationService(context)
+
     fun mapHourlyResponseToDomain(response: HourlyWeatherResponse, currentTime: String): List<HourlyWeather> {
-        val currentHour = extractCurrentTime(currentTime)//locationService.lastKnownLocation?.time
+        val currentHour = extractCurrentTime(currentTime)
         val location = response.location.name.trim()
 
         val firstForecastDay = response.forecast.forecastday[0]

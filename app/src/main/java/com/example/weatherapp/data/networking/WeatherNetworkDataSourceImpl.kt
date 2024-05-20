@@ -2,20 +2,18 @@ package com.example.weatherapp.data.networking
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.weatherapp.data.mappers.DailyWeatherMapper
 import com.example.weatherapp.data.models.CurrentWeatherResponse
 import com.example.weatherapp.data.models.DailyWeatherResponse
 import com.example.weatherapp.data.models.HourlyWeatherResponse
 import com.example.weatherapp.data.models.PastWeatherResponse
 import com.example.weatherapp.ui.ErrorCallback
-import java.io.IOException
 
 class WeatherNetworkDataSourceImpl(
     private val weatherApiService: WeatherApiService,
-    private val openMeteoApiService: OpenMeteoApiService,
-    private val dailyWeatherMapper: DailyWeatherMapper
+    private val openMeteoApiService: OpenMeteoApiService
 ) : WeatherNetworkDataSource {
     private var errorCallback: ErrorCallback? = null
+    private var errorCount = 0
 
     // Current weather
     private val _downloadedCurrentWeather = MutableLiveData<CurrentWeatherResponse>()
@@ -28,8 +26,8 @@ class WeatherNetworkDataSourceImpl(
                 .getCurrentWeather(location = location)
                 .await()
             _downloadedCurrentWeather.postValue(currentWeatherResponse)
-        } catch (e: IOException) {
-            errorCallback?.onError("Ошибка при получении данных о погоде. Попробуйте повторить запрос.")
+        } catch (e: Exception) {
+            onError()
         }
     }
 
@@ -44,8 +42,8 @@ class WeatherNetworkDataSourceImpl(
                 .getHourlyWeather(location = location)
                 .await()
             _downloadedHourlyWeather.postValue(hourlyWeatherResponse)
-        } catch (e: IOException) {
-            errorCallback?.onError("Ошибка при получении данных о погоде. Попробуйте повторить запрос.")
+        } catch (e: Exception) {
+            onError()
         }
     }
 
@@ -60,8 +58,8 @@ class WeatherNetworkDataSourceImpl(
                 .getDailyWeather(lat = lat, lon = lon)
                 .await()
             _downloadedDailyWeather.postValue(dailyWeatherResponse)
-        } catch (e: IOException) {
-            errorCallback?.onError("Ошибка при получении данных о погоде. Попробуйте повторить запрос.")
+        } catch (e: Exception) {
+            onError()
         }
     }
 
@@ -77,9 +75,20 @@ class WeatherNetworkDataSourceImpl(
                 .getPastWeather(lat = lat, lon = lon, pastDays = 7)
                 .await()
             _downloadedPastWeather.postValue(pastWeatherResponse)
-        } catch (e: IOException) {
+        } catch (e: Exception) {
+            onError()
+        }
+    }
+
+    private fun onError() {
+        errorCount++
+        if (errorCount == 1) {
             errorCallback?.onError("Ошибка при получении данных о погоде. Попробуйте повторить запрос.")
         }
+    }
+
+    override fun resetErrorCount() {
+        errorCount = 0
     }
 
     override fun setErrorCallback(callback: ErrorCallback) {

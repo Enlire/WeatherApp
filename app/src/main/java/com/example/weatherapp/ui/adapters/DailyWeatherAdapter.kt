@@ -14,7 +14,7 @@ import com.example.weatherapp.domain.models.DailyWeather
 
 class DailyWeatherAdapter(
     private var dailyWeatherList: List<DailyWeather>,
-    private val context: Context
+    context: Context
 ) : RecyclerView.Adapter<DailyWeatherAdapter.DailyWeatherViewHolder>() {
     private val dailyWeatherMapper = DailyWeatherMapper(context)
     class DailyWeatherViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -44,7 +44,7 @@ class DailyWeatherAdapter(
         // Bind the views with the corresponding data
         holder.dateTextView.text = dailyWeatherMapper.formatDate(dailyWeather.date)
         holder.dayTextView.text = dailyWeatherMapper.getDayOfWeek(dailyWeather.date)
-        holder.tempTextView.text = "${dailyWeather.tempMin}°C / ${dailyWeather.tempMax}°C"
+        holder.tempTextView.text = "${dailyWeather.tempMax}°C / ${dailyWeather.tempMin}°C"
         holder.conditionTextView.text = dailyWeather.description
         holder.iconImageView.setImageResource(dailyWeather.icResId)
         holder.chanceTextView.text = "${dailyWeather.chanceOfPrecip}%"

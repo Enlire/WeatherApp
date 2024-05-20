@@ -6,6 +6,15 @@
     <string name="correlation">Корреляция</string>
     <string name="settings">Настройки</string>
     <string name="no_internet_title">Отсутствует интернет-соединение</string>
-    <string name="no_internet_message">Пожалуйста, проверьте ваше интернет-соединение и попробуйте снова.</string>
+    <string name="no_internet_message">У вас отсутствует интернет-соединение. Некоторые функции могут не работать.</string>
     <string name="no_internet_button">OK</string>
+    <string name="_7">Прогноз на 7 дней</string>
+    <string name="_24">Прогноз на 24 часа</string>
+    <string name="dots">…</string>
+    <string name="feels">Ощущается как</string>
+    <string name="humidity">Влажность</string>
+    <string name="visibility">Видимость</string>
+    <string name="uv">УФ-индекс</string>
+    <string name="pressure">Давление</string>
+    <string name="last_7">За последние 7 дней</string>
 </resources>

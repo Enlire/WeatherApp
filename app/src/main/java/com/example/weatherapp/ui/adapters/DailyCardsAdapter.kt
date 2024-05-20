@@ -38,7 +38,7 @@ class DailyCardsAdapter(
 
         // Bind the views with the corresponding data
         holder.dayTextView.text = dailyWeatherMapper.getDayOfWeek(dailyWeather.date)
-        holder.tempTextView.text = "${dailyWeather.tempMin}°C / ${dailyWeather.tempMax}°C"
+        holder.tempTextView.text = "${dailyWeather.tempMax}°C / ${dailyWeather.tempMin}°C"
         holder.conditionTextView.text = dailyWeather.description
         holder.iconImageView.setImageResource(dailyWeather.icResId)
         holder.dateTextView.text = dailyWeatherMapper.formatDate(dailyWeather.date)

@@ -10,7 +10,7 @@ import com.example.weatherapp.domain.models.PastWeather
 @Dao
 interface PastWeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upsert(pastWeatherEntries: List<PastWeather>)
+    fun insert(pastWeather: List<PastWeather>)
 
     @Query("SELECT location FROM past_weather WHERE id = 1")
     fun getPastWeatherLocation(): String

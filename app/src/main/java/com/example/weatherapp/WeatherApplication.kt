@@ -40,7 +40,7 @@ class WeatherApp : Application(), KodeinAware {
         bind<WeatherApiService>() with singleton { WeatherApiService() }
         bind<OpenMeteoApiService>() with singleton { OpenMeteoApiService() }
         bind<WeatherRepository>() with singleton { WeatherRepositoryImpl(instance(), instance(), instance(), instance(), instance(), instance(), instance(), instance(), instance(), instance()) }
-        bind<WeatherNetworkDataSource>() with singleton { WeatherNetworkDataSourceImpl(instance(), instance(), instance()) }
+        bind<WeatherNetworkDataSource>() with singleton { WeatherNetworkDataSourceImpl(instance(), instance()) }
         bind<LocationService>() with singleton { LocationServiceImpl(instance())}
         bind() from provider { MainViewModelFactory(instance()) }
         bind() from provider { HourlyWeatherViewModelFactory(instance()) }

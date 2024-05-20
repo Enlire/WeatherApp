@@ -55,14 +55,11 @@ data class WeatherLocation(
 		get() {
 			val instant = Instant.ofEpochSecond(localTimeEpoch)
 			val zoneId = ZoneId.of(tzId)
-			return ZonedDateTime.ofInstant(instant, zoneId)
+			return instant.atZone(zoneId)
 		}
 }
 
 data class Current(
-	@field:SerializedName("last_updated")
-	val lastUpdated: String,
-
 	@field:SerializedName("feelslike_c")
 	val feelslikeC: Double,
 
